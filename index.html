@@ -3,164 +3,211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>New Hotspot User - WinBox</title>
+  <title>إضافة مستخدم - WinBox</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    :root { --bg: #0b111a; --card-bg: #121c2a; --card-border: #1e2f47; --accent-cyan: #00e5ff; --accent-blue: #0077ff; --accent-green: #00e676; --accent-red: #ff3d71; --text-main: #f0f4f8; --text-sub: #7a8fa6; --input-bg: #070d14; }
+    :root {
+      --bg: #0b111a;
+      --card-bg: #121c2a;
+      --item-bg: #0c141f;
+      --card-border: #263852;
+      --accent-cyan: #00e5ff;
+      --accent-amber: #ffab00;
+      --accent-green: #00e676;
+      --accent-red: #ff3d71;
+      --text-main: #ffffff;
+      --text-sub: #9cb2cc;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text-main); padding: 14px; min-height: 100vh; }
-    .winbox-window { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6); overflow: hidden; }
-    .win-header { background: #172436; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border); }
-    .win-title { font-size: 14px; font-weight: 700; color: var(--accent-cyan); }
-    .win-badge { font-size: 11px; background: rgba(0, 229, 255, 0.12); color: var(--accent-cyan); padding: 3px 8px; border-radius: 6px; font-family: monospace; }
-    .live-preview { background: linear-gradient(135deg, rgba(0, 119, 255, 0.12), rgba(0, 229, 255, 0.06)); border: 1px dashed var(--accent-cyan); margin: 14px; border-radius: 14px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
-    .lp-user { font-family: monospace; font-size: 18px; font-weight: 800; color: #fff; }
-    .lp-pass { font-size: 13px; color: var(--text-sub); font-family: monospace; }
-    .lp-comm { font-size: 12px; color: var(--accent-cyan); font-family: monospace; margin-top: 3px; }
-    .lp-badge-prof { display: inline-block; background: var(--accent-blue); color: white; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; margin-bottom: 4px; }
-    .lp-badge-quota { font-size: 14px; font-weight: 800; color: var(--accent-green); }
-    .form-content { padding: 0 16px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
-    .field-group { display: flex; flex-direction: column; gap: 5px; }
-    .field-header { display: flex; justify-content: space-between; align-items: center; }
-    .field-label { font-size: 13px; font-weight: 600; color: var(--text-sub); }
-    .field-action { font-size: 12px; color: var(--accent-cyan); cursor: pointer; font-weight: 700; text-decoration: underline; }
-    .win-input { background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; color: #fff; padding: 10px 14px; font-size: 15px; font-family: monospace; outline: none; }
-    .options-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .opt-btn { background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-main); padding: 10px 4px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; }
-    .opt-btn.active { background: linear-gradient(135deg, #0077ff, #00c3ff); color: #fff; border-color: var(--accent-cyan); }
-    .actions-footer { display: flex; gap: 10px; margin-top: 6px; }
-    .btn-create { flex: 2; background: linear-gradient(135deg, #00e676, #00b0ff); color: #05141f; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; }
-    .btn-cancel { flex: 1; background: rgba(255, 61, 113, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      padding: 12px;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .winbox-window {
+      width: 100%;
+      max-width: 450px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 18px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+    }
+    .win-header {
+      background: linear-gradient(90deg, #162638, #121c2a);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); }
+    .win-badge { font-size: 12px; background: rgba(0, 229, 255, 0.14); color: var(--accent-cyan); padding: 4px 10px; border-radius: 8px; font-weight: 700; }
+
+    .form-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-label { font-size: 13px; color: var(--text-sub); font-weight: 700; }
+
+    .text-input {
+      width: 100%;
+      background: var(--item-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: #fff;
+      padding: 11px 12px;
+      font-size: 15px;
+      outline: none;
+      direction: ltr;
+      text-align: left;
+    }
+    .text-input:focus { border-color: var(--accent-cyan); }
+
+    .btn-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .opt-btn {
+      background: var(--item-bg);
+      border: 1.5px solid var(--card-border);
+      color: var(--text-main);
+      padding: 10px 6px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.15s;
+    }
+    .opt-btn.active {
+      background: linear-gradient(135deg, #ffab00, #ff6d00);
+      border-color: #ffd54f;
+      color: #0b111a;
+      font-weight: 900;
+      box-shadow: 0 4px 14px rgba(255, 171, 0, 0.35);
+    }
+
+    .actions-row { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-top: 6px; }
+    .btn-cancel {
+      background: rgba(255, 61, 113, 0.15);
+      border: 1px solid var(--accent-red);
+      color: var(--accent-red);
+      padding: 12px;
+      border-radius: 11px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-submit {
+      background: linear-gradient(90deg, #00e676, #00b0ff);
+      border: none;
+      color: #08121e;
+      padding: 12px;
+      border-radius: 11px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0, 230, 118, 0.3);
+    }
   </style>
 </head>
 <body>
   <div class="winbox-window">
     <div class="win-header">
-      <div class="win-title">⚡ New Hotspot User</div>
-      <div class="win-badge">hAP ax² • out</div>
+      <div class="win-title">➕ إضافة مشترك جديد</div>
+      <div class="win-badge">Hotspot • out</div>
     </div>
-    <div class="live-preview">
-      <div>
-        <div class="lp-user" id="pvUser">user1</div>
-        <div class="lp-pass" id="pvPass">الرمز: 1234</div>
-        <div class="lp-comm" id="pvComm">User1 To 12-12-2026</div>
-      </div>
-      <div style="text-align: left;">
-        <span class="lp-badge-prof" id="pvProf">512+</span><br>
-        <span class="lp-badge-quota" id="pvQuota">15 GB</span>
-      </div>
-    </div>
-    <div class="form-content">
+
+    <div class="form-body">
       <div class="field-group">
-        <div class="field-header">
-          <label class="field-label">👤 اسم المستخدم</label>
-          <span class="field-action" onclick="genRandom()">🎲 عشوائي</span>
-        </div>
-        <input type="text" id="inUser" class="win-input" value="user1" oninput="updatePreview()">
+        <label class="field-label">👤 اسم المستخدم (User)</label>
+        <input type="text" id="uName" class="text-input" placeholder="مثال: ahmed2026" oninput="updateAutoComment()">
       </div>
+
       <div class="field-group">
-        <div class="field-header">
-          <label class="field-label">🔑 الرقم السري (Password)</label>
-          <span class="field-action" onclick="matchPass()">مطابق للاسم</span>
-        </div>
-        <input type="text" id="inPass" class="win-input" value="1234" oninput="updatePreview()">
+        <label class="field-label">🔑 كلمة المرور (Password)</label>
+        <input type="text" id="uPass" class="text-input" placeholder="مثال: 1234">
       </div>
+
       <div class="field-group">
-        <label class="field-label">💬 الكومنت (اتركه فارغاً للتوليد التلقائي +30 يوم)</label>
-        <input type="text" id="inComment" class="win-input" placeholder="تلقائي: Name To DD-MM-YYYY" oninput="updatePreview()">
-      </div>
-      <div class="field-group">
-        <label class="field-label">🚀 البروفايل (Profile)</label>
-        <div class="options-grid" style="grid-template-columns: repeat(2, 1fr);">
-          <button class="opt-btn active" id="prof1" onclick="setProfile('512+', this)">512+ (الأساسي)</button>
-          <button class="opt-btn" id="prof2" onclick="setProfile('120K/400K', this)">120K/400K</button>
+        <label class="field-label">🚀 البروفايل (السرعة)</label>
+        <div class="btn-grid-2">
+          <button type="button" class="opt-btn active" onclick="selectProf('512+', this)">512+ (الأساسي)</button>
+          <button type="button" class="opt-btn" onclick="selectProf('120K/400K', this)">120K/400K</button>
         </div>
       </div>
+
       <div class="field-group">
-        <label class="field-label">📦 الرصيد / الجيجات</label>
-        <div class="options-grid">
-          <button class="opt-btn" onclick="setQuota(12, this)">12 جيجا</button>
-          <button class="opt-btn active" onclick="setQuota(15, this)">15 جيجا</button>
-          <button class="opt-btn" onclick="setQuota(20, this)">20 جيجا</button>
+        <label class="field-label">📦 الباقة (الجيجات)</label>
+        <div class="btn-grid-3">
+          <button type="button" class="opt-btn" onclick="selectGb('12', this)">12 جيجا</button>
+          <button type="button" class="opt-btn active" onclick="selectGb('15', this)">15 جيجا</button>
+          <button type="button" class="opt-btn" onclick="selectGb('20', this)">20 جيجا</button>
         </div>
       </div>
-      <div class="actions-footer">
-        <button class="btn-create" onclick="submitUser()">✅ إنشاء الكارت (OK)</button>
-        <button class="btn-cancel" onclick="cancelAction()">إلغاء</button>
+
+      <div class="field-group">
+        <label class="field-label">💬 الكومنت (تاريخ الانتهاء تلقائي +30 يوم)</label>
+        <input type="text" id="uComm" class="text-input" placeholder="Name To DD-MM-YYYY">
+      </div>
+
+      <div class="actions-row">
+        <button type="button" class="btn-cancel" onclick="if(tg) tg.close()">إلغاء</button>
+        <button type="button" class="btn-submit" onclick="submitUser()">✅ إنشاء الكارت</button>
       </div>
     </div>
   </div>
+
   <script>
-    let currentProfile = '512+';
-    let currentQuota = 15;
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) { tg.ready(); tg.expand(); }
 
-    function getAutoComment(rawUser) {
-      const cleanUser = (rawUser || 'User').trim();
-      const firstName = cleanUser.split(/\s+/)[0];
-      const capitalized = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-      
-      const targetDate = new Date();
-      targetDate.setDate(targetDate.getDate() + 30);
-      const day = String(targetDate.getDate()).padStart(2, '0');
-      const month = String(targetDate.getMonth() + 1).padStart(2, '0');
-      const year = targetDate.getFullYear();
-      
-      return `${capitalized} To ${day}-${month}-${year}`;
+    let selectedProf = '512+';
+    let selectedGb = '15';
+    let commEdited = false;
+
+    document.getElementById('uComm').addEventListener('input', () => { commEdited = true; });
+
+    function getExpiryDate() {
+      const d = new Date();
+      d.setDate(d.getDate() + 30);
+      return `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
     }
 
-    function setProfile(prof, btn) {
-      currentProfile = prof;
-      document.querySelectorAll('#prof1, #prof2').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      updatePreview();
+    function updateAutoComment() {
+      if (commEdited) return;
+      const name = document.getElementById('uName').value.trim();
+      document.getElementById('uComm').value = name ? `${name} To ${getExpiryDate()}` : '';
     }
 
-    function setQuota(gb, btn) {
-      currentQuota = gb;
-      btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      updatePreview();
+    function selectProf(val, el) {
+      selectedProf = val;
+      el.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
     }
 
-    function genRandom() {
-      const pin = Math.floor(1000 + Math.random() * 9000);
-      document.getElementById('inUser').value = pin;
-      document.getElementById('inPass').value = pin;
-      updatePreview();
-    }
-
-    function matchPass() {
-      document.getElementById('inPass').value = document.getElementById('inUser').value;
-      updatePreview();
-    }
-
-    function updatePreview() {
-      const uVal = document.getElementById('inUser').value;
-      const cManual = document.getElementById('inComment').value.trim();
-      const finalComm = cManual ? cManual : getAutoComment(uVal);
-
-      document.getElementById('pvUser').innerText = uVal || '---';
-      document.getElementById('pvPass').innerText = 'الرمز: ' + (document.getElementById('inPass').value || '---');
-      document.getElementById('pvComm').innerText = finalComm;
-      document.getElementById('pvProf').innerText = currentProfile;
-      document.getElementById('pvQuota').innerText = currentQuota + ' GB';
+    function selectGb(val, el) {
+      selectedGb = val;
+      el.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
     }
 
     function submitUser() {
-      const u = document.getElementById('inUser').value.trim();
-      const p = document.getElementById('inPass').value.trim();
-      const cManual = document.getElementById('inComment').value.trim();
-      const cFinal = cManual ? cManual : getAutoComment(document.getElementById('inUser').value);
-
-      if (!u || !p) return alert('أدخل الاسم والباسورد');
-      const cmdText = `/add_user|${u}|${p}|${currentProfile}|${currentQuota}|${cFinal}`;
-      if (tg && tg.sendData) tg.sendData(cmdText);
+      const u = document.getElementById('uName').value.trim();
+      const p = document.getElementById('uPass').value.trim();
+      const c = document.getElementById('uComm').value.trim() || `${u} To ${getExpiryDate()}`;
+      if (!u || !p) {
+        alert('برجاء إدخال اسم المستخدم وكلمة المرور');
+        return;
+      }
+      const payload = `/add_user|${u}|${p}|${selectedProf}|${selectedGb}|${c}`;
+      if (tg) {
+        tg.sendData(payload);
+      } else {
+        alert(payload);
+      }
     }
-
-    function cancelAction() { if (tg) tg.close(); }
-    updatePreview();
   </script>
 </body>
 </html>
