@@ -11,6 +11,7 @@
       --card-bg: #121c2a;
       --card-border: #26354d;
       --accent-amber: #ffab00;
+      --accent-cyan: #00e5ff;
       --accent-blue: #0077ff;
       --accent-green: #00e676;
       --accent-red: #ff3d71;
@@ -25,65 +26,68 @@
     .win-header { background: linear-gradient(90deg, #1f2636, #172030); padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border); }
     .win-title { font-size: 15px; font-weight: 800; color: var(--accent-amber); }
     .win-badge { font-size: 11px; background: rgba(255, 171, 0, 0.15); color: var(--accent-amber); padding: 3px 9px; border-radius: 6px; font-family: monospace; font-weight: 700; }
-    
-    .live-preview { background: linear-gradient(135deg, rgba(255, 171, 0, 0.13), rgba(0, 230, 118, 0.06)); border: 1px dashed var(--accent-amber); margin: 14px; border-radius: 14px; padding: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-    .lp-user { font-size: 17px; font-weight: 800; color: #fff; word-break: break-word; }
-    .lp-sub { font-size: 12px; color: var(--accent-amber); font-family: monospace; margin-top: 4px; }
-    .lp-note { font-size: 11px; color: var(--text-sub); margin-top: 3px; }
-    .lp-badge-prof { display: inline-block; background: var(--accent-blue); color: white; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; margin-bottom: 5px; }
-    .lp-badge-quota { font-size: 15px; font-weight: 800; color: var(--accent-green); }
 
-    .form-content { padding: 0 16px 16px 16px; display: flex; flex-direction: column; gap: 13px; }
-    .field-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-content { padding: 14px 16px 16px 16px; display: flex; flex-direction: column; gap: 13px; }
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
     .field-header { display: flex; justify-content: space-between; align-items: center; }
     .field-label { font-size: 13px; font-weight: 600; color: var(--text-sub); }
     .field-hint { font-size: 11px; color: var(--accent-amber); }
-    .win-input { background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; color: #fff; padding: 11px 14px; font-size: 15px; outline: none; transition: border-color 0.2s; }
+
+    .search-row { display: flex; gap: 8px; }
+    .win-input { flex: 1; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; color: #fff; padding: 11px 14px; font-size: 15px; outline: none; transition: border-color 0.2s; }
     .win-input:focus { border-color: var(--accent-amber); }
+    .btn-search { background: linear-gradient(135deg, #0077ff, #00c3ff); border: none; color: #fff; border-radius: 10px; padding: 0 16px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 195, 255, 0.25); }
+
+    .user-card { background: linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(255, 171, 0, 0.08)); border: 1px solid var(--accent-cyan); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+    .uc-top { display: flex; justify-content: space-between; align-items: center; }
+    .uc-name { font-size: 16px; font-weight: 800; color: #fff; font-family: monospace; }
+    .uc-status { font-size: 11px; background: rgba(0, 230, 118, 0.15); color: var(--accent-green); padding: 2px 8px; border-radius: 6px; font-weight: 700; }
+    .uc-status.disabled { background: rgba(255, 61, 113, 0.15); color: var(--accent-red); }
+    .uc-comm { font-size: 12px; color: var(--accent-amber); font-family: monospace; }
+    .uc-stats { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-sub); margin-top: 2px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px; }
+    .uc-stats b { color: #fff; }
+
+    .multi-list { display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto; }
+    .multi-item { background: var(--input-bg); border: 1px solid var(--accent-amber); border-radius: 10px; padding: 9px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+    .multi-item:active { background: #192638; }
 
     .options-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .opt-btn { background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-main); padding: 11px 4px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; transition: all 0.15s; }
     .opt-btn.active { background: linear-gradient(135deg, #ff8f00, #ffca28); color: #0b111a; border-color: #ffe082; box-shadow: 0 4px 12px rgba(255, 171, 0, 0.25); }
 
-    .actions-footer { display: flex; gap: 10px; margin-top: 6px; }
+    .actions-footer { display: flex; gap: 10px; margin-top: 4px; }
     .btn-renew { flex: 2; background: linear-gradient(135deg, #ffab00, #00e676); color: #05141f; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; }
     .btn-cancel { flex: 1; background: rgba(255, 61, 113, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .status-note { font-size: 11px; color: var(--text-sub); text-align: center; }
   </style>
 </head>
 <body>
   <div class="winbox-window">
     <div class="win-header">
       <div class="win-title">🔄 تجديد باقة مشترك</div>
-      <div class="win-badge">Comment Date +30d</div>
-    </div>
-
-    <div class="live-preview">
-      <div>
-        <div class="lp-user" id="pvUser" dir="auto">ابحث باليوزر أو الكومنت...</div>
-        <div class="lp-sub" id="pvCommMode">الكومنت: تلقائي (+30 يوم من تاريخه)</div>
-        <div class="lp-note">تصفير العداد + تفعيل الكارت</div>
-      </div>
-      <div style="text-align: left; flex-shrink: 0;">
-        <span class="lp-badge-prof" id="pvProf">512+</span><br>
-        <span class="lp-badge-quota" id="pvQuota">15 GB</span>
-      </div>
+      <div class="win-badge" id="syncBadge">جاري تحميل القائمة...</div>
     </div>
 
     <div class="form-content">
       <div class="field-group">
         <div class="field-header">
-          <label class="field-label">🔍 اليوزر أو أي كلمة من الكومنت</label>
+          <label class="field-label">🔍 ابحث باليوزر أو الكومنت ثم اضغط العدسة</label>
           <span class="field-hint">عربي / إنجليزي</span>
         </div>
-        <input type="text" id="inQuery" class="win-input" dir="auto" placeholder="مثال: عنتر أو Antar أو 01119535407" oninput="updatePreview()">
+        <div class="search-row">
+          <input type="text" id="inQuery" class="win-input" dir="auto" placeholder="اكتب Antar أو عنتر أو رقم..." onkeydown="if(event.key==='Enter') searchUsers()">
+          <button class="btn-search" onclick="searchUsers()" title="بحث">🔍</button>
+        </div>
       </div>
+
+      <div id="resultArea"></div>
 
       <div class="field-group">
         <div class="field-header">
-          <label class="field-label">💬 تعديل الكومنت (اختياري)</label>
-          <span class="field-hint">اتركه فارغاً لزيادة 30 يوم تلقائياً</span>
+          <label class="field-label">💬 الكومنت الجديد (+30 يوم تلقائياً)</label>
+          <span class="field-hint">قابل للتعديل اليدوي</span>
         </div>
-        <input type="text" id="inManualComm" class="win-input" dir="auto" placeholder="تلقائي: يضيف 30 يوم على تاريخ الكومنت القديم" oninput="updatePreview()">
+        <input type="text" id="inNewComm" class="win-input" dir="auto" placeholder="يتعبأ تلقائياً عند اختيار المشترك...">
       </div>
 
       <div class="field-group">
@@ -97,58 +101,178 @@
       <div class="field-group">
         <label class="field-label">📦 الباقة الجديدة (الجيجات)</label>
         <div class="options-grid">
-          <button class="opt-btn" onclick="setQuota(12, this)">12 جيجا</button>
-          <button class="opt-btn active" onclick="setQuota(15, this)">15 جيجا</button>
-          <button class="opt-btn" onclick="setQuota(20, this)">20 جيجا</button>
+          <button class="opt-btn" id="q12" onclick="setQuota(12, this)">12 جيجا</button>
+          <button class="opt-btn active" id="q15" onclick="setQuota(15, this)">15 جيجا</button>
+          <button class="opt-btn" id="q20" onclick="setQuota(20, this)">20 جيجا</button>
         </div>
       </div>
 
       <div class="actions-footer">
-        <button class="btn-renew" onclick="submitRenew()">🔄 تأكيد التجديد</button>
+        <button class="btn-renew" onclick="submitRenew()">🔄 حفظ وتجديد الباقة</button>
         <button class="btn-cancel" onclick="cancelAction()">إلغاء</button>
       </div>
     </div>
   </div>
 
   <script>
+    let allUsers = [];
+    let selectedUser = null;
     let currentProfile = '512+';
     let currentQuota = 15;
+
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) { tg.ready(); tg.expand(); }
+
+    // تحميل أحدث بيانات المشتركين من GitHub (مع منع الكاش)
+    async function loadUsers() {
+      try {
+        const url = `https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?t=${Date.now()}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Not synced yet');
+        allUsers = await res.json();
+        document.getElementById('syncBadge').innerText = `متصل • ${allUsers.length} مشترك`;
+      } catch (e) {
+        document.getElementById('syncBadge').innerText = 'وضع البحث المباشر';
+      }
+    }
+
+    function computePlus30Comment(oldComm, userName) {
+      let baseName = userName;
+      let targetDate = null;
+
+      if (oldComm && oldComm.trim().length > 0) {
+        const toIdx = oldComm.indexOf(' To ');
+        if (toIdx !== -1) {
+          baseName = oldComm.substring(0, toIdx).trim();
+          const afterTo = oldComm.substring(toIdx + 4).trim();
+          const dateToken = afterTo.split(/\s+/)[0];
+          const parts = dateToken.split('-');
+          if (parts.length === 3) {
+            const d = parseInt(parts[0], 10);
+            const m = parseInt(parts[1], 10) - 1;
+            const y = parseInt(parts[2], 10);
+            if (!isNaN(d) && !isNaN(m) && !isNaN(y) && y > 2000) {
+              targetDate = new Date(y, m, d);
+            }
+          }
+        } else {
+          baseName = oldComm.trim();
+        }
+      }
+
+      if (!targetDate) {
+        targetDate = new Date();
+      }
+      targetDate.setDate(targetDate.getDate() + 30);
+
+      const day = targetDate.getDate();
+      const month = targetDate.getMonth() + 1;
+      const year = targetDate.getFullYear();
+      return `${baseName} To ${day}-${month}-${year}`;
+    }
+
+    function selectUserCard(u) {
+      selectedUser = u;
+      document.getElementById('inQuery').value = u.n;
+
+      // تعبئة الكومنت الجديد (+30 يوم من تاريخه القديم)
+      document.getElementById('inNewComm').value = computePlus30Comment(u.c, u.n);
+
+      // ضبط الجيجات تلقائياً حسب باقته السابقة إن كانت 12 أو 15 أو 20
+      if ([12, 15, 20].includes(u.l)) {
+        const btn = document.getElementById('q' + u.l);
+        if (btn) setQuota(u.l, btn);
+      }
+
+      // عرض بطاقة تفاصيل المشترك
+      const usedGB = (u.u / 1024).toFixed(2);
+      const statusHtml = u.d
+        ? `<span class="uc-status disabled">معطّل (Disabled)</span>`
+        : `<span class="uc-status">نشط (Enabled) ✓</span>`;
+
+      document.getElementById('resultArea').innerHTML = `
+        <div class="user-card">
+          <div class="uc-top">
+            <span class="uc-name" dir="auto">👤 ${u.n}</span>
+            ${statusHtml}
+          </div>
+          <div class="uc-comm" dir="auto">💬 ${u.c || 'بدون كومنت'}</div>
+          <div class="uc-stats">
+            <span>البروفايل: <b>${u.p}</b></span>
+            <span>الباقة: <b>${u.l} GB</b></span>
+            <span>المستهلك: <b>${usedGB} GB</b></span>
+          </div>
+        </div>
+      `;
+    }
+
+    function searchUsers() {
+      const q = document.getElementById('inQuery').value.trim();
+      if (!q) return alert('اكتب اسم المستخدم أو كلمة من الكومنت أولاً');
+      selectedUser = null;
+
+      if (allUsers.length === 0) {
+        document.getElementById('resultArea').innerHTML = `<div class="status-note">سيتم البحث وتنفيذ التجديد مباشرة عبر البوت لـ: <b>${q}</b></div>`;
+        return;
+      }
+
+      const qLower = q.toLowerCase();
+      // 1. بحث مطابق تماماً لليوزر
+      let matches = allUsers.filter(u => u.n.toLowerCase() === qLower);
+      // 2. إن لم يوجد، بحث جزئي في اليوزر أو الكومنت
+      if (matches.length === 0) {
+        matches = allUsers.filter(u =>
+          u.n.toLowerCase().includes(qLower) || (u.c && u.c.toLowerCase().includes(qLower))
+        );
+      }
+
+      if (matches.length === 0) {
+        document.getElementById('resultArea').innerHTML = `<div class="status-note" style="color:#ff3d71;">❌ لم يتم العثور على مشترك مطابق في القائمة الحالية</div>`;
+      } else if (matches.length === 1) {
+        selectUserCard(matches[0]);
+      } else {
+        let html = `<div class="field-hint" style="margin-bottom:5px;">اختر المشترك المقصود (${matches.length} نتائج):</div><div class="multi-list">`;
+        matches.forEach((m, idx) => {
+          html += `<div class="multi-item" onclick='selectUserByIndex(${idx})'>
+            <b style="color:#fff;font-size:14px;" dir="auto">👤 ${m.n}</b>
+            <span style="color:#ffab00;font-size:12px;" dir="auto">💬 ${m.c || 'بدون كومنت'} (${m.p} • ${m.l}GB)</span>
+          </div>`;
+        });
+        html += `</div>`;
+        window._lastMatches = matches;
+        document.getElementById('resultArea').innerHTML = html;
+      }
+    }
+
+    function selectUserByIndex(idx) {
+      if (window._lastMatches && window._lastMatches[idx]) {
+        selectUserCard(window._lastMatches[idx]);
+      }
+    }
 
     function setProfile(prof, btn) {
       currentProfile = prof;
       document.querySelectorAll('#prof1, #prof2').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      updatePreview();
     }
 
     function setQuota(gb, btn) {
       currentQuota = gb;
       btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      updatePreview();
-    }
-
-    function updatePreview() {
-      const qVal = document.getElementById('inQuery').value.trim();
-      const mComm = document.getElementById('inManualComm').value.trim();
-      document.getElementById('pvUser').innerText = qVal || 'ابحث باليوزر أو الكومنت...';
-      document.getElementById('pvCommMode').innerText = mComm ? ('كومنت يدوي: ' + mComm) : 'الكومنت: تلقائي (+30 يوم من تاريخه)';
-      document.getElementById('pvProf').innerText = currentProfile;
-      document.getElementById('pvQuota').innerText = currentQuota + ' GB';
     }
 
     function submitRenew() {
-      const q = document.getElementById('inQuery').value.trim();
-      const mComm = document.getElementById('inManualComm').value.trim();
-      if (!q) return alert('أدخل اسم المستخدم أو كلمة من الكومنت أولاً');
-      const cmdText = `/renew_user|${q}|${currentProfile}|${currentQuota}|${mComm}`;
+      const target = selectedUser ? selectedUser.n : document.getElementById('inQuery').value.trim();
+      const newComm = document.getElementById('inNewComm').value.trim();
+      if (!target) return alert('ابحث عن المشترك أو اكتب اسمه أولاً');
+
+      const cmdText = `/renew_user|${target}|${currentProfile}|${currentQuota}|${newComm}`;
       if (tg && tg.sendData) tg.sendData(cmdText);
     }
 
     function cancelAction() { if (tg) tg.close(); }
-    updatePreview();
+    loadUsers();
   </script>
 </body>
 </html>
