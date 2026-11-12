@@ -71,7 +71,9 @@
 
                             :local uid [/ip hotspot user find name=$target]
                             :if ([:len $uid] = 0) do={
-                                :set uid [/ip hotspot user find where [:tostr $.id]=$target]
+                                :foreach x in=[/ip hotspot user find] do={
+                                    :if ([:tostr $x] = $target) do={ :set uid $x }
+                                }
                             }
 
                             :if ([:len $uid] > 0) do={
