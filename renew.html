@@ -25,7 +25,7 @@
     
     .win-header { background: linear-gradient(90deg, #1f2636, #172030); padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border); }
     .win-title { font-size: 15px; font-weight: 800; color: var(--accent-amber); }
-    .win-badge { font-size: 11px; background: rgba(255, 171, 0, 0.15); color: var(--accent-amber); padding: 3px 9px; border-radius: 6px; font-family: monospace; font-weight: 700; }
+    .win-badge { font-size: 11px; background: rgba(0, 230, 118, 0.15); color: var(--accent-green); padding: 3px 9px; border-radius: 6px; font-family: monospace; font-weight: 700; }
 
     .form-content { padding: 14px 16px 16px 16px; display: flex; flex-direction: column; gap: 13px; }
     .field-group { display: flex; flex-direction: column; gap: 6px; }
@@ -47,7 +47,7 @@
     .uc-stats { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-sub); margin-top: 2px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px; }
     .uc-stats b { color: #fff; }
 
-    .multi-list { display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto; }
+    .multi-list { display: flex; flex-direction: column; gap: 6px; max-height: 190px; overflow-y: auto; }
     .multi-item { background: var(--input-bg); border: 1px solid var(--accent-amber); border-radius: 10px; padding: 9px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
     .multi-item:active { background: #192638; }
 
@@ -58,24 +58,24 @@
     .actions-footer { display: flex; gap: 10px; margin-top: 4px; }
     .btn-renew { flex: 2; background: linear-gradient(135deg, #ffab00, #00e676); color: #05141f; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; }
     .btn-cancel { flex: 1; background: rgba(255, 61, 113, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
-    .status-note { font-size: 11px; color: var(--text-sub); text-align: center; }
+    .status-note { font-size: 12px; color: var(--text-sub); text-align: center; padding: 6px; }
   </style>
 </head>
 <body>
   <div class="winbox-window">
     <div class="win-header">
       <div class="win-title">🔄 تجديد باقة مشترك</div>
-      <div class="win-badge" id="syncBadge">جاري تحميل القائمة...</div>
+      <div class="win-badge" id="syncBadge">جاري الاتصال...</div>
     </div>
 
     <div class="form-content">
       <div class="field-group">
         <div class="field-header">
           <label class="field-label">🔍 ابحث باليوزر أو الكومنت ثم اضغط العدسة</label>
-          <span class="field-hint">عربي / إنجليزي</span>
+          <span class="field-hint">إنجليزي / أرقام</span>
         </div>
         <div class="search-row">
-          <input type="text" id="inQuery" class="win-input" dir="auto" placeholder="اكتب Antar أو عنتر أو رقم..." onkeydown="if(event.key==='Enter') searchUsers()">
+          <input type="text" id="inQuery" class="win-input" dir="auto" placeholder="مثال: Antar أو Sama أو masoud..." onkeydown="if(event.key==='Enter') searchUsers()">
           <button class="btn-search" onclick="searchUsers()" title="بحث">🔍</button>
         </div>
       </div>
@@ -123,13 +123,13 @@
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) { tg.ready(); tg.expand(); }
 
-    // تحميل أحدث بيانات المشتركين من GitHub (مع منع الكاش)
     async function loadUsers() {
       try {
         const url = `https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?t=${Date.now()}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Not synced yet');
-        allUsers = await res.json();
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const textData = await res.text();
+        allUsers = JSON.parse(textData);
         document.getElementById('syncBadge').innerText = `متصل • ${allUsers.length} مشترك`;
       } catch (e) {
         document.getElementById('syncBadge').innerText = 'وضع البحث المباشر';
@@ -173,18 +173,15 @@
 
     function selectUserCard(u) {
       selectedUser = u;
-      document.getElementById('inQuery').value = u.n;
+      const displayName = u.n.startsWith('Arabic_User_') ? (u.c.split(' To ')[0] || u.n) : u.n;
+      document.getElementById('inQuery').value = displayName;
+      document.getElementById('inNewComm').value = computePlus30Comment(u.c, displayName);
 
-      // تعبئة الكومنت الجديد (+30 يوم من تاريخه القديم)
-      document.getElementById('inNewComm').value = computePlus30Comment(u.c, u.n);
-
-      // ضبط الجيجات تلقائياً حسب باقته السابقة إن كانت 12 أو 15 أو 20
       if ([12, 15, 20].includes(u.l)) {
         const btn = document.getElementById('q' + u.l);
         if (btn) setQuota(u.l, btn);
       }
 
-      // عرض بطاقة تفاصيل المشترك
       const usedGB = (u.u / 1024).toFixed(2);
       const statusHtml = u.d
         ? `<span class="uc-status disabled">معطّل (Disabled)</span>`
@@ -217,9 +214,7 @@
       }
 
       const qLower = q.toLowerCase();
-      // 1. بحث مطابق تماماً لليوزر
       let matches = allUsers.filter(u => u.n.toLowerCase() === qLower);
-      // 2. إن لم يوجد، بحث جزئي في اليوزر أو الكومنت
       if (matches.length === 0) {
         matches = allUsers.filter(u =>
           u.n.toLowerCase().includes(qLower) || (u.c && u.c.toLowerCase().includes(qLower))
@@ -227,7 +222,7 @@
       }
 
       if (matches.length === 0) {
-        document.getElementById('resultArea').innerHTML = `<div class="status-note" style="color:#ff3d71;">❌ لم يتم العثور على مشترك مطابق في القائمة الحالية</div>`;
+        document.getElementById('resultArea').innerHTML = `<div class="status-note" style="color:#ff3d71;">❌ لم يتم العثور على مشترك مطابق في القائمة</div>`;
       } else if (matches.length === 1) {
         selectUserCard(matches[0]);
       } else {
@@ -263,7 +258,7 @@
     }
 
     function submitRenew() {
-      const target = selectedUser ? selectedUser.n : document.getElementById('inQuery').value.trim();
+      const target = selectedUser ? (selectedUser.id || selectedUser.n) : document.getElementById('inQuery').value.trim();
       const newComm = document.getElementById('inNewComm').value.trim();
       if (!target) return alert('ابحث عن المشترك أو اكتب اسمه أولاً');
 
