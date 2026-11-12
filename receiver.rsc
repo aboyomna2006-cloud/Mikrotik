@@ -1,6 +1,6 @@
 # ==========================================
 # Telegram_Receiver Script (RouterOS v7)
-# Full Control + Precision Speed + Aligned Neighbors
+# Full Control + Aligned Active Users (Comments)
 # ==========================================
 
 :global tgReceiverRunning
@@ -271,21 +271,91 @@
                             }
                         }
 
-                        # 3. المشتركين النشطين (/users)
+                        # 3. المشتركين النشطين (/users) - بالنظام الحديث: الكومنت الإنجليزي + ترتيب ومحاذاة IP
                         :if ([:find $text "/users"] = 0) do={
-                            :local activeCount [/ip hotspot active print count-only]
-                            :local outMsg ("%F0%9F%91%A5%20%D8%A7%D9%84%D9%85%D8%B4%D8%AA%D8%B1%D9%83%D9%8A%D9%86%20%D8%A7%D9%84%D9%86%D8%B4%D8%B7%D9%8A%D9%86%20%D8%AD%D8%A7%D9%84%D9%8A%D8%A7%D9%8B%3A%20" . $activeCount . "%0A")
+                            :local uList [:toarray ""]
+                            :local allowedChr "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_:"
                             :foreach i in=[/ip hotspot active find] do={
-                                :local u [/ip hotspot active get $i user]
-                                :local ip [/ip hotspot active get $i address]
-                                :local encActUser ""
-                                :for j from=0 to=([:len $u] - 1) do={
-                                    :local ch [:pick $u $j ($j + 1)]
-                                    :if ($ch = " ") do={ :set encActUser ($encActUser . "%20") } else={ :set encActUser ($encActUser . $ch) }
+                                :local uName [/ip hotspot active get $i user]
+                                :local ip [:tostr [/ip hotspot active get $i address]]
+
+                                # جلب الكومنت من بيانات المستخدم لعرض الاسم الإنجليزي الواضح
+                                :local dispName $uName
+                                :local uid [/ip hotspot user find name=$uName]
+                                :if ([:len $uid] > 0) do={
+                                    :local comm [/ip hotspot user get $uid comment]
+                                    :if ([:len $comm] > 0) do={
+                                        :local toPos [:find $comm " To "]
+                                        :if ([:typeof $toPos] = "num") do={
+                                            :set dispName [:pick $comm 0 $toPos]
+                                        } else={
+                                            :local devPos [:find $comm " (Dev:"]
+                                            :if ([:typeof $devPos] = "num") do={
+                                                :set dispName [:pick $comm 0 $devPos]
+                                            } else={
+                                                :set dispName $comm
+                                            }
+                                        }
+                                    }
                                 }
-                                :set outMsg ($outMsg . "%E2%96%AA%20" . $encActUser . "%20(" . $ip . ")%0A")
+
+                                :local cleanName ""
+                                :for j from=0 to=([:len $dispName] - 1) do={
+                                    :local ch [:pick $dispName $j ($j + 1)]
+                                    :if ([:typeof [:find $allowedChr $ch]] = "num") do={
+                                        :set cleanName ($cleanName . $ch)
+                                    } else={
+                                        :if ($ch = " ") do={ :set cleanName ($cleanName . "%20") }
+                                    }
+                                }
+                                :if ([:len $cleanName] = 0) do={ :set cleanName "User" }
+
+                                # مفتاح ترتيب رقمي حسب الـ IP
+                                :local sortKey 0
+                                :if ([:len $ip] > 0) do={
+                                    :local d1 [:find $ip "."]
+                                    :local rem1 [:pick $ip ($d1 + 1) [:len $ip]]
+                                    :local d2 [:find $rem1 "."]
+                                    :local rem2 [:pick $rem1 ($d2 + 1) [:len $rem1]]
+                                    :local d3 [:find $rem2 "."]
+                                    :local o3 [:tonum [:pick $rem2 0 $d3]]
+                                    :local o4 [:tonum [:pick $rem2 ($d3 + 1) [:len $rem2]]]
+                                    :set sortKey (($o3 * 1000) + $o4)
+                                }
+
+                                # وزن الـ IP إلى 15 خانة بالمسافات
+                                :local paddedIp $ip
+                                :while ([:len $paddedIp] < 15) do={
+                                    :set paddedIp ($paddedIp . "%20")
+                                }
+
+                                :local line ("%E2%96%AA%20%60" . $paddedIp . "%60%20%7C%20" . $cleanName)
+                                :set uList ($uList , ({{ "k"=$sortKey; "t"=$line }}))
                             }
-                            /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $outMsg) keep-result=no
+
+                            :local count [:len $uList]
+                            :if ($count > 1) do={
+                                :for i from=0 to=($count - 2) do={
+                                    :for j from=0 to=($count - 2 - $i) do={
+                                        :local a ($uList->$j)
+                                        :local b ($uList->($j + 1))
+                                        :if (($a->"k") > ($b->"k")) do={
+                                            :set ($uList->$j) $b
+                                            :set ($uList->($j + 1)) $a
+                                        }
+                                    }
+                                }
+                            }
+
+                            :local outMsg ("%F0%9F%91%A5%20%D8%A7%D9%84%D9%85%D8%B4%D8%AA%D8%B1%D9%83%D9%8A%D9%86%20%D8%A7%D9%84%D9%86%D8%B4%D8%B7%D9%8A%D9%86%20(" . $count . ")%3A%0A")
+                            :if ($count = 0) do={
+                                :set outMsg ($outMsg . "%D9%84%D8%A7%20%D9%8A%D9%88%D8%AC%D8%AF%20%D9%85%D8%B4%D8%AA%D8%B1%D9%83%D9%8A%D9%86%20%D9%86%D8%B4%D8%B7%D9%8A%D9%86%20%D8%AD%D8%A7%D9%84%D9%8A%D8%A7%D9%8B")
+                            } else={
+                                :foreach item in=$uList do={
+                                    :set outMsg ($outMsg . ($item->"t") . "%0A")
+                                }
+                            }
+                            /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&parse_mode=Markdown&text=" . $outMsg) keep-result=no
                         }
 
                         # 4. استهلاك الخط (/traffic)
@@ -314,7 +384,7 @@
                             /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $pMsg) keep-result=no
                         }
 
-                        # 7. السرعة الحالية (/speed) - بدون أي مسافات غير مشفرة
+                        # 7. السرعة الحالية (/speed)
                         :if ([:find $text "/speed"] = 0 && [:find $text "/speed_test"] != 0) do={
                             :local mon [/interface monitor-traffic in1 once as-value]
                             :local rxBps ($mon->"rx-bits-per-second")
