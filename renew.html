@@ -3,270 +3,316 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>تجديد باقة مشترك - WinBox</title>
+  <title>تجديد باقة - WinBox</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --bg: #0b111a;
       --card-bg: #121c2a;
-      --card-border: #26354d;
-      --accent-amber: #ffab00;
+      --item-bg: #0c141f;
+      --card-border: #263852;
       --accent-cyan: #00e5ff;
-      --accent-blue: #0077ff;
+      --accent-amber: #ffab00;
       --accent-green: #00e676;
       --accent-red: #ff3d71;
-      --text-main: #f0f4f8;
-      --text-sub: #889bb3;
-      --input-bg: #070d14;
+      --text-main: #ffffff;
+      --text-sub: #9cb2cc;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text-main); padding: 14px; min-height: 100vh; }
-    .winbox-window { width: 100%; max-width: 440px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65); overflow: hidden; }
-    
-    .win-header { background: linear-gradient(90deg, #1f2636, #172030); padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border); }
-    .win-title { font-size: 15px; font-weight: 800; color: var(--accent-amber); }
-    .win-badge { font-size: 11px; background: rgba(0, 230, 118, 0.15); color: var(--accent-green); padding: 3px 9px; border-radius: 6px; font-family: monospace; font-weight: 700; }
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      padding: 12px;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .winbox-window {
+      width: 100%;
+      max-width: 450px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 18px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+    }
+    .win-header {
+      background: linear-gradient(90deg, #162638, #121c2a);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .win-title { font-size: 16px; font-weight: 800; color: var(--accent-amber); }
+    .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.16); color: var(--accent-green); padding: 4px 10px; border-radius: 8px; font-weight: 700; }
 
-    .form-content { padding: 14px 16px 16px 16px; display: flex; flex-direction: column; gap: 13px; }
-    .field-group { display: flex; flex-direction: column; gap: 6px; }
-    .field-header { display: flex; justify-content: space-between; align-items: center; }
-    .field-label { font-size: 13px; font-weight: 600; color: var(--text-sub); }
-    .field-hint { font-size: 11px; color: var(--accent-amber); }
+    .form-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+    .field-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
+    .label-row { display: flex; justify-content: space-between; align-items: center; }
+    .field-label { font-size: 13px; color: var(--text-sub); font-weight: 700; }
+    .hint-tag { font-size: 11px; color: var(--accent-amber); font-weight: 700; }
 
     .search-row { display: flex; gap: 8px; }
-    .win-input { flex: 1; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; color: #fff; padding: 11px 14px; font-size: 15px; outline: none; transition: border-color 0.2s; }
-    .win-input:focus { border-color: var(--accent-amber); }
-    .btn-search { background: linear-gradient(135deg, #0077ff, #00c3ff); border: none; color: #fff; border-radius: 10px; padding: 0 16px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 195, 255, 0.25); }
+    .text-input {
+      flex: 1;
+      width: 100%;
+      background: var(--item-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: #fff;
+      padding: 11px 12px;
+      font-size: 15px;
+      outline: none;
+      direction: ltr;
+      text-align: left;
+    }
+    .text-input:focus { border-color: var(--accent-cyan); }
+    .btn-search {
+      background: linear-gradient(135deg, #00b0ff, #0077c2);
+      border: none;
+      border-radius: 10px;
+      padding: 0 14px;
+      font-size: 18px;
+      cursor: pointer;
+    }
 
-    .user-card { background: linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(255, 171, 0, 0.08)); border: 1px solid var(--accent-cyan); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
-    .uc-top { display: flex; justify-content: space-between; align-items: center; }
-    .uc-name { font-size: 16px; font-weight: 800; color: #fff; font-family: monospace; }
-    .uc-status { font-size: 11px; background: rgba(0, 230, 118, 0.15); color: var(--accent-green); padding: 2px 8px; border-radius: 6px; font-weight: 700; }
-    .uc-status.disabled { background: rgba(255, 61, 113, 0.15); color: var(--accent-red); }
-    .uc-comm { font-size: 12px; color: var(--accent-amber); font-family: monospace; }
-    .uc-stats { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-sub); margin-top: 2px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px; }
-    .uc-stats b { color: #fff; }
+    .results-box {
+      background: #0a1019;
+      border: 1px solid var(--accent-cyan);
+      border-radius: 10px;
+      max-height: 170px;
+      overflow-y: auto;
+      display: none;
+    }
+    .res-item {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .res-item:last-child { border-bottom: none; }
+    .res-item:active { background: rgba(0, 229, 255, 0.15); }
+    .res-name { font-size: 14px; font-weight: 800; color: #fff; direction: ltr; }
+    .res-sub { font-size: 12px; color: var(--text-sub); direction: ltr; }
 
-    .multi-list { display: flex; flex-direction: column; gap: 6px; max-height: 190px; overflow-y: auto; }
-    .multi-item { background: var(--input-bg); border: 1px solid var(--accent-amber); border-radius: 10px; padding: 9px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
-    .multi-item:active { background: #192638; }
+    .btn-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .opt-btn {
+      background: var(--item-bg);
+      border: 1.5px solid var(--card-border);
+      color: var(--text-main);
+      padding: 10px 6px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+    .opt-btn.active {
+      background: linear-gradient(135deg, #ffab00, #ff6d00);
+      border-color: #ffd54f;
+      color: #0b111a;
+      font-weight: 900;
+      box-shadow: 0 4px 14px rgba(255, 171, 0, 0.35);
+    }
 
-    .options-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .opt-btn { background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-main); padding: 11px 4px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; transition: all 0.15s; }
-    .opt-btn.active { background: linear-gradient(135deg, #ff8f00, #ffca28); color: #0b111a; border-color: #ffe082; box-shadow: 0 4px 12px rgba(255, 171, 0, 0.25); }
-
-    .actions-footer { display: flex; gap: 10px; margin-top: 4px; }
-    .btn-renew { flex: 2; background: linear-gradient(135deg, #ffab00, #00e676); color: #05141f; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; }
-    .btn-cancel { flex: 1; background: rgba(255, 61, 113, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
-    .status-note { font-size: 12px; color: var(--text-sub); text-align: center; padding: 6px; }
+    .actions-row { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-top: 6px; }
+    .btn-cancel {
+      background: rgba(255, 61, 113, 0.15);
+      border: 1px solid var(--accent-red);
+      color: var(--accent-red);
+      padding: 12px;
+      border-radius: 11px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-submit {
+      background: linear-gradient(90deg, #ffab00, #00e676);
+      border: none;
+      color: #08121e;
+      padding: 12px;
+      border-radius: 11px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div class="winbox-window">
     <div class="win-header">
       <div class="win-title">🔄 تجديد باقة مشترك</div>
-      <div class="win-badge" id="syncBadge">جاري الاتصال...</div>
+      <div class="win-badge" id="statusBadge">جاري التحميل...</div>
     </div>
 
-    <div class="form-content">
+    <div class="form-body">
       <div class="field-group">
-        <div class="field-header">
+        <div class="label-row">
           <label class="field-label">🔍 ابحث باليوزر أو الكومنت ثم اضغط العدسة</label>
-          <span class="field-hint">إنجليزي / أرقام</span>
+          <span class="hint-tag">إنجليزي / أرقام</span>
         </div>
         <div class="search-row">
-          <input type="text" id="inQuery" class="win-input" dir="auto" placeholder="مثال: Antar أو Sama أو masoud..." onkeydown="if(event.key==='Enter') searchUsers()">
-          <button class="btn-search" onclick="searchUsers()" title="بحث">🔍</button>
+          <input type="text" id="searchQuery" class="text-input" placeholder="مثال: Antar أو Sama أو masoud..." oninput="doSearch()">
+          <button type="button" class="btn-search" onclick="doSearch()">🔍</button>
         </div>
+        <div class="results-box" id="resultsBox"></div>
       </div>
 
-      <div id="resultArea"></div>
-
       <div class="field-group">
-        <div class="field-header">
+        <div class="label-row">
           <label class="field-label">💬 الكومنت الجديد (+30 يوم تلقائياً)</label>
-          <span class="field-hint">قابل للتعديل اليدوي</span>
+          <span class="hint-tag">قابل للتعديل اليدوي</span>
         </div>
-        <input type="text" id="inNewComm" class="win-input" dir="auto" placeholder="يتعبأ تلقائياً عند اختيار المشترك...">
+        <input type="text" id="newComment" class="text-input" placeholder="يتعبأ تلقائياً عند اختيار المشترك...">
       </div>
 
       <div class="field-group">
         <label class="field-label">🚀 البروفايل بعد التجديد</label>
-        <div class="options-grid" style="grid-template-columns: repeat(2, 1fr);">
-          <button class="opt-btn active" id="prof1" onclick="setProfile('512+', this)">512+ (الأساسي)</button>
-          <button class="opt-btn" id="prof2" onclick="setProfile('120K/400K', this)">120K/400K</button>
+        <div class="btn-grid-2">
+          <button type="button" class="opt-btn active" id="prof_512" onclick="selectProf('512+', this)">512+ (الأساسي)</button>
+          <button type="button" class="opt-btn" id="prof_120" onclick="selectProf('120K/400K', this)">120K/400K</button>
         </div>
       </div>
 
       <div class="field-group">
         <label class="field-label">📦 الباقة الجديدة (الجيجات)</label>
-        <div class="options-grid">
-          <button class="opt-btn" id="q12" onclick="setQuota(12, this)">12 جيجا</button>
-          <button class="opt-btn active" id="q15" onclick="setQuota(15, this)">15 جيجا</button>
-          <button class="opt-btn" id="q20" onclick="setQuota(20, this)">20 جيجا</button>
+        <div class="btn-grid-3">
+          <button type="button" class="opt-btn" id="gb_12" onclick="selectGb('12', this)">12 جيجا</button>
+          <button type="button" class="opt-btn active" id="gb_15" onclick="selectGb('15', this)">15 جيجا</button>
+          <button type="button" class="opt-btn" id="gb_20" onclick="selectGb('20', this)">20 جيجا</button>
         </div>
       </div>
 
-      <div class="actions-footer">
-        <button class="btn-renew" onclick="submitRenew()">🔄 حفظ وتجديد الباقة</button>
-        <button class="btn-cancel" onclick="cancelAction()">إلغاء</button>
+      <div class="actions-row">
+        <button type="button" class="btn-cancel" onclick="if(tg) tg.close()">إلغاء</button>
+        <button type="button" class="btn-submit" onclick="submitRenew()">🔄 حفظ وتجديد الباقة</button>
       </div>
     </div>
   </div>
 
   <script>
-    let allUsers = [];
-    let selectedUser = null;
-    let currentProfile = '512+';
-    let currentQuota = 15;
-
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) { tg.ready(); tg.expand(); }
 
+    let usersList = [];
+    let selectedTarget = '';
+    let selectedProf = '512+';
+    let selectedGb = '15';
+
     async function loadUsers() {
       try {
-        const url = `https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?t=${Date.now()}`;
-        const res = await fetch(url, { cache: 'no-store' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const textData = await res.text();
-        allUsers = JSON.parse(textData);
-        document.getElementById('syncBadge').innerText = `متصل • ${allUsers.length} مشترك`;
+        const res = await fetch(`https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?t=${Date.now()}`, { cache: 'no-store' });
+        usersList = await res.json();
+        document.getElementById('statusBadge').innerText = `متصل • ${usersList.length} مشترك`;
       } catch (e) {
-        document.getElementById('syncBadge').innerText = 'وضع البحث المباشر';
+        document.getElementById('statusBadge').innerText = 'وضع يدوي';
       }
     }
 
-    function computePlus30Comment(oldComm, userName) {
-      let baseName = userName;
-      let targetDate = null;
+    function calcNext30Days(oldComm, fallbackName) {
+      let baseName = fallbackName;
+      let d = 0, m = 0, y = 0, valid = false;
 
-      if (oldComm && oldComm.trim().length > 0) {
-        const toIdx = oldComm.indexOf(' To ');
-        if (toIdx !== -1) {
-          baseName = oldComm.substring(0, toIdx).trim();
-          const afterTo = oldComm.substring(toIdx + 4).trim();
-          const dateToken = afterTo.split(/\s+/)[0];
-          const parts = dateToken.split('-');
-          if (parts.length === 3) {
-            const d = parseInt(parts[0], 10);
-            const m = parseInt(parts[1], 10) - 1;
-            const y = parseInt(parts[2], 10);
-            if (!isNaN(d) && !isNaN(m) && !isNaN(y) && y > 2000) {
-              targetDate = new Date(y, m, d);
-            }
-          }
-        } else {
-          baseName = oldComm.trim();
+      if (oldComm && oldComm.includes(' To ')) {
+        const parts = oldComm.split(' To ');
+        baseName = parts[0].trim();
+        const datePart = parts[1].trim().split(' ')[0];
+        const nums = datePart.split('-').map(Number);
+        if (nums.length === 3 && nums[0] > 0 && nums[1] > 0 && nums[2] > 2000) {
+          [d, m, y] = nums;
+          valid = true;
         }
+      } else if (oldComm && oldComm.trim().length > 0) {
+        baseName = oldComm.trim();
       }
 
-      if (!targetDate) {
-        targetDate = new Date();
-      }
-      targetDate.setDate(targetDate.getDate() + 30);
-
-      const day = targetDate.getDate();
-      const month = targetDate.getMonth() + 1;
-      const year = targetDate.getFullYear();
-      return `${baseName} To ${day}-${month}-${year}`;
+      const dt = valid ? new Date(y, m - 1, d) : new Date();
+      dt.setDate(dt.getDate() + 30);
+      return `${baseName} To ${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
     }
 
-    function selectUserCard(u) {
-      selectedUser = u;
-      const displayName = u.n.startsWith('Arabic_User_') ? (u.c.split(' To ')[0] || u.n) : u.n;
-      document.getElementById('inQuery').value = displayName;
-      document.getElementById('inNewComm').value = computePlus30Comment(u.c, displayName);
-
-      if ([12, 15, 20].includes(u.l)) {
-        const btn = document.getElementById('q' + u.l);
-        if (btn) setQuota(u.l, btn);
+    function doSearch() {
+      const q = document.getElementById('searchQuery').value.trim().toLowerCase();
+      selectedTarget = document.getElementById('searchQuery').value.trim();
+      const box = document.getElementById('resultsBox');
+      if (!q || usersList.length === 0) {
+        box.style.display = 'none';
+        return;
       }
+      const matches = usersList.filter(u =>
+        (u.n && u.n.toLowerCase().includes(q)) ||
+        (u.c && u.c.toLowerCase().includes(q))
+      ).slice(0, 12);
 
-      const usedGB = (u.u / 1024).toFixed(2);
-      const statusHtml = u.d
-        ? `<span class="uc-status disabled">معطّل (Disabled)</span>`
-        : `<span class="uc-status">نشط (Enabled) ✓</span>`;
-
-      document.getElementById('resultArea').innerHTML = `
-        <div class="user-card">
-          <div class="uc-top">
-            <span class="uc-name" dir="auto">👤 ${u.n}</span>
-            ${statusHtml}
-          </div>
-          <div class="uc-comm" dir="auto">💬 ${u.c || 'بدون كومنت'}</div>
-          <div class="uc-stats">
-            <span>البروفايل: <b>${u.p}</b></span>
-            <span>الباقة: <b>${u.l} GB</b></span>
-            <span>المستهلك: <b>${usedGB} GB</b></span>
-          </div>
-        </div>
-      `;
-    }
-
-    function searchUsers() {
-      const q = document.getElementById('inQuery').value.trim();
-      if (!q) return alert('اكتب اسم المستخدم أو كلمة من الكومنت أولاً');
-      selectedUser = null;
-
-      if (allUsers.length === 0) {
-        document.getElementById('resultArea').innerHTML = `<div class="status-note">سيتم البحث وتنفيذ التجديد مباشرة عبر البوت لـ: <b>${q}</b></div>`;
+      if (matches.length === 0) {
+        box.style.display = 'none';
         return;
       }
 
-      const qLower = q.toLowerCase();
-      let matches = allUsers.filter(u => u.n.toLowerCase() === qLower);
-      if (matches.length === 0) {
-        matches = allUsers.filter(u =>
-          u.n.toLowerCase().includes(qLower) || (u.c && u.c.toLowerCase().includes(qLower))
-        );
-      }
+      box.innerHTML = matches.map(u => {
+        const title = u.n.startsWith('Arabic_User_') ? (u.c || u.n) : u.n;
+        const sub = u.c || u.n;
+        return `<div class="res-item" onclick='pickUser(${JSON.stringify(u)})'>
+          <div>
+            <div class="res-name">${title}</div>
+            <div class="res-sub">${sub}</div>
+          </div>
+          <div class="res-sub">${u.p} • ${u.l}G</div>
+        </div>`;
+      }).join('');
+      box.style.display = 'block';
+    }
 
-      if (matches.length === 0) {
-        document.getElementById('resultArea').innerHTML = `<div class="status-note" style="color:#ff3d71;">❌ لم يتم العثور على مشترك مطابق في القائمة</div>`;
-      } else if (matches.length === 1) {
-        selectUserCard(matches[0]);
+    function pickUser(u) {
+      const isArabic = u.n.startsWith('Arabic_User_');
+      selectedTarget = isArabic ? u.id : u.n;
+      document.getElementById('searchQuery').value = isArabic ? (u.c || u.n) : u.n;
+      document.getElementById('resultsBox').style.display = 'none';
+      document.getElementById('newComment').value = calcNext30Days(u.c, isArabic ? 'User' : u.n);
+
+      if (u.p === '120K/400K') {
+        selectProf('120K/400K', document.getElementById('prof_120'));
       } else {
-        let html = `<div class="field-hint" style="margin-bottom:5px;">اختر المشترك المقصود (${matches.length} نتائج):</div><div class="multi-list">`;
-        matches.forEach((m, idx) => {
-          html += `<div class="multi-item" onclick='selectUserByIndex(${idx})'>
-            <b style="color:#fff;font-size:14px;" dir="auto">👤 ${m.n}</b>
-            <span style="color:#ffab00;font-size:12px;" dir="auto">💬 ${m.c || 'بدون كومنت'} (${m.p} • ${m.l}GB)</span>
-          </div>`;
-        });
-        html += `</div>`;
-        window._lastMatches = matches;
-        document.getElementById('resultArea').innerHTML = html;
+        selectProf('512+', document.getElementById('prof_512'));
       }
+
+      if (u.l == 12) selectGb('12', document.getElementById('gb_12'));
+      else if (u.l == 20) selectGb('20', document.getElementById('gb_20'));
+      else selectGb('15', document.getElementById('gb_15'));
     }
 
-    function selectUserByIndex(idx) {
-      if (window._lastMatches && window._lastMatches[idx]) {
-        selectUserCard(window._lastMatches[idx]);
-      }
+    function selectProf(val, el) {
+      selectedProf = val;
+      el.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
     }
 
-    function setProfile(prof, btn) {
-      currentProfile = prof;
-      document.querySelectorAll('#prof1, #prof2').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    }
-
-    function setQuota(gb, btn) {
-      currentQuota = gb;
-      btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+    function selectGb(val, el) {
+      selectedGb = val;
+      el.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
     }
 
     function submitRenew() {
-      const target = selectedUser ? (selectedUser.id || selectedUser.n) : document.getElementById('inQuery').value.trim();
-      const newComm = document.getElementById('inNewComm').value.trim();
-      if (!target) return alert('ابحث عن المشترك أو اكتب اسمه أولاً');
-
-      const cmdText = `/renew_user|${target}|${currentProfile}|${currentQuota}|${newComm}`;
-      if (tg && tg.sendData) tg.sendData(cmdText);
+      const q = selectedTarget || document.getElementById('searchQuery').value.trim();
+      const comm = document.getElementById('newComment').value.trim();
+      if (!q) {
+        alert('برجاء إدخال أو اختيار اسم المشترك أولاً');
+        return;
+      }
+      const payload = `/renew_user|${q}|${selectedProf}|${selectedGb}|${comm}`;
+      if (tg) {
+        tg.sendData(payload);
+      } else {
+        alert(payload);
+      }
     }
 
-    function cancelAction() { if (tg) tg.close(); }
     loadUsers();
   </script>
 </body>
