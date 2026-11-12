@@ -1,10 +1,14 @@
 # --- Auto Active Users Sync ---
 :local ghTok ""
 :local curSrc [/system script get Sync_Users_GitHub source]
-:local p1 [:find $curSrc "ghp_"]
+:local p1 [:find $curSrc "Bearer "]
 :if ([:typeof $p1] = "num") do={
-    :local p2 [:find $curSrc "\"" $p1]
-    :set ghTok [:pick $curSrc $p1 $p2]
+    :local start ($p1 + 7)
+    :local end1 [:find $curSrc "\"" $start]
+    :local end2 [:find $curSrc "," $start]
+    :local endPos $end1
+    :if ([:typeof $end2] = "num" && $end2 < $endPos) do={ :set endPos $end2 }
+    :set ghTok [:pick $curSrc $start $endPos]
 }
 :if ([:len $ghTok] > 10) do={
     :local allowed "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_ ()[]:+/@"
