@@ -314,7 +314,7 @@
                             /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $pMsg) keep-result=no
                         }
 
-                        # 7. السرعة الحالية (/speed) - بدقة Mbps مع كسور عشري + Kbps وتنسيق موزون
+                        # 7. السرعة الحالية (/speed) - بدون أي مسافات غير مشفرة
                         :if ([:find $text "/speed"] = 0 && [:find $text "/speed_test"] != 0) do={
                             :local mon [/interface monitor-traffic in1 once as-value]
                             :local rxBps ($mon->"rx-bits-per-second")
@@ -355,7 +355,7 @@
                             /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $cMsg) keep-result=no
                         }
 
-                        # 9. الأجهزة المجاورة (/neighbors) - مرتبة بالـ IP وموزونة تحت بعضها
+                        # 9. الأجهزة المجاورة (/neighbors)
                         :if ([:find $text "/neighbors"] = 0) do={
                             :local nbList [:toarray ""]
                             :local allowedNb "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_:"
