@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>تجديد باقة مشترك - WinBox</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: #0b111a;
+      --card-bg: #121c2a;
+      --card-border: #26354d;
+      --accent-amber: #ffab00;
+      --accent-blue: #0077ff;
+      --accent-green: #00e676;
+      --accent-red: #ff3d71;
+      --text-main: #f0f4f8;
+      --text-sub: #889bb3;
+      --input-bg: #070d14;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text-main); padding: 14px; min-height: 100vh; }
+    .winbox-window { width: 100%; max-width: 440px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65); overflow: hidden; }
+    
+    .win-header { background: linear-gradient(90deg, #1f2636, #172030); padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border); }
+    .win-title { font-size: 15px; font-weight: 800; color: var(--accent-amber); }
+    .win-badge { font-size: 11px; background: rgba(255, 171, 0, 0.15); color: var(--accent-amber); padding: 3px 9px; border-radius: 6px; font-family: monospace; font-weight: 700; }
+    
+    .live-preview { background: linear-gradient(135deg, rgba(255, 171, 0, 0.13), rgba(0, 230, 118, 0.06)); border: 1px dashed var(--accent-amber); margin: 14px; border-radius: 14px; padding: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .lp-user { font-size: 17px; font-weight: 800; color: #fff; word-break: break-word; }
+    .lp-sub { font-size: 12px; color: var(--accent-amber); font-family: monospace; margin-top: 4px; }
+    .lp-note { font-size: 11px; color: var(--text-sub); margin-top: 3px; }
+    .lp-badge-prof { display: inline-block; background: var(--accent-blue); color: white; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; margin-bottom: 5px; }
+    .lp-badge-quota { font-size: 15px; font-weight: 800; color: var(--accent-green); }
+
+    .form-content { padding: 0 16px 16px 16px; display: flex; flex-direction: column; gap: 13px; }
+    .field-group { display: flex; flex-direction: column; gap: 5px; }
+    .field-header { display: flex; justify-content: space-between; align-items: center; }
+    .field-label { font-size: 13px; font-weight: 600; color: var(--text-sub); }
+    .field-hint { font-size: 11px; color: var(--accent-amber); }
+    .win-input { background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; color: #fff; padding: 11px 14px; font-size: 15px; outline: none; transition: border-color 0.2s; }
+    .win-input:focus { border-color: var(--accent-amber); }
+
+    .options-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .opt-btn { background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-main); padding: 11px 4px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; transition: all 0.15s; }
+    .opt-btn.active { background: linear-gradient(135deg, #ff8f00, #ffca28); color: #0b111a; border-color: #ffe082; box-shadow: 0 4px 12px rgba(255, 171, 0, 0.25); }
+
+    .actions-footer { display: flex; gap: 10px; margin-top: 6px; }
+    .btn-renew { flex: 2; background: linear-gradient(135deg, #ffab00, #00e676); color: #05141f; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; }
+    .btn-cancel { flex: 1; background: rgba(255, 61, 113, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="winbox-window">
+    <div class="win-header">
+      <div class="win-title">🔄 تجديد باقة مشترك</div>
+      <div class="win-badge">Comment Date +30d</div>
+    </div>
+
+    <div class="live-preview">
+      <div>
+        <div class="lp-user" id="pvUser" dir="auto">ابحث باليوزر أو الكومنت...</div>
+        <div class="lp-sub" id="pvCommMode">الكومنت: تلقائي (+30 يوم من تاريخه)</div>
+        <div class="lp-note">تصفير العداد + تفعيل الكارت</div>
+      </div>
+      <div style="text-align: left; flex-shrink: 0;">
+        <span class="lp-badge-prof" id="pvProf">512+</span><br>
+        <span class="lp-badge-quota" id="pvQuota">15 GB</span>
+      </div>
+    </div>
+
+    <div class="form-content">
+      <div class="field-group">
+        <div class="field-header">
+          <label class="field-label">🔍 اليوزر أو أي كلمة من الكومنت</label>
+          <span class="field-hint">عربي / إنجليزي</span>
+        </div>
+        <input type="text" id="inQuery" class="win-input" dir="auto" placeholder="مثال: عنتر أو Antar أو 01119535407" oninput="updatePreview()">
+      </div>
+
+      <div class="field-group">
+        <div class="field-header">
+          <label class="field-label">💬 تعديل الكومنت (اختياري)</label>
+          <span class="field-hint">اتركه فارغاً لزيادة 30 يوم تلقائياً</span>
+        </div>
+        <input type="text" id="inManualComm" class="win-input" dir="auto" placeholder="تلقائي: يضيف 30 يوم على تاريخ الكومنت القديم" oninput="updatePreview()">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">🚀 البروفايل بعد التجديد</label>
+        <div class="options-grid" style="grid-template-columns: repeat(2, 1fr);">
+          <button class="opt-btn active" id="prof1" onclick="setProfile('512+', this)">512+ (الأساسي)</button>
+          <button class="opt-btn" id="prof2" onclick="setProfile('120K/400K', this)">120K/400K</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">📦 الباقة الجديدة (الجيجات)</label>
+        <div class="options-grid">
+          <button class="opt-btn" onclick="setQuota(12, this)">12 جيجا</button>
+          <button class="opt-btn active" onclick="setQuota(15, this)">15 جيجا</button>
+          <button class="opt-btn" onclick="setQuota(20, this)">20 جيجا</button>
+        </div>
+      </div>
+
+      <div class="actions-footer">
+        <button class="btn-renew" onclick="submitRenew()">🔄 تأكيد التجديد</button>
+        <button class="btn-cancel" onclick="cancelAction()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentProfile = '512+';
+    let currentQuota = 15;
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    if (tg) { tg.ready(); tg.expand(); }
+
+    function setProfile(prof, btn) {
+      currentProfile = prof;
+      document.querySelectorAll('#prof1, #prof2').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      updatePreview();
+    }
+
+    function setQuota(gb, btn) {
+      currentQuota = gb;
+      btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const qVal = document.getElementById('inQuery').value.trim();
+      const mComm = document.getElementById('inManualComm').value.trim();
+      document.getElementById('pvUser').innerText = qVal || 'ابحث باليوزر أو الكومنت...';
+      document.getElementById('pvCommMode').innerText = mComm ? ('كومنت يدوي: ' + mComm) : 'الكومنت: تلقائي (+30 يوم من تاريخه)';
+      document.getElementById('pvProf').innerText = currentProfile;
+      document.getElementById('pvQuota').innerText = currentQuota + ' GB';
+    }
+
+    function submitRenew() {
+      const q = document.getElementById('inQuery').value.trim();
+      const mComm = document.getElementById('inManualComm').value.trim();
+      if (!q) return alert('أدخل اسم المستخدم أو كلمة من الكومنت أولاً');
+      const cmdText = `/renew_user|${q}|${currentProfile}|${currentQuota}|${mComm}`;
+      if (tg && tg.sendData) tg.sendData(cmdText);
+    }
+
+    function cancelAction() { if (tg) tg.close(); }
+    updatePreview();
+  </script>
+</body>
+</html>
