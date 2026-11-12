@@ -149,8 +149,8 @@
     }
 
     function submitUser() {
-      const u = document.getElementById('inUser').value.trim().replace(/\s+/g, '_');
-      const p = document.getElementById('inPass').value.trim().replace(/\s+/g, '_');
+      const u = document.getElementById('inUser').value.trim();
+      const p = document.getElementById('inPass').value.trim();
       const cManual = document.getElementById('inComment').value.trim();
       const cFinal = cManual ? cManual : getAutoComment(document.getElementById('inUser').value);
 
