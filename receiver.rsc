@@ -1,6 +1,6 @@
 # ==========================================
 # Telegram_Receiver Script (RouterOS v7)
-# Full Control + Full-Name Compact Table (/users)
+# Full Control + Clean Two-Line Active Users
 # ==========================================
 
 :global tgReceiverRunning
@@ -271,7 +271,7 @@
                             }
                         }
 
-                        # 3. المشتركين النشطين (/users) - الاسم كامل بدون قصّ داخل صندوق pre بخط صغير موزون
+                        # 3. المشتركين النشطين (/users) - بطاقة سطرين مريحة للعين: الاسم كامل فوق، والـ IP + الاستهلاك موزونين تحته
                         :if ([:find $text "/users"] = 0) do={
                             :local uList [:toarray ""]
                             :local allowedChr "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_:"
@@ -286,13 +286,9 @@
                                 :if ($totMB >= 1024) do={
                                     :local gInt ($totMB / 1024)
                                     :local gDec ((($totMB % 1024) * 10) / 1024)
-                                    :set sessRaw ([:tostr $gInt] . "." . [:tostr $gDec] . "G")
+                                    :set sessRaw ([:tostr $gInt] . "." . [:tostr $gDec] . "%20GB")
                                 } else={
-                                    :set sessRaw ([:tostr $totMB] . "M")
-                                }
-                                :local paddedSess $sessRaw
-                                :while ([:len $paddedSess] < 5) do={
-                                    :set paddedSess ($paddedSess . "%20")
+                                    :set sessRaw ([:tostr $totMB] . "%20MB")
                                 }
 
                                 :local dispName $uName
@@ -338,11 +334,11 @@
                                 }
 
                                 :local paddedIp $ip
-                                :while ([:len $paddedIp] < 10) do={
+                                :while ([:len $paddedIp] < 12) do={
                                     :set paddedIp ($paddedIp . "%20")
                                 }
 
-                                :local line ($paddedIp . "%7C" . $paddedSess . "%7C%20" . $cleanName)
+                                :local line ("%E2%96%AA%20*" . $cleanName . "*%0A%20%20%E2%94%94%20%60" . $paddedIp . "%60%20%7C%20%60" . $sessRaw . "%60")
                                 :set uList ($uList , ({{ "k"=$sortKey; "t"=$line }}))
                             }
 
@@ -360,17 +356,15 @@
                                 }
                             }
 
-                            :local outMsg ("%F0%9F%91%A5%20%3Cb%3E%D8%A7%D9%84%D9%85%D8%B4%D8%AA%D8%B1%D9%83%D9%8A%D9%86%20%D8%A7%D9%84%D9%86%D8%B4%D8%B7%D9%8A%D9%86%20(" . $count . ")%3A%3C%2Fb%3E%0A")
+                            :local outMsg ("%F0%9F%91%A5%20%D8%A7%D9%84%D9%85%D8%B4%D8%AA%D8%B1%D9%83%D9%8A%D9%86%20%D8%A7%D9%84%D9%86%D8%B4%D8%B7%D9%8A%D9%86%20(" . $count . ")%3A%0A%0A")
                             :if ($count = 0) do={
                                 :set outMsg ($outMsg . "%D9%84%D8%A7%20%D9%8A%D9%88%D8%AC%D8%AF%20%D9%85%D8%B4%D8%AA%D8%B1%D9%83%D9%8A%D9%86%20%D9%86%D8%B4%D8%B7%D9%8A%D9%86%20%D8%AD%D8%A7%D9%84%D9%8A%D8%A7%D9%8B")
                             } else={
-                                :set outMsg ($outMsg . "%3Cpre%3E")
                                 :foreach item in=$uList do={
                                     :set outMsg ($outMsg . ($item->"t") . "%0A")
                                 }
-                                :set outMsg ($outMsg . "%3C%2Fpre%3E")
                             }
-                            /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&parse_mode=HTML&text=" . $outMsg) keep-result=no
+                            /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&parse_mode=Markdown&text=" . $outMsg) keep-result=no
                         }
 
                         # 4. استهلاك الخط (/traffic)
