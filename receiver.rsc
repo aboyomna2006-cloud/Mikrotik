@@ -143,7 +143,8 @@
 
                         # 9. الأجهزة المجاورة (/neighbors) - يجيب MAC + Interface لو مفيش IP
                         :if ([:find $text "/neighbors"] = 0) do={
-                            :local nbList [:toarray ""]
+                            :local keys [:toarray ""]
+                            :local lines [:toarray ""]
                             :local allowedNb "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_:"
                             :foreach n in=[/ip neighbor find] do={
                                 :local id [/ip neighbor get $n identity]
@@ -188,18 +189,22 @@
                                 }
 
                                 :local line ("%E2%96%AA%20%60" . $paddedIp . "%60%20%7C%20" . $cleanId)
-                                :set nbList ($nbList , ({{ "k"=$sortKey; "t"=$line }}))
+                                :set keys ($keys , $sortKey)
+                                :set lines ($lines , $line)
                             }
 
-                            :local count [:len $nbList]
+                            :local count [:len $keys]
                             :if ($count > 1) do={
                                 :for i from=0 to=($count - 2) do={
                                     :for j from=0 to=($count - 2 - $i) do={
-                                        :local a ($nbList->$j)
-                                        :local b ($nbList->($j + 1))
-                                        :if (($a->"k") > ($b->"k")) do={
-                                            :set ($nbList->$j) $b
-                                            :set ($nbList->($j + 1)) $a
+                                        :if (($keys->$j) > ($keys->($j + 1))) do={
+                                            :local tmpK ($keys->$j)
+                                            :set ($keys->$j) ($keys->($j + 1))
+                                            :set ($keys->($j + 1)) $tmpK
+
+                                            :local tmpL ($lines->$j)
+                                            :set ($lines->$j) ($lines->($j + 1))
+                                            :set ($lines->($j + 1)) $tmpL
                                         }
                                     }
                                 }
@@ -209,8 +214,8 @@
                             :if ($count = 0) do={
                                 :set nbMsg ($nbMsg . "%D9%84%D8%A7%20%D8%AA%D9%88%D8%AC%D8%AF%20%D8%A3%D8%AC%D9%87%D8%B2%D8%A9%20%D9%85%D8%AC%D8%A7%D9%88%D8%B1%D8%A9%20%D8%AD%D8%A7%D9%84%D9%8A%D8%A7%D9%8B")
                             } else={
-                                :foreach item in=$nbList do={
-                                    :set nbMsg ($nbMsg . ($item->"t") . "%0A")
+                                :foreach item in=$lines do={
+                                    :set nbMsg ($nbMsg . $item . "%0A")
                                 }
                             }
                             /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&parse_mode=Markdown&text=" . $nbMsg) keep-result=no
