@@ -1,6 +1,6 @@
 # ==========================================
 # Telegram_Receiver Script (RouterOS v7)
-# Full Control + Sorted & Aligned Neighbors
+# Full Control + Precision Speed + Aligned Neighbors
 # ==========================================
 
 :global tgReceiverRunning
@@ -314,13 +314,35 @@
                             /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $pMsg) keep-result=no
                         }
 
-                        # 7. السرعة الحالية (/speed)
+                        # 7. السرعة الحالية (/speed) - بدقة Mbps مع كسور عشري + Kbps وتنسيق موزون
                         :if ([:find $text "/speed"] = 0 && [:find $text "/speed_test"] != 0) do={
                             :local mon [/interface monitor-traffic in1 once as-value]
-                            :local rxMbps (($mon->"rx-bits-per-second") / 1048576)
-                            :local txMbps (($mon->"tx-bits-per-second") / 1048576)
-                            :local spMsg ("%E2%9A%A1%20%D8%A7%D9%84%D8%B3%D8%AD%D8%A8%20%D8%A7%D9%84%D8%AD%D8%A7%D9%84%D9%8A%20%D8%B9%D9%84%D9%89%20%D8%A7%D9%84%D8%AE%D8%B7%3A%0A%E2%AC%87%20Download%3A%20" . $rxMbps . "%20Mbps%0A%E2%AC%86%20Upload%3A%20" . $txMbps . "%20Mbps")
-                            /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $spMsg) keep-result=no
+                            :local rxBps ($mon->"rx-bits-per-second")
+                            :local txBps ($mon->"tx-bits-per-second")
+
+                            # حساب Kbps
+                            :local rxKbps ($rxBps / 1000)
+                            :local txKbps ($txBps / 1000)
+
+                            # حساب Mbps بدقة رقمين عشريين (1 Mbps = 1,000,000 bps)
+                            :local rxInt ($rxBps / 1000000)
+                            :local rxRem (($rxBps % 1000000) / 10000)
+                            :local rxDec [:tostr $rxRem]
+                            :if ($rxRem < 10) do={ :set rxDec ("0" . $rxDec) }
+                            :local rxStr ([:tostr $rxInt] . "." . $rxDec . " Mbps")
+                            :while ([:len $rxStr] < 11) do={ :set rxStr ($rxStr . "%20") }
+
+                            :local txInt ($txBps / 1000000)
+                            :local txRem (($txBps % 1000000) / 10000)
+                            :local txDec [:tostr $txRem]
+                            :if ($txRem < 10) do={ :set txDec ("0" . $txDec) }
+                            :local txStr ([:tostr $txInt] . "." . $txDec . " Mbps")
+                            :while ([:len $txStr] < 11) do={ :set txStr ($txStr . "%20") }
+
+                            :local spMsg ("%E2%9A%A1%20%D8%A7%D9%84%D8%B3%D8%AD%D8%A8%20%D8%A7%D9%84%D8%AD%D8%A7%D9%84%D9%8A%20%D8%B9%D9%84%D9%89%20%D8%A7%D9%84%D8%AE%D8%B7%20(in1)%3A%0A")
+                            :set spMsg ($spMsg . "%E2%AC%87%20%60" . $rxStr . "%60%20%7C%20%60" . $rxKbps . "%20Kbps%60%0A")
+                            :set spMsg ($spMsg . "%E2%AC%86%20%60" . $txStr . "%60%20%7C%20%60" . $txKbps . "%20Kbps%60")
+                            /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&parse_mode=Markdown&text=" . $spMsg) keep-result=no
                         }
 
                         # 8. الوقت والتاريخ (/clock)
@@ -347,7 +369,6 @@
                                         :set cleanId ($cleanId . "%20")
                                     }
                                 }
-                                # استخراج مفتاح رقمي للترتيب من الـ IP (أول 3 أرقام من كل خانة)
                                 :local sortKey 0
                                 :if ([:len $adr] > 0) do={
                                     :local d1 [:find $adr "."]
@@ -363,7 +384,6 @@
                                     :set sortKey 999999
                                 }
 
-                                # وزن الـ IP إلى 15 خانة بالمسافات
                                 :local paddedIp $adr
                                 :while ([:len $paddedIp] < 15) do={
                                     :set paddedIp ($paddedIp . "%20")
@@ -373,7 +393,6 @@
                                 :set nbList ($nbList , ({{ "k"=$sortKey; "t"=$line }}))
                             }
 
-                            # ترتيب تصاعدي (Bubble Sort)
                             :local count [:len $nbList]
                             :if ($count > 1) do={
                                 :for i from=0 to=($count - 2) do={
