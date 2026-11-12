@@ -1,6 +1,6 @@
 # ==========================================
 # Telegram_Receiver Script (RouterOS v7)
-# Full Control + Aligned Active Users (Comments)
+# Full Control + Active Users with Session Usage
 # ==========================================
 
 :global tgReceiverRunning
@@ -271,15 +271,32 @@
                             }
                         }
 
-                        # 3. المشتركين النشطين (/users) - بالنظام الحديث: الكومنت الإنجليزي + ترتيب ومحاذاة IP
+                        # 3. المشتركين النشطين (/users) - IP موزون + استهلاك الجلسة (ابلود+داونلود) + الكومنت الإنجليزي
                         :if ([:find $text "/users"] = 0) do={
                             :local uList [:toarray ""]
                             :local allowedChr "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_:"
                             :foreach i in=[/ip hotspot active find] do={
                                 :local uName [/ip hotspot active get $i user]
                                 :local ip [:tostr [/ip hotspot active get $i address]]
+                                :local bIn [/ip hotspot active get $i bytes-in]
+                                :local bOut [/ip hotspot active get $i bytes-out]
+                                :local totBytes ($bIn + $bOut)
+                                :local totMB ($totBytes / 1048576)
 
-                                # جلب الكومنت من بيانات المستخدم لعرض الاسم الإنجليزي الواضح
+                                # تنسيق استهلاك الجلسة بوزن موحد 6 خانات (مثلاً 450M أو 1.4G)
+                                :local sessRaw ""
+                                :if ($totMB >= 1024) do={
+                                    :local gInt ($totMB / 1024)
+                                    :local gDec ((($totMB % 1024) * 10) / 1024)
+                                    :set sessRaw ([:tostr $gInt] . "." . [:tostr $gDec] . "G")
+                                } else={
+                                    :set sessRaw ([:tostr $totMB] . "M")
+                                }
+                                :local paddedSess $sessRaw
+                                :while ([:len $paddedSess] < 6) do={
+                                    :set paddedSess ($paddedSess . "%20")
+                                }
+
                                 :local dispName $uName
                                 :local uid [/ip hotspot user find name=$uName]
                                 :if ([:len $uid] > 0) do={
@@ -310,7 +327,6 @@
                                 }
                                 :if ([:len $cleanName] = 0) do={ :set cleanName "User" }
 
-                                # مفتاح ترتيب رقمي حسب الـ IP
                                 :local sortKey 0
                                 :if ([:len $ip] > 0) do={
                                     :local d1 [:find $ip "."]
@@ -323,13 +339,12 @@
                                     :set sortKey (($o3 * 1000) + $o4)
                                 }
 
-                                # وزن الـ IP إلى 15 خانة بالمسافات
                                 :local paddedIp $ip
-                                :while ([:len $paddedIp] < 15) do={
+                                :while ([:len $paddedIp] < 12) do={
                                     :set paddedIp ($paddedIp . "%20")
                                 }
 
-                                :local line ("%E2%96%AA%20%60" . $paddedIp . "%60%20%7C%20" . $cleanName)
+                                :local line ("%E2%96%AA%20%60" . $paddedIp . "%7C" . $paddedSess . "%60%20" . $cleanName)
                                 :set uList ($uList , ({{ "k"=$sortKey; "t"=$line }}))
                             }
 
