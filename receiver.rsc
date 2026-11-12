@@ -320,24 +320,26 @@
                             :local rxBps ($mon->"rx-bits-per-second")
                             :local txBps ($mon->"tx-bits-per-second")
 
-                            # حساب Kbps
                             :local rxKbps ($rxBps / 1000)
                             :local txKbps ($txBps / 1000)
 
-                            # حساب Mbps بدقة رقمين عشريين (1 Mbps = 1,000,000 bps)
                             :local rxInt ($rxBps / 1000000)
                             :local rxRem (($rxBps % 1000000) / 10000)
                             :local rxDec [:tostr $rxRem]
                             :if ($rxRem < 10) do={ :set rxDec ("0" . $rxDec) }
-                            :local rxStr ([:tostr $rxInt] . "." . $rxDec . " Mbps")
-                            :while ([:len $rxStr] < 11) do={ :set rxStr ($rxStr . "%20") }
+                            :local rxRaw ([:tostr $rxInt] . "." . $rxDec . " Mbps")
+                            :local rxStr ([:tostr $rxInt] . "." . $rxDec . "%20Mbps")
+                            :local pad1 (11 - [:len $rxRaw])
+                            :while ($pad1 > 0) do={ :set rxStr ($rxStr . "%20"); :set pad1 ($pad1 - 1) }
 
                             :local txInt ($txBps / 1000000)
                             :local txRem (($txBps % 1000000) / 10000)
                             :local txDec [:tostr $txRem]
                             :if ($txRem < 10) do={ :set txDec ("0" . $txDec) }
-                            :local txStr ([:tostr $txInt] . "." . $txDec . " Mbps")
-                            :while ([:len $txStr] < 11) do={ :set txStr ($txStr . "%20") }
+                            :local txRaw ([:tostr $txInt] . "." . $txDec . " Mbps")
+                            :local txStr ([:tostr $txInt] . "." . $txDec . "%20Mbps")
+                            :local pad2 (11 - [:len $txRaw])
+                            :while ($pad2 > 0) do={ :set txStr ($txStr . "%20"); :set pad2 ($pad2 - 1) }
 
                             :local spMsg ("%E2%9A%A1%20%D8%A7%D9%84%D8%B3%D8%AD%D8%A8%20%D8%A7%D9%84%D8%AD%D8%A7%D9%84%D9%8A%20%D8%B9%D9%84%D9%89%20%D8%A7%D9%84%D8%AE%D8%B7%20(in1)%3A%0A")
                             :set spMsg ($spMsg . "%E2%AC%87%20%60" . $rxStr . "%60%20%7C%20%60" . $rxKbps . "%20Kbps%60%0A")
