@@ -16,6 +16,7 @@
     .live-preview { background: linear-gradient(135deg, rgba(0, 119, 255, 0.12), rgba(0, 229, 255, 0.06)); border: 1px dashed var(--accent-cyan); margin: 14px; border-radius: 14px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
     .lp-user { font-family: monospace; font-size: 18px; font-weight: 800; color: #fff; }
     .lp-pass { font-size: 13px; color: var(--text-sub); font-family: monospace; }
+    .lp-comm { font-size: 12px; color: var(--accent-cyan); font-family: monospace; margin-top: 3px; }
     .lp-badge-prof { display: inline-block; background: var(--accent-blue); color: white; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; margin-bottom: 4px; }
     .lp-badge-quota { font-size: 14px; font-weight: 800; color: var(--accent-green); }
     .form-content { padding: 0 16px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
@@ -36,12 +37,13 @@
   <div class="winbox-window">
     <div class="win-header">
       <div class="win-title">⚡ New Hotspot User</div>
-      <div class="win-badge">hAP ax² • v7</div>
+      <div class="win-badge">hAP ax² • out</div>
     </div>
     <div class="live-preview">
       <div>
         <div class="lp-user" id="pvUser">user1</div>
         <div class="lp-pass" id="pvPass">الرمز: 1234</div>
+        <div class="lp-comm" id="pvComm">User1 To 12-12-2026</div>
       </div>
       <div style="text-align: left;">
         <span class="lp-badge-prof" id="pvProf">512+</span><br>
@@ -64,8 +66,8 @@
         <input type="text" id="inPass" class="win-input" value="1234" oninput="updatePreview()">
       </div>
       <div class="field-group">
-        <label class="field-label">💬 الكومنت / الملاحظة (Comment)</label>
-        <input type="text" id="inComment" class="win-input" placeholder="مثال: Ahmed_Masoud" oninput="updatePreview()">
+        <label class="field-label">💬 الكومنت (اتركه فارغاً للتوليد التلقائي +30 يوم)</label>
+        <input type="text" id="inComment" class="win-input" placeholder="تلقائي: Name To DD-MM-YYYY" oninput="updatePreview()">
       </div>
       <div class="field-group">
         <label class="field-label">🚀 البروفايل (Profile)</label>
@@ -93,42 +95,70 @@
     let currentQuota = 15;
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) { tg.ready(); tg.expand(); }
+
+    function getAutoComment(rawUser) {
+      const cleanUser = (rawUser || 'User').trim();
+      const firstName = cleanUser.split(/\s+/)[0];
+      const capitalized = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+      
+      const targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + 30);
+      const day = String(targetDate.getDate()).padStart(2, '0');
+      const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+      const year = targetDate.getFullYear();
+      
+      return `${capitalized} To ${day}-${month}-${year}`;
+    }
+
     function setProfile(prof, btn) {
       currentProfile = prof;
       document.querySelectorAll('#prof1, #prof2').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       updatePreview();
     }
+
     function setQuota(gb, btn) {
       currentQuota = gb;
       btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       updatePreview();
     }
+
     function genRandom() {
       const pin = Math.floor(1000 + Math.random() * 9000);
       document.getElementById('inUser').value = pin;
       document.getElementById('inPass').value = pin;
       updatePreview();
     }
+
     function matchPass() {
       document.getElementById('inPass').value = document.getElementById('inUser').value;
       updatePreview();
     }
+
     function updatePreview() {
-      document.getElementById('pvUser').innerText = document.getElementById('inUser').value || '---';
+      const uVal = document.getElementById('inUser').value;
+      const cManual = document.getElementById('inComment').value.trim();
+      const finalComm = cManual ? cManual : getAutoComment(uVal);
+
+      document.getElementById('pvUser').innerText = uVal || '---';
       document.getElementById('pvPass').innerText = 'الرمز: ' + (document.getElementById('inPass').value || '---');
+      document.getElementById('pvComm').innerText = finalComm;
       document.getElementById('pvProf').innerText = currentProfile;
       document.getElementById('pvQuota').innerText = currentQuota + ' GB';
     }
+
     function submitUser() {
       const u = document.getElementById('inUser').value.trim().replace(/\s+/g, '_');
       const p = document.getElementById('inPass').value.trim().replace(/\s+/g, '_');
-      const c = (document.getElementById('inComment').value.trim() || 'New_User').replace(/\s+/g, '_');
+      const cManual = document.getElementById('inComment').value.trim();
+      const cFinal = cManual ? cManual : getAutoComment(document.getElementById('inUser').value);
+
       if (!u || !p) return alert('أدخل الاسم والباسورد');
-      const cmdText = `/add_user-${u}-${p}-${currentProfile}-${currentQuota}-${c}`;
+      const cmdText = `/add_user|${u}|${p}|${currentProfile}|${currentQuota}|${cFinal}`;
       if (tg && tg.sendData) tg.sendData(cmdText);
     }
+
     function cancelAction() { if (tg) tg.close(); }
     updatePreview();
   </script>
