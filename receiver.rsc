@@ -1,6 +1,6 @@
 # ==========================================
 # Telegram_Receiver Script (RouterOS v7)
-# Full Control + Safe URL Encoding for Neighbors
+# Full Control + Sorted & Aligned Neighbors
 # ==========================================
 
 :global tgReceiverRunning
@@ -331,15 +331,13 @@
                             /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $cMsg) keep-result=no
                         }
 
-                        # 9. الأجهزة المجاورة (/neighbors) - مع ترميز آمن للأسماء
+                        # 9. الأجهزة المجاورة (/neighbors) - مرتبة بالـ IP وموزونة تحت بعضها
                         :if ([:find $text "/neighbors"] = 0) do={
-                            :local nbMsg "%F0%9F%93%A1%20%D8%A7%D9%84%D8%A3%D8%AC%D9%87%D8%B2%D8%A9%20%D8%A7%D9%84%D9%85%D8%AC%D8%A7%D9%88%D8%B1%D8%A9%3A%0A"
+                            :local nbList [:toarray ""]
                             :local allowedNb "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_:"
-                            :local nbCount 0
                             :foreach n in=[/ip neighbor find] do={
-                                :set nbCount ($nbCount + 1)
                                 :local id [/ip neighbor get $n identity]
-                                :local adr [/ip neighbor get $n address]
+                                :local adr [:tostr [/ip neighbor get $n address]]
                                 :local cleanId ""
                                 :for i from=0 to=([:len $id] - 1) do={
                                     :local ch [:pick $id $i ($i + 1)]
@@ -349,12 +347,56 @@
                                         :set cleanId ($cleanId . "%20")
                                     }
                                 }
-                                :set nbMsg ($nbMsg . "%E2%96%AA%20" . $cleanId . "%20-%20" . $adr . "%0A")
+                                # استخراج مفتاح رقمي للترتيب من الـ IP (أول 3 أرقام من كل خانة)
+                                :local sortKey 0
+                                :if ([:len $adr] > 0) do={
+                                    :local d1 [:find $adr "."]
+                                    :local rem1 [:pick $adr ($d1 + 1) [:len $adr]]
+                                    :local d2 [:find $rem1 "."]
+                                    :local rem2 [:pick $rem1 ($d2 + 1) [:len $rem1]]
+                                    :local d3 [:find $rem2 "."]
+                                    :local o3 [:tonum [:pick $rem2 0 $d3]]
+                                    :local o4 [:tonum [:pick $rem2 ($d3 + 1) [:len $rem2]]]
+                                    :set sortKey (($o3 * 1000) + $o4)
+                                } else={
+                                    :set adr "No-IP"
+                                    :set sortKey 999999
+                                }
+
+                                # وزن الـ IP إلى 15 خانة بالمسافات
+                                :local paddedIp $adr
+                                :while ([:len $paddedIp] < 15) do={
+                                    :set paddedIp ($paddedIp . "%20")
+                                }
+
+                                :local line ("%E2%96%AA%20%60" . $paddedIp . "%60%20%7C%20" . $cleanId)
+                                :set nbList ($nbList , ({{ "k"=$sortKey; "t"=$line }}))
                             }
-                            :if ($nbCount = 0) do={
+
+                            # ترتيب تصاعدي (Bubble Sort)
+                            :local count [:len $nbList]
+                            :if ($count > 1) do={
+                                :for i from=0 to=($count - 2) do={
+                                    :for j from=0 to=($count - 2 - $i) do={
+                                        :local a ($nbList->$j)
+                                        :local b ($nbList->($j + 1))
+                                        :if (($a->"k") > ($b->"k")) do={
+                                            :set ($nbList->$j) $b
+                                            :set ($nbList->($j + 1)) $a
+                                        }
+                                    }
+                                }
+                            }
+
+                            :local nbMsg "%F0%9F%93%A1%20%D8%A7%D9%84%D8%A3%D8%AC%D9%87%D8%B2%D8%A9%20%D8%A7%D9%84%D9%85%D8%AC%D8%A7%D9%88%D8%B1%D8%A9%20(%D9%85%D8%B1%D8%AA%D8%A8%D8%A9)%3A%0A"
+                            :if ($count = 0) do={
                                 :set nbMsg ($nbMsg . "%D9%84%D8%A7%20%D8%AA%D9%88%D8%AC%D8%AF%20%D8%A3%D8%AC%D9%87%D8%B2%D8%A9%20%D9%85%D8%AC%D8%A7%D9%88%D8%B1%D8%A9%20%D8%AD%D8%A7%D9%84%D9%8A%D8%A7%D9%8B")
+                            } else={
+                                :foreach item in=$nbList do={
+                                    :set nbMsg ($nbMsg . ($item->"t") . "%0A")
+                                }
                             }
-                            /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $nbMsg) keep-result=no
+                            /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&parse_mode=Markdown&text=" . $nbMsg) keep-result=no
                         }
 
                         # 10. استعلام عن مشترك (/find_user & /info)
