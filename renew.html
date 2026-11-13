@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>تجديد باقة - WinBox</title>
+  <title>تجديد وتعديل مشترك - WinBox</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
@@ -55,7 +55,7 @@
     .hint-tag { font-size: 11px; color: var(--accent-amber); font-weight: 700; }
 
     .search-row { display: flex; gap: 8px; }
-    .text-input {
+    .text-input, .select-input {
       flex: 1;
       width: 100%;
       background: var(--item-bg);
@@ -68,7 +68,7 @@
       direction: ltr;
       text-align: left;
     }
-    .text-input:focus { border-color: var(--accent-cyan); }
+    .text-input:focus, .select-input:focus { border-color: var(--accent-cyan); }
     .btn-search {
       background: linear-gradient(135deg, #00b0ff, #0077c2);
       border: none;
@@ -93,21 +93,22 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
     }
     .res-item:last-child { border-bottom: none; }
     .res-item:active { background: rgba(0, 229, 255, 0.15); }
     .res-name { font-size: 14px; font-weight: 800; color: #fff; direction: ltr; }
     .res-sub { font-size: 12px; color: var(--text-sub); direction: ltr; }
 
-    .btn-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .btn-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .btn-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px; }
+    .btn-grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1.2fr; gap: 6px; }
     .opt-btn {
       background: var(--item-bg);
       border: 1.5px solid var(--card-border);
       color: var(--text-main);
-      padding: 10px 6px;
+      padding: 10px 4px;
       border-radius: 10px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       cursor: pointer;
       text-align: center;
@@ -118,6 +119,11 @@
       color: #0b111a;
       font-weight: 900;
       box-shadow: 0 4px 14px rgba(255, 171, 0, 0.35);
+    }
+    .opt-btn.keep-btn.active {
+      background: linear-gradient(135deg, #00e5ff, #0091ea);
+      border-color: #80d8ff;
+      color: #08121e;
     }
 
     .actions-row { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-top: 6px; }
@@ -146,18 +152,18 @@
 <body>
   <div class="winbox-window">
     <div class="win-header">
-      <div class="win-title">🔄 تجديد باقة مشترك</div>
+      <div class="win-title">🔄 تجديد / تعديل مشترك</div>
       <div class="win-badge" id="statusBadge">جاري التحميل...</div>
     </div>
 
     <div class="form-body">
       <div class="field-group">
         <div class="label-row">
-          <label class="field-label">🔍 ابحث باليوزر أو الكومنت ثم اضغط العدسة</label>
+          <label class="field-label">🔍 ابحث باليوزر أو الكومنت</label>
           <span class="hint-tag">إنجليزي / أرقام</span>
         </div>
         <div class="search-row">
-          <input type="text" id="searchQuery" class="text-input" placeholder="مثال: Antar أو Sama أو masoud..." oninput="doSearch()">
+          <input type="text" id="searchQuery" class="text-input" placeholder="مثال: Abdo أو Antar..." oninput="doSearch()">
           <button type="button" class="btn-search" onclick="doSearch()">🔍</button>
         </div>
         <div class="results-box" id="resultsBox"></div>
@@ -165,32 +171,54 @@
 
       <div class="field-group">
         <div class="label-row">
-          <label class="field-label">💬 الكومنت الجديد (+30 يوم تلقائياً)</label>
-          <span class="hint-tag">قابل للتعديل اليدوي</span>
+          <label class="field-label">💬 الكومنت (يعرض الحالي لتعدله براحتك)</label>
+          <span class="hint-tag">تعديل يدوي</span>
         </div>
-        <input type="text" id="newComment" class="text-input" placeholder="يتعبأ تلقائياً عند اختيار المشترك...">
+        <input type="text" id="newComment" class="text-input" placeholder="يظهر الكومنت الحالي عند اختيار المشترك...">
       </div>
 
       <div class="field-group">
-        <label class="field-label">🚀 البروفايل بعد التجديد</label>
+        <div class="label-row">
+          <label class="field-label">🚀 البروفايل (اختر أو عدّل من القائمة)</label>
+          <span class="hint-tag" id="currProfTag">الحالي: -</span>
+        </div>
         <div class="btn-grid-2">
-          <button type="button" class="opt-btn active" id="prof_512" onclick="selectProf('512+', this)">512+ (الأساسي)</button>
-          <button type="button" class="opt-btn" id="prof_120" onclick="selectProf('120K/400K', this)">120K/400K</button>
+          <button type="button" class="opt-btn active" id="prof_512" onclick="setProfile('512+')">512+ (الأساسي)</button>
+          <button type="button" class="opt-btn" id="prof_120" onclick="setProfile('120K/400K')">120K/400K</button>
         </div>
+        <select id="profSelect" class="select-input" onchange="setProfile(this.value)">
+          <option value="512+">512+</option>
+          <option value="120K/400K">120K/400K</option>
+          <option value="120K/400K 2 User">120K/400K 2 User</option>
+          <option value="512">512</option>
+          <option value="512X2">512X2</option>
+          <option value="1M">1M</option>
+          <option value="1M/2">1M/2</option>
+          <option value="1M/5">1M/5</option>
+          <option value="2M">2M</option>
+          <option value="3M">3M</option>
+          <option value="4M">4M</option>
+          <option value="5M/5M">5M/5M</option>
+          <option value="8M">8M</option>
+          <option value="close">close</option>
+          <option value="default">default</option>
+          <option value="Please today end day">Please today end day</option>
+        </select>
       </div>
 
       <div class="field-group">
-        <label class="field-label">📦 الباقة الجديدة (الجيجات)</label>
-        <div class="btn-grid-3">
+        <label class="field-label">📦 الباقة (اختر "بدون تصفير" لتعديل البروفايل والكومنت فقط)</label>
+        <div class="btn-grid-4">
           <button type="button" class="opt-btn" id="gb_12" onclick="selectGb('12', this)">12 جيجا</button>
           <button type="button" class="opt-btn active" id="gb_15" onclick="selectGb('15', this)">15 جيجا</button>
           <button type="button" class="opt-btn" id="gb_20" onclick="selectGb('20', this)">20 جيجا</button>
+          <button type="button" class="opt-btn keep-btn" id="gb_0" onclick="selectGb('0', this)">بدون تصفير</button>
         </div>
       </div>
 
       <div class="actions-row">
         <button type="button" class="btn-cancel" onclick="if(tg) tg.close()">إلغاء</button>
-        <button type="button" class="btn-submit" onclick="submitRenew()">🔄 حفظ وتجديد الباقة</button>
+        <button type="button" class="btn-submit" onclick="submitRenew()">✅ حفظ التعديل</button>
       </div>
     </div>
   </div>
@@ -212,28 +240,6 @@
       } catch (e) {
         document.getElementById('statusBadge').innerText = 'وضع يدوي';
       }
-    }
-
-    function calcNext30Days(oldComm, fallbackName) {
-      let baseName = fallbackName;
-      let d = 0, m = 0, y = 0, valid = false;
-
-      if (oldComm && oldComm.includes(' To ')) {
-        const parts = oldComm.split(' To ');
-        baseName = parts[0].trim();
-        const datePart = parts[1].trim().split(' ')[0];
-        const nums = datePart.split('-').map(Number);
-        if (nums.length === 3 && nums[0] > 0 && nums[1] > 0 && nums[2] > 2000) {
-          [d, m, y] = nums;
-          valid = true;
-        }
-      } else if (oldComm && oldComm.trim().length > 0) {
-        baseName = oldComm.trim();
-      }
-
-      const dt = valid ? new Date(y, m - 1, d) : new Date();
-      dt.setDate(dt.getDate() + 30);
-      return `${baseName} To ${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
     }
 
     function doSearch() {
@@ -268,28 +274,36 @@
       box.style.display = 'block';
     }
 
+    function setProfile(val) {
+      selectedProf = val;
+      document.getElementById('profSelect').value = val;
+      document.getElementById('prof_512').classList.toggle('active', val === '512+');
+      document.getElementById('prof_120').classList.toggle('active', val === '120K/400K');
+    }
+
     function pickUser(u) {
       const isArabic = u.n.startsWith('Arabic_User_');
       selectedTarget = isArabic ? u.id : u.n;
       document.getElementById('searchQuery').value = isArabic ? (u.c || u.n) : u.n;
       document.getElementById('resultsBox').style.display = 'none';
-      document.getElementById('newComment').value = calcNext30Days(u.c, isArabic ? 'User' : u.n);
 
-      if (u.p === '120K/400K') {
-        selectProf('120K/400K', document.getElementById('prof_120'));
+      // عرض الكومنت الحالي كما هو لتعدله براحتك
+      document.getElementById('newComment').value = u.c || '';
+
+      // عرض البروفايل الحالي في القائمة والشارة
+      document.getElementById('currProfTag').innerText = `الحالي: ${u.p}`;
+      setProfile(u.p || '512+');
+
+      // اختيار الباقة المناسبة (لو متوقف يختار "بدون تصفير" تلقائياً)
+      if (u.p === 'Please today end day' || u.p === 'close') {
+        selectGb('0', document.getElementById('gb_0'));
+      } else if (u.l == 12) {
+        selectGb('12', document.getElementById('gb_12'));
+      } else if (u.l == 20) {
+        selectGb('20', document.getElementById('gb_20'));
       } else {
-        selectProf('512+', document.getElementById('prof_512'));
+        selectGb('15', document.getElementById('gb_15'));
       }
-
-      if (u.l == 12) selectGb('12', document.getElementById('gb_12'));
-      else if (u.l == 20) selectGb('20', document.getElementById('gb_20'));
-      else selectGb('15', document.getElementById('gb_15'));
-    }
-
-    function selectProf(val, el) {
-      selectedProf = val;
-      el.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
-      el.classList.add('active');
     }
 
     function selectGb(val, el) {
