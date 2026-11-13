@@ -1,7 +1,9 @@
 # ==========================================
 # Telegram_Receiver (RouterOS v7)
-# Full Bot Handler + Clean HTML + Smart Name Extraction
+# Full Bot Handler + Clean HTML + Deduplicated Neighbors
 # ==========================================
+
+:if ([:len [/system script job find script="Telegram_Receiver"]] > 1) do={ :error "already running" }
 
 :local botToken "9010171304:AAGo8QbUxcWaC6Y4wWb2i8Wb0M6YvJHLYZM"
 :local adminChatId "486915427"
@@ -249,10 +251,11 @@
                             /system reboot
                         }
 
-                        # 9. الأجهزة المجاورة (/neighbors)
+                        # 9. الأجهزة المجاورة (/neighbors) - مرتبة وبدون تكرار
                         :if ([:find $text "/neighbors"] = 0) do={
                             :local keys [:toarray ""]
                             :local lines [:toarray ""]
+                            :local seen [:toarray ""]
                             :local allowedNb "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_:"
                             :foreach n in=[/ip neighbor find] do={
                                 :local id [/ip neighbor get $n identity]
@@ -260,45 +263,57 @@
                                 :local mac [:tostr [/ip neighbor get $n mac-address]]
                                 :local iface [:tostr [/ip neighbor get $n interface]]
 
-                                :local cleanId ""
-                                :for i from=0 to=([:len $id] - 1) do={
-                                    :local ch [:pick $id $i ($i + 1)]
-                                    :if ([:typeof [:find $allowedNb $ch]] = "num") do={
-                                        :set cleanId ($cleanId . $ch)
-                                    } else={
-                                        :set cleanId ($cleanId . "%20")
-                                    }
-                                }
-                                :if ([:len $cleanId] = 0) do={ :set cleanId ("Port:" . $iface) }
-
-                                :local sortKey 0
-                                :local dispAddr $adr
+                                :local dispAddr ""
                                 :if ([:len $adr] > 0) do={
-                                    :local d1 [:find $adr "."]
-                                    :local rem1 [:pick $adr ($d1 + 1) [:len $adr]]
-                                    :local d2 [:find $rem1 "."]
-                                    :local rem2 [:pick $rem1 ($d2 + 1) [:len $rem1]]
-                                    :local d3 [:find $rem2 "."]
-                                    :local o3 [:tonum [:pick $rem2 0 $d3]]
-                                    :local o4 [:tonum [:pick $rem2 ($d3 + 1) [:len $rem2]]]
-                                    :set sortKey (($o3 * 1000) + $o4)
+                                    :set dispAddr $adr
                                 } else={
                                     :if ([:len $mac] > 0) do={
                                         :set dispAddr $mac
                                     } else={
-                                        :set dispAddr "No-MAC"
+                                        :set dispAddr ("No-MAC-" . $iface)
                                     }
-                                    :set sortKey 999999
                                 }
 
-                                :local paddedIp $dispAddr
-                                :while ([:len $paddedIp] < 17) do={
-                                    :set paddedIp ($paddedIp . "%20")
+                                :local isDup false
+                                :foreach s in=$seen do={
+                                    :if ($s = $dispAddr) do={ :set isDup true }
                                 }
 
-                                :local line ("%E2%96%AA%20%60" . $paddedIp . "%60%20%7C%20" . $cleanId)
-                                :set keys ($keys , $sortKey)
-                                :set lines ($lines , $line)
+                                :if ($isDup = false) do={
+                                    :set seen ($seen , $dispAddr)
+
+                                    :local cleanId ""
+                                    :for i from=0 to=([:len $id] - 1) do={
+                                        :local ch [:pick $id $i ($i + 1)]
+                                        :if ([:typeof [:find $allowedNb $ch]] = "num") do={
+                                            :set cleanId ($cleanId . $ch)
+                                        } else={
+                                            :set cleanId ($cleanId . "%20")
+                                        }
+                                    }
+                                    :if ([:len $cleanId] = 0) do={ :set cleanId ("Port:" . $iface) }
+
+                                    :local sortKey 999999
+                                    :if ([:len $adr] > 0) do={
+                                        :local d1 [:find $adr "."]
+                                        :local rem1 [:pick $adr ($d1 + 1) [:len $adr]]
+                                        :local d2 [:find $rem1 "."]
+                                        :local rem2 [:pick $rem1 ($d2 + 1) [:len $rem1]]
+                                        :local d3 [:find $rem2 "."]
+                                        :local o3 [:tonum [:pick $rem2 0 $d3]]
+                                        :local o4 [:tonum [:pick $rem2 ($d3 + 1) [:len $rem2]]]
+                                        :set sortKey (($o3 * 1000) + $o4)
+                                    }
+
+                                    :local paddedIp $dispAddr
+                                    :while ([:len $paddedIp] < 17) do={
+                                        :set paddedIp ($paddedIp . "%20")
+                                    }
+
+                                    :local line ("%E2%96%AA%20%60" . $paddedIp . "%60%20%7C%20" . $cleanId)
+                                    :set keys ($keys , $sortKey)
+                                    :set lines ($lines , $line)
+                                }
                             }
 
                             :local count [:len $keys]
@@ -312,7 +327,7 @@
 
                                             :local tmpL ($lines->$j)
                                             :set ($lines->$j) ($lines->($j + 1))
-                                            :set ($lines->$j + 1) $tmpL
+                                            :set ($lines->($j + 1)) $tmpL
                                         }
                                     }
                                 }
