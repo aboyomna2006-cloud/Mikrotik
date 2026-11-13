@@ -1,6 +1,6 @@
 # ==========================================
 # Telegram_Receiver (RouterOS v7)
-# Full Bot Handler + WebApp + Universal Safe Reply
+# Full Bot Handler + WebApp + Instant Confirmation First
 # ==========================================
 
 :local botToken "9010171304:AAGo8QbUxcWaC6Y4wWb2i8Wb0M6YvJHLYZM"
@@ -51,7 +51,6 @@
                             :local limBytes ($uGb * 1073741824)
 
                             /ip hotspot user add name=$uName password=$uPass profile=$uProf limit-bytes-total=$limBytes comment=$uComm server="out"
-                            /system script run Sync_Users_GitHub
 
                             :local encInfo ""
                             :local rawInfo ($uName . " | " . $uProf . " | " . $uGb . " GB")
@@ -74,6 +73,7 @@
 
                             :local okMsg ("%E2%9C%85%20%D8%AA%D9%85%20%D8%A5%D9%86%D8%B4%D8%A7%D8%A1%20%D8%A7%D9%84%D9%85%D8%B4%D8%AA%D8%B1%D9%83%20%D8%A8%D9%86%D8%AC%D8%A7%D8%AD%3A%0A%F0%9F%91%A4%20" . $encInfo)
                             /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $okMsg) keep-result=no
+                            /system script run Sync_Users_GitHub
                         }
 
                         # 2. تجديد باقة أو تعديل بروفايل (/renew_user|target|prof|gb|comment)
@@ -146,8 +146,8 @@
                                     :set renMsg ("%F0%9F%94%84%20%D8%AA%D9%85%20%D8%AA%D8%AC%D8%AF%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A8%D8%A7%D9%82%D8%A9%20%D8%A8%D9%86%D8%AC%D8%A7%D8%AD%3A%0A%F0%9F%91%A4%20" . $encDetails)
                                 }
 
-                                /system script run Sync_Users_GitHub
                                 /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $renMsg) keep-result=no
+                                /system script run Sync_Users_GitHub
                             } else={
                                 /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=%E2%9D%8C%20%D9%84%D9%85%20%D9%8A%D8%AA%D9%85%20%D8%A7%D9%84%D8%B9%D8%AB%D9%88%D8%B1%20%D8%B9%D9%84%D9%89%20%D8%A7%D9%84%D9%85%D8%B4%D8%AA%D8%B1%D9%83") keep-result=no
                             }
