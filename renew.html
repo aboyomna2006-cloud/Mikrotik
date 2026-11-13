@@ -54,6 +54,18 @@
     .label-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; font-weight: 700; color: var(--text-sub); }
     .hint-orange { color: var(--accent-amber); font-weight: 800; }
 
+    .btn-add-days {
+      background: rgba(0, 230, 118, 0.15);
+      border: 1px solid rgba(0, 230, 118, 0.45);
+      color: var(--accent-green);
+      padding: 2px 9px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-add-days:active { transform: scale(0.95); }
+
     .search-row { display: flex; gap: 8px; align-items: center; }
     .btn-search-icon {
       background: linear-gradient(135deg, #00b0ff, #0081cb);
@@ -272,8 +284,8 @@
     <!-- الكومنت -->
     <div class="field-group">
       <div class="label-row">
-        <span>💬 الكومنت (يعرض الحالي لتعدله براحتك)</span>
-        <span class="hint-orange">تعديل يدوي</span>
+        <span>💬 الكومنت (يزيد +30 يوم تلقائياً)</span>
+        <button type="button" class="btn-add-days" onclick="bumpCommentDays(30)">+30 يوم ➕</button>
       </div>
       <input type="text" id="commentInput" class="input-box" placeholder="الكومنت...">
     </div>
@@ -338,6 +350,36 @@
       }
     }
 
+    // fromToday = false: يزود 30 يوم على التاريخ القديم الموجود بعد To
+    // fromToday = true : يزود 30 يوم من تاريخ النهاردة (عند الضغط على "بدون تصفير")
+    function addDaysToComment(rawComm, daysToAdd, fromToday = false) {
+      const baseText = (rawComm || '').trim();
+      const dateRegex = /(To\s+)(\d{1,2})[-/](\d{1,2})[-/](\d{4})/i;
+      const match = baseText.match(dateRegex);
+
+      let dt = new Date();
+      if (!fromToday && match) {
+        const d = parseInt(match[2], 10);
+        const m = parseInt(match[3], 10) - 1;
+        const y = parseInt(match[4], 10);
+        dt = new Date(y, m, d);
+      }
+
+      dt.setDate(dt.getDate() + daysToAdd);
+      const newDateStr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
+
+      if (match) {
+        return baseText.replace(dateRegex, `${match[1]}${newDateStr}`);
+      } else {
+        return baseText ? `${baseText} To ${newDateStr}` : `To ${newDateStr}`;
+      }
+    }
+
+    function bumpCommentDays(days) {
+      const inp = document.getElementById('commentInput');
+      inp.value = addDaysToComment(inp.value, days, false);
+    }
+
     function formatDataSize(mb) {
       if (mb >= 1024) return `${(mb / 1024).toFixed(2)} GB`;
       return `${Math.round(mb)} MB`;
@@ -352,7 +394,7 @@
       const limitMb = limitGb * 1024;
 
       const circle = document.getElementById('donutCircle');
-      const circumference = 175.93; // 2 * PI * 28
+      const circumference = 175.93;
       const remDot = document.getElementById('remDot');
       const remText = document.getElementById('remText');
       const usedText = document.getElementById('usedText');
@@ -425,13 +467,13 @@
       selectedUser = u;
       document.getElementById('dropdownList').style.display = 'none';
       document.getElementById('searchInput').value = (u.c && u.c.trim()) ? u.c : u.n;
-      document.getElementById('commentInput').value = u.c || '';
       document.getElementById('currProfBadge').innerText = `الحالي: ${u.p}`;
 
-      // تحديث الدائرة فوراً
+      const origComm = u.c || '';
+      document.getElementById('commentInput').value = addDaysToComment(origComm, 30, selectedGb === 0);
+
       updateQuotaRing(u);
 
-      // ضبط البروفايل الحالي
       const sel = document.getElementById('profileSelect');
       let exists = Array.from(sel.options).some(o => o.value === u.p);
       if (!exists && u.p) {
@@ -457,31 +499,8 @@
       selectedGb = gb;
       document.querySelectorAll('.gb-grid .chip-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
-    }
 
-    function submitRenewal() {
-      if (!selectedUser) {
-        alert('من فضلك اختر المشترك أولاً من قائمة البحث');
-        return;
-      }
-      const target = selectedUser.n.startsWith('Arabic_User_') ? selectedUser.id : selectedUser.n;
-      const comm = document.getElementById('commentInput').value.trim();
-      const payload = `/renew_user|${target}|${selectedProfile}|${selectedGb}|${comm}`;
-
-      if (tg) {
-        tg.sendData(payload);
-      } else {
-        alert(payload);
-      }
-    }
-
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.field-group')) {
-        document.getElementById('dropdownList').style.display = 'none';
-      }
-    });
-
-    loadUsers();
-  </script>
-</body>
-</html>
+      // gb > 0: +30 يوم من التاريخ القديم | gb == 0 (بدون تصفير): +30 يوم من تاريخ النهاردة
+      if (selectedUser) {
+        const origComm = selectedUser.c || '';
+        document.getElementById('
