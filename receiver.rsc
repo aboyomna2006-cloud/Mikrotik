@@ -1,6 +1,6 @@
 # ==========================================
 # Telegram_Receiver (RouterOS v7)
-# Full Bot Handler + WebApp + Auto MAC Fallback
+# Full Bot Handler + WebApp + Keep-Usage Mode
 # ==========================================
 
 :local botToken "9010171304:AAGo8QbUxcWaC6Y4wWb2i8Wb0M6YvJHLYZM"
@@ -56,7 +56,7 @@
                             /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&parse_mode=Markdown&text=" . $okMsg) keep-result=no
                         }
 
-                        # 2. تجديد باقة مشترك (/renew_user|target|prof|gb|comment)
+                        # 2. تجديد باقة أو تعديل بروفايل (/renew_user|target|prof|gb|comment)
                         :if ([:find $text "/renew_user|"] = 0) do={
                             :local p1 [:find $text "|" 0]
                             :local p2 [:find $text "|" ($p1 + 1)]
@@ -67,7 +67,6 @@
                             :local uProf [:pick $text ($p2 + 1) $p3]
                             :local uGb [:tonum [:pick $text ($p3 + 1) $p4]]
                             :local uComm [:pick $text ($p4 + 1) [:len $text]]
-                            :local limBytes ($uGb * 1073741824)
 
                             :local uid [/ip hotspot user find name=$target]
                             :if ([:len $uid] = 0) do={
@@ -78,12 +77,21 @@
 
                             :if ([:len $uid] > 0) do={
                                 :local realName [/ip hotspot user get $uid name]
-                                /ip hotspot user reset-counters $uid
-                                /ip hotspot user set $uid profile=$uProf limit-bytes-total=$limBytes comment=$uComm disabled=no
-                                /ip hotspot active remove [find user=$realName]
-                                /system script run Sync_Users_GitHub
+                                :local renMsg ""
 
-                                :local renMsg ("%F0%9F%94%84%20%D8%AA%D9%85%20%D8%AA%D8%AC%D8%AF%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A8%D8%A7%D9%82%D8%A9%20%D8%A8%D9%86%D8%AC%D8%A7%D8%AD%3A%0A%F0%9F%91%A4%20%60" . $realName . "%60%0A%F0%9F%9A%80%20" . $uProf . "%20%7C%20%F0%9F%93%A6%20" . $uGb . "%20GB")
+                                :if ($uGb = 0) do={
+                                    /ip hotspot user set $uid profile=$uProf comment=$uComm disabled=no
+                                    /ip hotspot active remove [find user=$realName]
+                                    :set renMsg ("%E2%9C%85%20%D8%AA%D9%85%20%D8%AA%D8%B9%D8%AF%D9%8A%D9%84%20%D8%A7%D9%84%D8%A8%D8%B1%D9%88%D9%81%D8%A7%D9%8A%D9%84%20%D9%88%D8%A7%D9%84%D9%83%D9%88%D9%85%D9%86%D8%AA%20(%D8%A8%D8%AF%D9%88%D9%86%20%D8%AA%D8%B5%D9%81%D9%8A%D8%B1)%3A%0A%F0%9F%91%A4%20%60" . $realName . "%60%0A%F0%9F%9A%80%20" . $uProf)
+                                } else={
+                                    :local limBytes ($uGb * 1073741824)
+                                    /ip hotspot user reset-counters $uid
+                                    /ip hotspot user set $uid profile=$uProf limit-bytes-total=$limBytes comment=$uComm disabled=no
+                                    /ip hotspot active remove [find user=$realName]
+                                    :set renMsg ("%F0%9F%94%84%20%D8%AA%D9%85%20%D8%AA%D8%AC%D8%AF%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A8%D8%A7%D9%82%D8%A9%20%D8%A8%D9%86%D8%AC%D8%A7%D8%AD%3A%0A%F0%9F%91%A4%20%60" . $realName . "%60%0A%F0%9F%9A%80%20" . $uProf . "%20%7C%20%F0%9F%93%A6%20" . $uGb . "%20GB")
+                                }
+
+                                /system script run Sync_Users_GitHub
                                 /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&parse_mode=Markdown&text=" . $renMsg) keep-result=no
                             } else={
                                 /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=%E2%9D%8C%20%D9%84%D9%85%20%D9%8A%D8%AA%D9%85%20%D8%A7%D9%84%D8%B9%D8%AB%D9%88%D8%B1%20%D8%B9%D9%84%D9%89%20%D8%A7%D9%84%D9%85%D8%B4%D8%AA%D8%B1%D9%83") keep-result=no
