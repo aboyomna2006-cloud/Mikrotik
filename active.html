@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>المشتركين النشطين - WinBox</title>
+  <title>المشتركين النشطين</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --bg: #0b111a;
       --card-bg: #121c2a;
-      --item-bg: #0c141f;
-      --card-border: #263852;
+      --item-bg: #0e1622;
+      --card-border: #23344d;
       --accent-cyan: #00e5ff;
       --accent-amber: #ffab00;
       --accent-green: #00e676;
-      --accent-red: #ff3d71;
+      --accent-purple: #b388ff;
       --text-main: #ffffff;
       --text-sub: #9cb2cc;
     }
@@ -26,11 +26,11 @@
       min-height: 100dvh;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
     }
     .winbox-window {
       width: 100%;
-      max-width: 450px;
+      max-width: 460px;
       background: var(--card-bg);
       border: 1.5px solid var(--card-border);
       border-radius: 18px;
@@ -38,190 +38,216 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      max-height: 90dvh;
+      max-height: 94dvh;
     }
     .win-header {
-      background: linear-gradient(90deg, #162638, #121c2a);
       padding: 14px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--card-border);
     }
-    .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); }
-    .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.16); color: var(--accent-green); padding: 4px 10px; border-radius: 8px; font-weight: 800; }
+    .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); display: flex; align-items: center; gap: 6px; }
+    .win-badge { font-size: 13px; background: rgba(0, 230, 118, 0.14); border: 1px solid rgba(0, 230, 118, 0.35); color: var(--accent-green); padding: 4px 12px; border-radius: 10px; font-weight: 800; }
 
-    .toolbar { padding: 12px 14px; display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .search-bar {
+      padding: 12px 14px 6px;
+      display: flex;
+      gap: 8px;
+    }
     .search-input {
       flex: 1;
       background: var(--item-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
+      border-radius: 11px;
       color: #fff;
-      padding: 10px 12px;
+      padding: 10px 14px;
       font-size: 14px;
       outline: none;
     }
     .search-input:focus { border-color: var(--accent-cyan); }
     .btn-refresh {
-      background: rgba(0, 229, 255, 0.14);
-      border: 1px solid var(--accent-cyan);
+      background: var(--item-bg);
+      border: 1.5px solid var(--accent-cyan);
       color: var(--accent-cyan);
-      border-radius: 10px;
-      padding: 0 14px;
-      font-size: 16px;
+      border-radius: 11px;
+      width: 44px;
+      font-size: 18px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    .btn-refresh:active { transform: scale(0.95); }
 
     .users-list {
-      padding: 12px 14px;
+      padding: 8px 14px 12px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 9px;
-      flex: 1;
+      gap: 10px;
     }
     .user-card {
       background: var(--item-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 11px 14px;
+      border-radius: 13px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 10px;
     }
-    .uc-top {
+    .user-top {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 8px;
-    }
-    .uc-name {
       font-size: 15px;
       font-weight: 800;
-      color: #ffffff;
+      color: #fff;
       direction: ltr;
-      text-align: left;
-      word-break: break-word;
+      justify-content: flex-start;
     }
-    .uc-bottom {
+    .user-bottom {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding-top: 6px;
+      gap: 6px;
+      flex-wrap: wrap;
     }
-    .badge-ip {
-      font-family: monospace;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--accent-cyan);
-      background: rgba(0, 229, 255, 0.1);
-      padding: 2px 8px;
-      border-radius: 6px;
-      direction: ltr;
-    }
-    .badge-usage {
-      font-family: monospace;
-      font-size: 13px;
+    .pill {
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 12.5px;
       font-weight: 800;
-      color: var(--accent-amber);
-      background: rgba(255, 171, 0, 0.12);
-      padding: 2px 8px;
-      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       direction: ltr;
     }
-    .footer-bar { padding: 12px 14px; border-top: 1px solid var(--card-border); }
+    .pill-ip {
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: var(--accent-cyan);
+    }
+    .pill-time {
+      background: rgba(179, 136, 255, 0.12);
+      border: 1px solid rgba(179, 136, 255, 0.32);
+      color: var(--accent-purple);
+      direction: rtl;
+    }
+    .pill-mb {
+      background: rgba(255, 171, 0, 0.12);
+      border: 1px solid rgba(255, 171, 0, 0.32);
+      color: var(--accent-amber);
+    }
+
+    .footer-bar {
+      padding: 10px 14px 14px;
+      border-top: 1px solid var(--card-border);
+    }
     .btn-close {
       width: 100%;
-      background: rgba(255, 61, 113, 0.15);
-      border: 1px solid var(--accent-red);
-      color: var(--accent-red);
+      background: rgba(255, 61, 113, 0.14);
+      border: 1px solid rgba(255, 61, 113, 0.45);
+      color: #ff5277;
       padding: 11px;
-      border-radius: 11px;
+      border-radius: 12px;
       font-size: 15px;
       font-weight: 800;
       cursor: pointer;
     }
-    .empty-note { text-align: center; color: var(--text-sub); font-size: 14px; padding: 24px 10px; }
   </style>
 </head>
 <body>
   <div class="winbox-window">
     <div class="win-header">
       <div class="win-title">👥 المشتركين النشطين</div>
-      <div class="win-badge" id="countBadge">جاري التحميل...</div>
+      <div class="win-badge" id="countBadge">متصل الآن: 0</div>
     </div>
 
-    <div class="toolbar">
+    <div class="search-bar">
       <input type="text" id="filterInput" class="search-input" placeholder="فلترة بالاسم أو الـ IP..." oninput="renderList()">
-      <button class="btn-refresh" onclick="loadActive()" title="تحديث">🔄</button>
+      <button type="button" class="btn-refresh" onclick="loadActive()" title="تحديث">🔄</button>
     </div>
 
-    <div class="users-list" id="listContainer">
-      <div class="empty-note">جاري جلب بيانات المتصلين...</div>
-    </div>
+    <div class="users-list" id="usersList"></div>
 
     <div class="footer-bar">
-      <button class="btn-close" onclick="if(tg) tg.close()">إغلاق</button>
+      <button type="button" class="btn-close" onclick="if(tg) tg.close()">إغلاق</button>
     </div>
   </div>
 
   <script>
-    let activeUsers = [];
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) { tg.ready(); tg.expand(); }
 
-    function ipToNum(ip) {
-      if (!ip) return 999999999;
-      const p = ip.split('.').map(Number);
-      return ((p[0]||0)*16777216) + ((p[1]||0)*65536) + ((p[2]||0)*256) + (p[3]||0);
-    }
+    let activeUsers = [];
 
-    function formatSize(mb) {
-      if (mb >= 1024) return (mb / 1024).toFixed(2) + ' GB';
-      return mb + ' MB';
+    function formatUptime(raw) {
+      if (!raw) return '⏱️ الآن';
+      let s = String(raw).trim();
+      let weeks = 0, days = 0, hours = 0, mins = 0;
+
+      const wMatch = s.match(/(\d+)w/);
+      if (wMatch) { weeks = parseInt(wMatch[1], 10); s = s.replace(wMatch[0], ''); }
+
+      const dMatch = s.match(/(\d+)d/);
+      if (dMatch) { days = parseInt(dMatch[1], 10); s = s.replace(dMatch[0], ''); }
+
+      const tMatch = s.match(/(\d+):(\d+):(\d+)/);
+      if (tMatch) {
+        hours = parseInt(tMatch[1], 10);
+        mins = parseInt(tMatch[2], 10);
+      }
+
+      const totalDays = (weeks * 7) + days;
+      if (totalDays > 0) return `⏱️ ${totalDays}ي ${hours}س`;
+      if (hours > 0) return `⏱️ ${hours}س ${mins}د`;
+      if (mins > 0) return `⏱️ ${mins}د`;
+      return '⏱️ أقل من دقيقة';
     }
 
     async function loadActive() {
-      document.getElementById('countBadge').innerText = 'تحديث...';
       try {
-        const url = `https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/active.json?t=${Date.now()}`;
-        const res = await fetch(url, { cache: 'no-store' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const raw = await res.json();
-        activeUsers = raw.sort((a, b) => ipToNum(a.ip) - ipToNum(b.ip));
-        document.getElementById('countBadge').innerText = `متصل الآن: ${activeUsers.length}`;
+        const res = await fetch(`https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/active.json?t=${Date.now()}`, { cache: 'no-store' });
+        activeUsers = await res.json();
         renderList();
       } catch (e) {
-        document.getElementById('countBadge').innerText = 'غير متصل';
-        document.getElementById('listContainer').innerHTML = `<div class="empty-note" style="color:#ff3d71;">تعذر تحميل القائمة، تأكد من تشغيل المزامنة على الراوتر.</div>`;
+        document.getElementById('usersList').innerHTML = '<div style="text-align:center;color:#9cb2cc;padding:20px;">تعذر تحميل البيانات</div>';
       }
     }
 
     function renderList() {
       const q = document.getElementById('filterInput').value.trim().toLowerCase();
-      const filtered = activeUsers.filter(u =>
-        (u.name && u.name.toLowerCase().includes(q)) ||
-        (u.ip && u.ip.includes(q))
-      );
+      const filtered = activeUsers.filter(u => {
+        const uName = u.name || u.n || '';
+        return uName.toLowerCase().includes(q) || (u.ip && u.ip.toLowerCase().includes(q));
+      });
+
+      document.getElementById('countBadge').innerText = `متصل الآن: ${filtered.length}`;
+      const container = document.getElementById('usersList');
 
       if (filtered.length === 0) {
-        document.getElementById('listContainer').innerHTML = `<div class="empty-note">لا يوجد مشتركين مطابقين</div>`;
+        container.innerHTML = '<div style="text-align:center;color:#9cb2cc;padding:24px;">لا يوجد مشتركين نشطين</div>';
         return;
       }
 
-      document.getElementById('listContainer').innerHTML = filtered.map(u => `
-        <div class="user-card">
-          <div class="uc-top">
-            <span class="uc-name">👤 ${u.name}</span>
+      container.innerHTML = filtered.map(u => {
+        const uName = u.name || u.n || 'User';
+        const mbVal = u.mb >= 1024 ? `${(u.mb / 1024).toFixed(2)} GB` : `${u.mb} MB`;
+        const upStr = formatUptime(u.u);
+        return `
+          <div class="user-card">
+            <div class="user-top">👤 ${uName}</div>
+            <div class="user-bottom">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <span class="pill pill-ip">🌐 ${u.ip}</span>
+                <span class="pill pill-time">${upStr}</span>
+              </div>
+              <span class="pill pill-mb">📶 ${mbVal}</span>
+            </div>
           </div>
-          <div class="uc-bottom">
-            <span class="badge-ip">🌐 ${u.ip}</span>
-            <span class="badge-usage">📊 ${formatSize(u.mb)}</span>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     loadActive();
