@@ -1,6 +1,6 @@
 # ==========================================
 # Telegram_Receiver (RouterOS v7)
-# Full Bot Handler + Clean HTML Formatted Replies
+# Full Bot Handler + Clean HTML + Smart Name Extraction
 # ==========================================
 
 :local botToken "9010171304:AAGo8QbUxcWaC6Y4wWb2i8Wb0M6YvJHLYZM"
@@ -95,13 +95,40 @@
 
                             :if ([:len $uid] > 0) do={
                                 :local realName [/ip hotspot user get $uid name]
+                                :local isAscii true
+                                :for i from=0 to=([:len $realName] - 1) do={
+                                    :local ch [:pick $realName $i ($i + 1)]
+                                    :if (([:typeof [:find $safeChars $ch]] != "num") && ($ch != " ")) do={
+                                        :set isAscii false
+                                    }
+                                }
+
                                 :local dispUser $realName
-                                :if ([:find $realName "Arabic_User_"] = 0) do={
+                                :if (($isAscii = false) || ([:find $realName "Arabic_User_"] = 0)) do={
+                                    :local extracted ""
                                     :local toPos [:find $uComm " To "]
                                     :if ([:typeof $toPos] = "num") do={
-                                        :set dispUser [:pick $uComm 0 $toPos]
+                                        :set extracted [:pick $uComm 0 $toPos]
                                     } else={
-                                        :set dispUser "User"
+                                        :local devPos [:find $uComm " (Dev:"]
+                                        :if ([:typeof $devPos] = "num") do={
+                                            :set extracted [:pick $uComm 0 $devPos]
+                                        } else={
+                                            :set extracted $uComm
+                                        }
+                                    }
+
+                                    :local cleanExt ""
+                                    :for i from=0 to=([:len $extracted] - 1) do={
+                                        :local ch [:pick $extracted $i ($i + 1)]
+                                        :if (([:typeof [:find $safeChars $ch]] = "num") || ($ch = " ")) do={
+                                            :set cleanExt ($cleanExt . $ch)
+                                        }
+                                    }
+                                    :if ([:len $cleanExt] > 1) do={
+                                        :set dispUser $cleanExt
+                                    } else={
+                                        :set dispUser "Arabic User"
                                     }
                                 }
 
@@ -285,7 +312,7 @@
 
                                             :local tmpL ($lines->$j)
                                             :set ($lines->$j) ($lines->($j + 1))
-                                            :set ($lines->($j + 1)) $tmpL
+                                            :set ($lines->$j + 1) $tmpL
                                         }
                                     }
                                 }
