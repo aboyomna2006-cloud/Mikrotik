@@ -1,6 +1,6 @@
 # ==========================================
 # Telegram_Receiver (RouterOS v7)
-# Full Bot Handler + WebApp + Safe Confirmation Msg
+# Full Bot Handler + WebApp + Universal Safe Reply
 # ==========================================
 
 :local botToken "9010171304:AAGo8QbUxcWaC6Y4wWb2i8Wb0M6YvJHLYZM"
@@ -33,6 +33,7 @@
                     }
 
                     :if ([:len $text] > 0) do={
+                        :local safeChars "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~"
 
                         # 1. إضافة مستخدم جديد (/add_user|user|pass|prof|gb|comment)
                         :if ([:find $text "/add_user|"] = 0) do={
@@ -52,15 +53,26 @@
                             /ip hotspot user add name=$uName password=$uPass profile=$uProf limit-bytes-total=$limBytes comment=$uComm server="out"
                             /system script run Sync_Users_GitHub
 
-                            :local safeProf ""
-                            :for i from=0 to=([:len $uProf] - 1) do={
-                                :local ch [:pick $uProf $i ($i + 1)]
-                                :if ($ch = "+") do={ :set safeProf ($safeProf . "%2B") } else={
-                                    :if ($ch = " ") do={ :set safeProf ($safeProf . "%20") } else={ :set safeProf ($safeProf . $ch) }
+                            :local encInfo ""
+                            :local rawInfo ($uName . " | " . $uProf . " | " . $uGb . " GB")
+                            :for i from=0 to=([:len $rawInfo] - 1) do={
+                                :local ch [:pick $rawInfo $i ($i + 1)]
+                                :if ([:typeof [:find $safeChars $ch]] = "num") do={
+                                    :set encInfo ($encInfo . $ch)
+                                } else={
+                                    :if ($ch = " ") do={ :set encInfo ($encInfo . "%20") } else={
+                                        :if ($ch = "+") do={ :set encInfo ($encInfo . "%2B") } else={
+                                            :if ($ch = "/") do={ :set encInfo ($encInfo . "%2F") } else={
+                                                :if ($ch = "|") do={ :set encInfo ($encInfo . "%7C") } else={
+                                                    :set encInfo ($encInfo . "_")
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
 
-                            :local okMsg ("%E2%9C%85%20%D8%AA%D9%85%20%D8%A5%D9%86%D8%B4%D8%A7%D8%A1%20%D8%A7%D9%84%D9%85%D8%B4%D8%AA%D8%B1%D9%83%20%D8%A8%D9%86%D8%AC%D8%A7%D8%AD%3A%0A%F0%9F%91%A4%20" . $uName . "%0A%F0%9F%9A%80%20" . $safeProf . "%20%7C%20%F0%9F%93%A6%20" . $uGb . "%20GB")
+                            :local okMsg ("%E2%9C%85%20%D8%AA%D9%85%20%D8%A5%D9%86%D8%B4%D8%A7%D8%A1%20%D8%A7%D9%84%D9%85%D8%B4%D8%AA%D8%B1%D9%83%20%D8%A8%D9%86%D8%AC%D8%A7%D8%AD%3A%0A%F0%9F%91%A4%20" . $encInfo)
                             /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $okMsg) keep-result=no
                         }
 
@@ -86,24 +98,33 @@
                             :if ([:len $uid] > 0) do={
                                 :local realName [/ip hotspot user get $uid name]
 
-                                :local safeProf ""
-                                :for i from=0 to=([:len $uProf] - 1) do={
-                                    :local ch [:pick $uProf $i ($i + 1)]
-                                    :if ($ch = "+") do={ :set safeProf ($safeProf . "%2B") } else={
-                                        :if ($ch = " ") do={ :set safeProf ($safeProf . "%20") } else={ :set safeProf ($safeProf . $ch) }
-                                    }
+                                :local rawDetails ($realName . "\nProf: " . $uProf . "\nComm: " . $uComm)
+                                :if ($uGb > 0) do={
+                                    :set rawDetails ($realName . "\nProf: " . $uProf . " | " . $uGb . " GB\nComm: " . $uComm)
                                 }
 
-                                :local safeComm ""
-                                :for i from=0 to=([:len $uComm] - 1) do={
-                                    :local ch [:pick $uComm $i ($i + 1)]
-                                    :if ($ch = " ") do={ :set safeComm ($safeComm . "%20") } else={
-                                        :if ($ch = "+") do={ :set safeComm ($safeComm . "%2B") } else={
-                                            :if ($ch = "[") do={ :set safeComm ($safeComm . "%5B") } else={
-                                                :if ($ch = "]") do={ :set safeComm ($safeComm . "%5D") } else={
-                                                    :if ($ch = "(") do={ :set safeComm ($safeComm . "%28") } else={
-                                                        :if ($ch = ")") do={ :set safeComm ($safeComm . "%29") } else={
-                                                            :set safeComm ($safeComm . $ch)
+                                :local encDetails ""
+                                :for i from=0 to=([:len $rawDetails] - 1) do={
+                                    :local ch [:pick $rawDetails $i ($i + 1)]
+                                    :if ([:typeof [:find $safeChars $ch]] = "num") do={
+                                        :set encDetails ($encDetails . $ch)
+                                    } else={
+                                        :if ($ch = "\n") do={ :set encDetails ($encDetails . "%0A") } else={
+                                            :if ($ch = " ") do={ :set encDetails ($encDetails . "%20") } else={
+                                                :if ($ch = "+") do={ :set encDetails ($encDetails . "%2B") } else={
+                                                    :if ($ch = "/") do={ :set encDetails ($encDetails . "%2F") } else={
+                                                        :if ($ch = ":") do={ :set encDetails ($encDetails . "%3A") } else={
+                                                            :if ($ch = "|") do={ :set encDetails ($encDetails . "%7C") } else={
+                                                                :if ($ch = "(") do={ :set encDetails ($encDetails . "%28") } else={
+                                                                    :if ($ch = ")") do={ :set encDetails ($encDetails . "%29") } else={
+                                                                        :if ($ch = "[") do={ :set encDetails ($encDetails . "%5B") } else={
+                                                                            :if ($ch = "]") do={ :set encDetails ($encDetails . "%5D") } else={
+                                                                                :set encDetails ($encDetails . "%20")
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -116,13 +137,13 @@
                                 :if ($uGb = 0) do={
                                     /ip hotspot user set $uid profile=$uProf comment=$uComm disabled=no
                                     /ip hotspot active remove [find user=$realName]
-                                    :set renMsg ("%E2%9C%85%20%D8%AA%D9%85%20%D8%AA%D8%B9%D8%AF%D9%8A%D9%84%20%D8%A7%D9%84%D8%A8%D8%B1%D9%88%D9%81%D8%A7%D9%8A%D9%84%20%D9%88%D8%A7%D9%84%D9%83%D9%88%D9%85%D9%86%D8%AA%20(%D8%A8%D8%AF%D9%88%D9%86%20%D8%AA%D8%B5%D9%81%D9%8A%D8%B1)%3A%0A%F0%9F%91%A4%20" . $realName . "%0A%F0%9F%9A%80%20" . $safeProf . "%0A%F0%9F%92%AC%20" . $safeComm)
+                                    :set renMsg ("%E2%9C%85%20%D8%AA%D9%85%20%D8%A7%D9%84%D8%AA%D8%B9%D8%AF%D9%8A%D9%84%20(%D8%A8%D8%AF%D9%88%D9%86%20%D8%AA%D8%B5%D9%81%D9%8A%D8%B1)%3A%0A%F0%9F%91%A4%20" . $encDetails)
                                 } else={
                                     :local limBytes ($uGb * 1073741824)
                                     /ip hotspot user reset-counters $uid
                                     /ip hotspot user set $uid profile=$uProf limit-bytes-total=$limBytes comment=$uComm disabled=no
                                     /ip hotspot active remove [find user=$realName]
-                                    :set renMsg ("%F0%9F%94%84%20%D8%AA%D9%85%20%D8%AA%D8%AC%D8%AF%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A8%D8%A7%D9%82%D8%A9%20%D8%A8%D9%86%D8%AC%D8%A7%D8%AD%3A%0A%F0%9F%91%A4%20" . $realName . "%0A%F0%9F%9A%80%20" . $safeProf . "%20%7C%20%F0%9F%93%A6%20" . $uGb . "%20GB%0A%F0%9F%92%AC%20" . $safeComm)
+                                    :set renMsg ("%F0%9F%94%84%20%D8%AA%D9%85%20%D8%AA%D8%AC%D8%AF%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A8%D8%A7%D9%82%D8%A9%20%D8%A8%D9%86%D8%AC%D8%A7%D8%AD%3A%0A%F0%9F%91%A4%20" . $encDetails)
                                 }
 
                                 /system script run Sync_Users_GitHub
