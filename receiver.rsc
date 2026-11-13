@@ -1,6 +1,6 @@
 # ==========================================
 # Telegram_Receiver (RouterOS v7)
-# Silent Lock + 15x Google Ping + Clean HTML
+# Silent Lock + 5x Clean Google Ping + Clean HTML
 # ==========================================
 
 :global botBusy
@@ -227,29 +227,22 @@
                                 /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&text=" . $spMsg) keep-result=no
                             }
 
-                            # 6. فحص البنج (/ping) - 15 مرة على www.google.com بتنسيق time=ms
+                            # 6. فحص البنج (/ping) - 5 نبضات Google بتنسيق Time = ms كبير وواضح
                             :if ([:find $text "/ping"] = 0) do={
                                 :local targetHost "www.google.com"
                                 :local gIp ""
                                 :do { :set gIp [:tostr [:resolve $targetHost]] } on-error={}
 
                                 :if ([:len $gIp] = 0) do={
-                                    :local failDns ("%E2%9D%8C%20%3Cb%3E%D9%81%D8%B4%D9%84%20%D8%A7%D9%84%D8%A7%D8%AA%D8%B5%D8%A7%D9%84%20%D8%A8%D9%80%20" . $targetHost . "%3C%2Fb%3E%0A%D8%AA%D8%A3%D9%83%D8%AF%20%D9%85%D9%86%20%D8%A7%D9%84%D8%A5%D9%86%D8%AA%D8%B1%D9%86%D8%AA%20%D8%A3%D9%88%20%D8%A7%D9%84%D9%80%20DNS")
+                                    :local failDns ("%E2%9D%8C%20%3Cb%3E%D9%81%D8%B4%D9%84%20%D8%A7%D9%84%D8%A7%D8%AA%D8%B5%D8%A7%D9%84%20%D8%A8%D9%80%20Google%3C%2Fb%3E%0A%D8%AA%D8%A3%D9%83%D8%AF%20%D9%85%D9%86%20%D8%A7%D9%84%D8%A5%D9%86%D8%AA%D8%B1%D9%86%D8%AA")
                                     /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&parse_mode=HTML&text=" . $failDns) keep-result=no
                                 } else={
-                                    :local pRes [/ping $gIp count=15 as-value]
+                                    :local pRes [/ping $gIp count=5 as-value]
                                     :local rcv 0
                                     :local sumMs 0
-                                    :local minMs 99999
-                                    :local maxMs 0
-                                    :local idx 0
                                     :local linesStr ""
 
                                     :foreach r in=$pRes do={
-                                        :set idx ($idx + 1)
-                                        :local numStr [:tostr $idx]
-                                        :if ($idx < 10) do={ :set numStr ("0" . $numStr) }
-
                                         :local tVal ($r->"time")
                                         :if ([:typeof $tVal] != "nothing") do={
                                             :set rcv ($rcv + 1)
@@ -268,19 +261,17 @@
                                             }
                                             :if ($msNum = 0) do={ :set msNum 1 }
                                             :set sumMs ($sumMs + $msNum)
-                                            :if ($msNum < $minMs) do={ :set minMs $msNum }
-                                            :if ($msNum > $maxMs) do={ :set maxMs $msNum }
 
-                                            :set linesStr ($linesStr . $numStr . "%3A%20Reply%20from%20" . $gIp . "%3A%20time%3D" . $msNum . "ms%0A")
+                                            :set linesStr ($linesStr . "%E2%9A%A1%20%3Cb%3ETime%20%3D%20" . $msNum . "%20ms%3C%2Fb%3E%0A")
                                         } else={
-                                            :set linesStr ($linesStr . $numStr . "%3A%20Request%20timed%20out.%0A")
+                                            :set linesStr ($linesStr . "%E2%9D%8C%20%3Cb%3ETime%20%3D%20Timeout%3C%2Fb%3E%0A")
                                         }
                                     }
 
                                     :local avgMs 0
-                                    :if ($rcv > 0) do={ :set avgMs ($sumMs / $rcv) } else={ :set minMs 0 }
+                                    :if ($rcv > 0) do={ :set avgMs ($sumMs / $rcv) }
 
-                                    :local pgMsg ("%F0%9F%8F%93%20%3Cb%3E%D9%81%D8%AD%D8%B5%20%D8%A7%D9%84%D8%A8%D9%86%D8%AC%20(" . $targetHost . ")%3A%3C%2Fb%3E%0A%3Ccode%3E" . $linesStr . "%3C%2Fcode%3E%0A%F0%9F%93%8A%20%3Cb%3E%D9%88%D8%B5%D9%84%3A%3C%2Fb%3E%20%3Ccode%3E" . $rcv . "%2F15%3C%2Fcode%3E%20%7C%20%3Cb%3E%D8%A7%D9%84%D9%85%D8%AA%D9%88%D8%B3%D8%B7%3A%3C%2Fb%3E%20%3Ccode%3E" . $avgMs . "ms%3C%2Fcode%3E%20(" . $minMs . "-" . $maxMs . "ms)")
+                                    :local pgMsg ("%F0%9F%8F%93%20%3Cb%3E%D9%81%D8%AD%D8%B5%20%D8%A7%D9%84%D8%A8%D9%86%D8%AC%20(Google)%3A%3C%2Fb%3E%0A%0A" . $linesStr . "%0A%F0%9F%93%8A%20%3Cb%3E%D9%88%D8%B5%D9%84%3A%3C%2Fb%3E%20" . $rcv . "%2F5%20%7C%20%3Cb%3E%D8%A7%D9%84%D9%85%D8%AA%D9%88%D8%B3%D8%B7%3A%3C%2Fb%3E%20" . $avgMs . "%20ms")
                                     /tool fetch url=("https://api.telegram.org/bot" . $botToken . "/sendMessage?chat_id=" . $adminChatId . "&parse_mode=HTML&text=" . $pgMsg) keep-result=no
                                 }
                             }
