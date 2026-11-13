@@ -48,7 +48,7 @@
       border-bottom: 1px solid var(--card-border);
     }
     .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); display: flex; align-items: center; gap: 6px; }
-    .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.14); border: 1px solid rgba(0, 230, 118, 0.35); color: var(--accent-green); padding: 4px 10px; border-radius: 9px; font-weight: 800; }
+    .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.14); border: 1px solid rgba(0, 230, 118, 0.35); color: var(--accent-green); padding: 4px 10px; border-radius: 9px; font-weight: 800; cursor: pointer; }
 
     .field-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
     .label-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; font-weight: 700; color: var(--text-sub); }
@@ -239,7 +239,7 @@
   <div class="winbox-window">
     <div class="win-header">
       <div class="win-title">🔄 تجديد / تعديل مشترك</div>
-      <div class="win-badge" id="totalBadge">متصل • 0 مشترك</div>
+      <div class="win-badge" id="totalBadge" onclick="loadUsers()">جاري التحميل...</div>
     </div>
 
     <!-- البحث -->
@@ -341,17 +341,30 @@
     let selectedGb = 12;
 
     async function loadUsers() {
-      try {
-        const res = await fetch(`https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?t=${Date.now()}`, { cache: 'no-store' });
-        usersList = await res.json();
-        document.getElementById('totalBadge').innerText = `متصل • ${usersList.length} مشترك`;
-      } catch (e) {
-        document.getElementById('totalBadge').innerText = 'خطأ في التحميل';
+      const badge = document.getElementById('totalBadge');
+      badge.innerText = 'جاري التحميل...';
+      const ts = Date.now();
+      const urls = [
+        `https://aboyomna2006-cloud.github.io/Mikrotik/users.json?v=${ts}`,
+        `https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?v=${ts}`
+      ];
+
+      for (const url of urls) {
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              usersList = data;
+              badge.innerText = `متصل • ${usersList.length} مشترك`;
+              return;
+            }
+          }
+        } catch (e) {}
       }
+      badge.innerText = 'اضغط لإعادة المحاولة 🔄';
     }
 
-    // fromToday = false: يزود 30 يوم على التاريخ القديم الموجود بعد To
-    // fromToday = true : يزود 30 يوم من تاريخ النهاردة (عند الضغط على "بدون تصفير")
     function addDaysToComment(rawComm, daysToAdd, fromToday = false) {
       const baseText = (rawComm || '').trim();
       const dateRegex = /(To\s+)(\d{1,2})[-/](\d{1,2})[-/](\d{4})/i;
@@ -500,7 +513,35 @@
       document.querySelectorAll('.gb-grid .chip-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
 
-      // gb > 0: +30 يوم من التاريخ القديم | gb == 0 (بدون تصفير): +30 يوم من تاريخ النهاردة
       if (selectedUser) {
         const origComm = selectedUser.c || '';
-        document.getElementById('
+        document.getElementById('commentInput').value = addDaysToComment(origComm, 30, gb === 0);
+      }
+    }
+
+    function submitRenewal() {
+      if (!selectedUser) {
+        alert('من فضلك اختر المشترك أولاً من قائمة البحث');
+        return;
+      }
+      const target = selectedUser.n.startsWith('Arabic_User_') ? selectedUser.id : selectedUser.n;
+      const comm = document.getElementById('commentInput').value.trim();
+      const payload = `/renew_user|${target}|${selectedProfile}|${selectedGb}|${comm}`;
+
+      if (tg) {
+        tg.sendData(payload);
+      } else {
+        alert(payload);
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.field-group')) {
+        document.getElementById('dropdownList').style.display = 'none';
+      }
+    });
+
+    loadUsers();
+  </script>
+</body>
+</html>
