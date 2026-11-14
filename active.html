@@ -48,7 +48,24 @@
       border-bottom: 1px solid var(--card-border);
     }
     .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); display: flex; align-items: center; gap: 6px; }
-    .win-badge { font-size: 13px; background: rgba(0, 230, 118, 0.14); border: 1px solid rgba(0, 230, 118, 0.35); color: var(--accent-green); padding: 4px 12px; border-radius: 10px; font-weight: 800; }
+    .win-badge {
+      font-size: 13px;
+      background: rgba(0, 230, 118, 0.14);
+      border: 1px solid rgba(0, 230, 118, 0.35);
+      color: var(--accent-green);
+      padding: 5px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+    .win-badge:active { transform: scale(0.93); }
+    .win-badge.loading {
+      background: rgba(0, 229, 255, 0.16);
+      border-color: rgba(0, 229, 255, 0.5);
+      color: var(--accent-cyan);
+    }
 
     .search-bar {
       padding: 12px 14px 6px;
@@ -77,8 +94,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: transform 0.2s ease;
     }
     .btn-refresh:active { transform: scale(0.95); }
+    .btn-refresh.spin { animation: spinAnim 0.7s linear infinite; }
+    @keyframes spinAnim { 100% { transform: rotate(360deg); } }
 
     .users-list {
       padding: 8px 14px 12px;
@@ -161,12 +181,12 @@
   <div class="winbox-window">
     <div class="win-header">
       <div class="win-title">👥 المشتركين النشطين</div>
-      <div class="win-badge" id="countBadge">متصل الآن: 0</div>
+      <div class="win-badge" id="countBadge" onclick="loadActive(true)" title="اضغط للتحديث الفوري">متصل الآن: 0</div>
     </div>
 
     <div class="search-bar">
       <input type="text" id="filterInput" class="search-input" placeholder="فلترة بالاسم أو الـ IP..." oninput="renderList()">
-      <button type="button" class="btn-refresh" onclick="loadActive()" title="تحديث">🔄</button>
+      <button type="button" class="btn-refresh" id="btnRefresh" onclick="loadActive(true)" title="تحديث">🔄</button>
     </div>
 
     <div class="users-list" id="usersList"></div>
@@ -206,24 +226,62 @@
       return '⏱️ أقل من دقيقة';
     }
 
-    async function loadActive() {
-      try {
-        const res = await fetch(`https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/active.json?t=${Date.now()}`, { cache: 'no-store' });
-        activeUsers = await res.json();
-        renderList();
-      } catch (e) {
-        document.getElementById('usersList').innerHTML = '<div style="text-align:center;color:#9cb2cc;padding:20px;">تعذر تحميل البيانات</div>';
+    async function loadActive(isManual = false) {
+      const badge = document.getElementById('countBadge');
+      const refBtn = document.getElementById('btnRefresh');
+      badge.classList.add('loading');
+      badge.innerText = '🔄 جاري التحديث...';
+      if (refBtn) refBtn.classList.add('spin');
+
+      if (isManual && tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
       }
+
+      const ts = Date.now();
+      const urls = [
+        `https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/active.json?v=${ts}`,
+        `https://aboyomna2006-cloud.github.io/Mikrotik/active.json?v=${ts}`
+      ];
+
+      for (const url of urls) {
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) {
+              activeUsers = data;
+              badge.classList.remove('loading');
+              if (refBtn) refBtn.classList.remove('spin');
+              renderList(isManual);
+              return;
+            }
+          }
+        } catch (e) {}
+      }
+
+      badge.classList.remove('loading');
+      if (refBtn) refBtn.classList.remove('spin');
+      badge.innerText = 'اضغط لإعادة المحاولة 🔄';
+      document.getElementById('usersList').innerHTML = '<div style="text-align:center;color:#9cb2cc;padding:20px;">تعذر تحميل البيانات</div>';
     }
 
-    function renderList() {
+    function renderList(showUpdatedFlash = false) {
       const q = document.getElementById('filterInput').value.trim().toLowerCase();
       const filtered = activeUsers.filter(u => {
         const uName = u.name || u.n || '';
         return uName.toLowerCase().includes(q) || (u.ip && u.ip.toLowerCase().includes(q));
       });
 
-      document.getElementById('countBadge').innerText = `متصل الآن: ${filtered.length}`;
+      const badge = document.getElementById('countBadge');
+      if (showUpdatedFlash) {
+        badge.innerText = `✅ تم التحديث: ${filtered.length}`;
+        setTimeout(() => {
+          badge.innerText = `متصل الآن: ${filtered.length}`;
+        }, 1100);
+      } else {
+        badge.innerText = `متصل الآن: ${filtered.length}`;
+      }
+
       const container = document.getElementById('usersList');
 
       if (filtered.length === 0) {
@@ -250,7 +308,7 @@
       }).join('');
     }
 
-    loadActive();
+    loadActive(false);
   </script>
 </body>
 </html>
