@@ -115,16 +115,36 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, transform 0.12s ease;
+    }
+    .user-card:active {
+      transform: scale(0.98);
+      border-color: var(--accent-cyan);
     }
     .user-top {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
       font-size: 15px;
       font-weight: 800;
       color: #fff;
+    }
+    .user-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       direction: ltr;
-      justify-content: flex-start;
+    }
+    .info-hint {
+      font-size: 11.5px;
+      color: var(--accent-cyan);
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.28);
+      padding: 2px 8px;
+      border-radius: 7px;
+      font-weight: 700;
     }
     .user-bottom {
       display: flex;
@@ -201,6 +221,13 @@
     if (tg) { tg.ready(); tg.expand(); }
 
     let activeUsers = [];
+
+    function openUserInfo(userName) {
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+      }
+      window.location.href = `info.html?user=${encodeURIComponent(userName)}`;
+    }
 
     function formatUptime(raw) {
       if (!raw) return '⏱️ الآن';
@@ -291,11 +318,15 @@
 
       container.innerHTML = filtered.map(u => {
         const uName = u.name || u.n || 'User';
+        const safeArg = uName.replace(/'/g, "\\'");
         const mbVal = u.mb >= 1024 ? `${(u.mb / 1024).toFixed(2)} GB` : `${u.mb} MB`;
         const upStr = formatUptime(u.u);
         return `
-          <div class="user-card">
-            <div class="user-top">👤 ${uName}</div>
+          <div class="user-card" onclick="openUserInfo('${safeArg}')">
+            <div class="user-top">
+              <div class="user-name-wrap">👤 ${uName}</div>
+              <span class="info-hint">استعلام 📋</span>
+            </div>
             <div class="user-bottom">
               <div style="display:flex; gap:6px; align-items:center;">
                 <span class="pill pill-ip">🌐 ${u.ip}</span>
