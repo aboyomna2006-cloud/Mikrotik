@@ -49,8 +49,9 @@
     .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.16); color: var(--accent-green); padding: 4px 10px; border-radius: 8px; font-weight: 700; }
 
     .body-wrap { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+    .search-row { display: flex; gap: 8px; align-items: center; }
     .search-input {
-      width: 100%;
+      flex: 1;
       background: var(--item-bg);
       border: 1px solid var(--card-border);
       border-radius: 10px;
@@ -62,6 +63,17 @@
       text-align: left;
     }
     .search-input:focus { border-color: var(--accent-cyan); }
+    .btn-clear {
+      background: var(--item-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-sub);
+      border-radius: 10px;
+      padding: 0 12px;
+      height: 42px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
 
     .list-box {
       max-height: 55vh;
@@ -88,8 +100,33 @@
     .prog-fill { height: 100%; border-radius: 6px; transition: width 0.3s; }
 
     .ic-stats { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--text-sub); }
+    .ic-actions { display: flex; justify-content: flex-end; margin-top: 2px; }
+    .btn-renew-mini {
+      background: rgba(255, 171, 0, 0.14);
+      border: 1px solid rgba(255, 171, 0, 0.4);
+      color: var(--accent-amber);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .footer-btns { display: flex; gap: 8px; }
+    .btn-back {
+      flex: 1;
+      background: rgba(0, 229, 255, 0.14);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 11px;
+      border-radius: 11px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: none;
+    }
     .btn-close {
-      width: 100%;
+      flex: 1;
       background: rgba(255, 61, 113, 0.15);
       border: 1px solid var(--accent-red);
       color: var(--accent-red);
@@ -109,9 +146,15 @@
     </div>
 
     <div class="body-wrap">
-      <input type="text" id="qInput" class="search-input" placeholder="اكتب اسم المشترك أو الكومنت..." oninput="renderCards()">
+      <div class="search-row">
+        <input type="text" id="qInput" class="search-input" placeholder="اكتب اسم المشترك أو الكومنت..." oninput="renderCards()">
+        <button type="button" class="btn-clear" onclick="clearSearch()">الكل</button>
+      </div>
       <div class="list-box" id="cardsBox"></div>
-      <button type="button" class="btn-close" onclick="if(tg) tg.close()">إغلاق</button>
+      <div class="footer-btns">
+        <button type="button" class="btn-back" id="btnBack" onclick="window.location.href='active.html'">↩️ رجوع للنشطين</button>
+        <button type="button" class="btn-close" onclick="if(tg) tg.close()">إغلاق</button>
+      </div>
     </div>
   </div>
 
@@ -120,10 +163,22 @@
     if (tg) { tg.ready(); tg.expand(); }
 
     let allUsers = [];
+    const urlParams = new URLSearchParams(window.location.search);
+    const preUser = urlParams.get('user');
+
+    if (preUser) {
+      document.getElementById('qInput').value = preUser;
+      document.getElementById('btnBack').style.display = 'block';
+    }
+
+    function clearSearch() {
+      document.getElementById('qInput').value = '';
+      renderCards();
+    }
 
     async function fetchUsers() {
       try {
-        const res = await fetch(`https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?t=${Date.now()}`, { cache: 'no-store' });
+        const res = await fetch(`https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?t=${Date.now()}`);
         allUsers = await res.json();
         document.getElementById('countBadge').innerText = `${allUsers.length} مشترك`;
         renderCards();
@@ -137,6 +192,11 @@
       const filtered = q
         ? allUsers.filter(u => (u.n && u.n.toLowerCase().includes(q)) || (u.c && u.c.toLowerCase().includes(q)))
         : allUsers.slice(0, 15);
+
+      if (filtered.length === 0) {
+        document.getElementById('cardsBox').innerHTML = '<div style="text-align:center;color:#9cb2cc;padding:20px;">لا توجد بيانات مطابقة لهذا المشترك</div>';
+        return;
+      }
 
       document.getElementById('cardsBox').innerHTML = filtered.map(u => {
         const title = u.n.startsWith('Arabic_User_') ? (u.c || u.n) : u.n;
@@ -155,6 +215,9 @@
           <div class="ic-stats">
             <span>الاستهلاك: ${usedGB} GB (${pct}%)</span>
             <span>الباقة: ${limGB} GB</span>
+          </div>
+          <div class="ic-actions">
+            <button type="button" class="btn-renew-mini" onclick="window.location.href='renew.html?user=${encodeURIComponent(u.n)}'">🔄 تجديد / تعديل</button>
           </div>
         </div>`;
       }).join('');
