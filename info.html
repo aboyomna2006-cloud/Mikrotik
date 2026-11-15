@@ -183,7 +183,6 @@
       font-size: 14px;
       font-weight: 800;
       cursor: pointer;
-      display: none;
     }
     .btn-close {
       flex: 1;
@@ -212,7 +211,7 @@
       </div>
       <div class="list-box" id="cardsBox"></div>
       <div class="footer-btns">
-        <button type="button" class="btn-back" id="btnBack" onclick="window.location.href='active.html'">↩️ رجوع للنشطين</button>
+        <button type="button" class="btn-back" onclick="window.location.href='dashboard.html'">🏠 الرئيسية</button>
         <button type="button" class="btn-close" onclick="if(tg) tg.close()">إغلاق</button>
       </div>
     </div>
@@ -228,7 +227,6 @@
 
     if (preUser) {
       document.getElementById('qInput').value = preUser;
-      document.getElementById('btnBack').style.display = 'block';
     }
 
     function clearSearch() {
