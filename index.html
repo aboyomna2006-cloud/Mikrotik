@@ -88,14 +88,24 @@
       box-shadow: 0 4px 14px rgba(255, 171, 0, 0.35);
     }
 
-    .actions-row { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-top: 6px; }
+    .actions-row { display: grid; grid-template-columns: 1fr 1fr 1.6fr; gap: 8px; margin-top: 6px; }
+    .btn-home {
+      background: rgba(0, 229, 255, 0.14);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 12px 6px;
+      border-radius: 11px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
     .btn-cancel {
       background: rgba(255, 61, 113, 0.15);
       border: 1px solid var(--accent-red);
       color: var(--accent-red);
-      padding: 12px;
+      padding: 12px 6px;
       border-radius: 11px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       cursor: pointer;
     }
@@ -103,9 +113,9 @@
       background: linear-gradient(90deg, #00e676, #00b0ff);
       border: none;
       color: #08121e;
-      padding: 12px;
+      padding: 12px 8px;
       border-radius: 11px;
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 900;
       cursor: pointer;
       box-shadow: 0 4px 16px rgba(0, 230, 118, 0.3);
@@ -153,6 +163,7 @@
       </div>
 
       <div class="actions-row">
+        <button type="button" class="btn-home" onclick="window.location.href='dashboard.html'">🏠 الرئيسية</button>
         <button type="button" class="btn-cancel" onclick="if(tg) tg.close()">إلغاء</button>
         <button type="button" class="btn-submit" onclick="submitUser()">✅ إنشاء الكارت</button>
       </div>
