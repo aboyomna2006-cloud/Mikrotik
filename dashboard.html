@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>لوحة التحكم الرئيسية - hAP ax²</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: #070d14;
+      --card-bg: #0e1722;
+      --glass-bg: rgba(18, 28, 42, 0.78);
+      --border: #1e3148;
+      --cyan: #00e5ff;
+      --green: #00e676;
+      --amber: #ffab00;
+      --lime: #1de9b6;
+      --red: #ff3d71;
+      --text-main: #ffffff;
+      --text-sub: #8fa6c2;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #102033 0%, var(--bg) 75%);
+      color: var(--text-main);
+      min-height: 100dvh;
+      padding: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .hub-container {
+      width: 100%;
+      max-width: 450px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* الهيدر الرئيسي */
+    .top-brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .net-name {
+      font-size: 18px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+    }
+
+    .router-badge {
+      background: rgba(0, 229, 255, 0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      padding: 4px 11px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 900;
+      direction: ltr;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.18);
+    }
+
+    /* شريط حالة السيرفر الحية */
+    .server-status-bar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 230, 118, 0.06);
+      border: 1px solid rgba(0, 230, 118, 0.25);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 230, 118, 0.15);
+      color: var(--green);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 13.5px;
+      font-weight: 800;
+      box-shadow: 0 0 16px rgba(0, 230, 118, 0.22);
+    }
+
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      animation: pulse 1.6s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.55; }
+      100% { transform: scale(0.95); opacity: 1; }
+    }
+
+    .quick-stats {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--text-sub);
+      padding-top: 4px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    }
+
+    .quick-stats span b {
+      color: var(--green);
+      font-size: 13.5px;
+    }
+
+    /* الكروت العريضة المتوهجة */
+    .cards-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .action-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: var(--glass-bg);
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.2s ease;
+    }
+
+    .action-card:active {
+      transform: scale(0.98);
+    }
+
+    .card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: right;
+    }
+
+    .card-title {
+      font-size: 16.5px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    .card-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    /* 1. كارت إضافة مستخدم */
+    .card-add {
+      border: 1.5px solid rgba(0, 229, 255, 0.45);
+      box-shadow: 0 4px 18px rgba(0, 229, 255, 0.12), inset 0 0 18px rgba(0, 229, 255, 0.06);
+    }
+    .card-add .card-icon-box {
+      background: rgba(0, 229, 255, 0.14);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      color: var(--cyan);
+    }
+
+    /* 2. كارت استعلام عن مشترك */
+    .card-info-btn {
+      border: 1.5px solid rgba(0, 230, 118, 0.45);
+      box-shadow: 0 4px 18px rgba(0, 230, 118, 0.12), inset 0 0 18px rgba(0, 230, 118, 0.06);
+    }
+    .card-info-btn .card-icon-box {
+      background: rgba(0, 230, 118, 0.14);
+      border: 1px solid rgba(0, 230, 118, 0.4);
+      color: var(--green);
+    }
+
+    /* 3. كارت تجديد باقة مشترك */
+    .card-renew {
+      border: 1.5px solid rgba(255, 171, 0, 0.45);
+      box-shadow: 0 4px 18px rgba(255, 171, 0, 0.12), inset 0 0 18px rgba(255, 171, 0, 0.06);
+    }
+    .card-renew .card-icon-box {
+      background: rgba(255, 171, 0, 0.14);
+      border: 1px solid rgba(255, 171, 0, 0.4);
+      color: var(--amber);
+    }
+
+    /* 4. كارت المشتركين النشطين */
+    .card-active {
+      border: 1.5px solid rgba(29, 233, 182, 0.45);
+      box-shadow: 0 4px 18px rgba(29, 233, 182, 0.12), inset 0 0 18px rgba(29, 233, 182, 0.06);
+    }
+    .card-active .card-icon-box {
+      background: rgba(29, 233, 182, 0.14);
+      border: 1px solid rgba(29, 233, 182, 0.4);
+      color: var(--lime);
+    }
+
+    /* زر الخروج السفلي */
+    .btn-exit {
+      width: 100%;
+      margin-top: 2px;
+      padding: 12px;
+      background: rgba(255, 61, 113, 0.14);
+      border: 1.5px solid rgba(255, 61, 113, 0.55);
+      color: var(--red);
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(255, 61, 113, 0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hub-container">
+    <!-- الهيدر -->
+    <div class="top-brand">
+      <div class="net-name">شبكة إنترنت أبو يمنى</div>
+      <div class="router-badge">hAP ax²</div>
+    </div>
+
+    <!-- حالة السيرفر الحية -->
+    <div class="server-status-bar">
+      <div class="status-pill" id="statusPill">
+        <span class="pulse-dot"></span>
+        <span>السيرفر يعمل الآن ونشط</span>
+      </div>
+      <div class="quick-stats">
+        <span>إجمالي المشتركين: <b id="totalUsers">...</b></span>
+        <span>النشطين حالياً: <b id="activeUsers">...</b></span>
+      </div>
+    </div>
+
+    <!-- الكروت العريضة -->
+    <div class="cards-stack">
+      <div class="action-card card-add" onclick="go('index.html?from=dash')">
+        <div class="card-info">
+          <div class="card-title">إضافة مستخدم جديد</div>
+          <div class="card-desc">إنشاء حسابات هوتسبوت جديدة فوراً</div>
+        </div>
+        <div class="card-icon-box">➕</div>
+      </div>
+
+      <div class="action-card card-info-btn" onclick="go('info.html?from=dash')">
+        <div class="card-info">
+          <div class="card-title">استعلام عن مشترك</div>
+          <div class="card-desc">بحث، تفاصيل الاستهلاك والباقات</div>
+        </div>
+        <div class="card-icon-box">📋</div>
+      </div>
+
+      <div class="action-card card-renew" onclick="go('renew.html?from=dash')">
+        <div class="card-info">
+          <div class="card-title">تجديد باقة مشترك</div>
+          <div class="card-desc">تجديد الباقات وتغيير السرعات والكومنت</div>
+        </div>
+        <div class="card-icon-box">🔄</div>
+      </div>
+
+      <div class="action-card card-active" onclick="go('active.html?from=dash')">
+        <div class="card-info">
+          <div class="card-title">المشتركين النشطين</div>
+          <div class="card-desc">عرض المتصلين حالياً واستهلاكهم الفوري</div>
+        </div>
+        <div class="card-icon-box">📡</div>
+      </div>
+    </div>
+
+    <!-- زر الخروج -->
+    <button type="button" class="btn-exit" onclick="if(tg) tg.close()">
+      <span>🚪 الخروج من اللوحة</span>
+    </button>
+  </div>
+
+  <script>
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    function go(page) {
+      window.location.href = page;
+    }
+
+    async function loadLiveStats() {
+      const base = "https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main";
+      const t = Date.now();
+      try {
+        const [uRes, aRes] = await Promise.all([
+          fetch(`${base}/users.json?t=${t}`),
+          fetch(`${base}/active.json?t=${t}`)
+        ]);
+        if (uRes.ok) {
+          const users = await uRes.json();
+          document.getElementById('totalUsers').innerText = Array.isArray(users) ? users.length : 0;
+        }
+        if (aRes.ok) {
+          const active = await aRes.json();
+          document.getElementById('activeUsers').innerText = Array.isArray(active) ? active.length : 0;
+        }
+      } catch (e) {
+        document.getElementById('totalUsers').innerText = '--';
+        document.getElementById('activeUsers').innerText = '--';
+      }
+    }
+
+    loadLiveStats();
+  </script>
+</body>
+</html>
