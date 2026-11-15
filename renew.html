@@ -212,15 +212,25 @@
       padding-left: 34px;
     }
 
-    .actions-row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-top: 4px; }
+    .actions-row { display: grid; grid-template-columns: 1fr 1fr 1.6fr; gap: 8px; margin-top: 4px; }
+    .btn-home {
+      background: rgba(0, 229, 255, 0.14);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 800;
+      padding: 12px 6px;
+      cursor: pointer;
+    }
     .btn-save {
       background: linear-gradient(90deg, #ffca28, #00e676);
       border: none;
       border-radius: 12px;
       color: #09131c;
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 900;
-      padding: 12px;
+      padding: 12px 8px;
       cursor: pointer;
     }
     .btn-cancel {
@@ -230,7 +240,7 @@
       border-radius: 12px;
       font-size: 14px;
       font-weight: 800;
-      padding: 12px;
+      padding: 12px 6px;
       cursor: pointer;
     }
   </style>
@@ -324,10 +334,11 @@
       </div>
     </div>
 
-    <!-- أزرار الحفظ -->
+    <!-- أزرار الحفظ والرجوع -->
     <div class="actions-row">
-      <button type="button" class="btn-save" onclick="submitRenewal()">✅ حفظ التعديل</button>
+      <button type="button" class="btn-home" onclick="window.location.href='dashboard.html'">🏠 الرئيسية</button>
       <button type="button" class="btn-cancel" onclick="if(tg) tg.close()">إلغاء</button>
+      <button type="button" class="btn-save" onclick="submitRenewal()">✅ حفظ التعديل</button>
     </div>
   </div>
 
@@ -339,6 +350,9 @@
     let selectedUser = null;
     let selectedProfile = '512+';
     let selectedGb = 12;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const preUser = urlParams.get('user');
 
     async function loadUsers() {
       const badge = document.getElementById('totalBadge');
@@ -357,6 +371,10 @@
             if (Array.isArray(data) && data.length > 0) {
               usersList = data;
               badge.innerText = `متصل • ${usersList.length} مشترك`;
+              if (preUser) {
+                const found = usersList.find(u => u.n === preUser || u.id === preUser);
+                if (found) pickUser(found.id);
+              }
               return;
             }
           }
