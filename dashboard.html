@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>شبكة إنترنت أبو يمنى - hAP ax²</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #070d14;
       --card-bg: #0d1622;
-      --glass-bg: rgba(16, 26, 40, 0.84);
+      --glass-bg: rgba(16, 26, 40, 0.86);
       --border: #1e3148;
       --cyan: #00e5ff;
       --green: #00e676;
@@ -24,12 +27,12 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+      font-family: 'Cairo', system-ui, -apple-system, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: radial-gradient(circle at top, #112338 0%, var(--bg) 75%);
+      background: radial-gradient(circle at top, #132840 0%, var(--bg) 75%);
       color: var(--text-main);
       min-height: 100dvh;
       padding: 12px;
@@ -41,43 +44,63 @@
     .hub-container {
       width: 100%;
       max-width: 450px;
-      background: linear-gradient(180deg, #101b2a 0%, #0b131e 100%);
+      background: linear-gradient(180deg, #111e2f 0%, #0b131e 100%);
       border: 1.5px solid var(--border);
       border-radius: 24px;
       padding: 15px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.82);
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.85);
       display: flex;
       flex-direction: column;
       gap: 13px;
     }
 
-    /* الهيدر العلوي الفخم */
+    /* الهيدر العلوي الضخم والمجسم */
     .hero-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      padding: 6px 4px 10px;
-      border-bottom: 1px solid rgba(30, 49, 72, 0.75);
+      gap: 8px;
+      padding: 4px 2px 8px;
     }
 
-    /* عنوان الشبكة المنشق من الخلفية */
     .embossed-title-wrap {
       flex: 1;
       text-align: right;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
-    .embossed-title {
-      font-size: 23px;
+    /* سطر شبكة إنترنت */
+    .title-line-1 {
+      font-size: 27px;
       font-weight: 900;
-      line-height: 1.25;
-      letter-spacing: -0.4px;
-      background: linear-gradient(180deg, #ffffff 15%, #9ec5dc 58%, #4d758f 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.95))
-              drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.22))
-              drop-shadow(0 0 14px rgba(0, 229, 255, 0.16));
+      line-height: 1.15;
+      color: #d6ebf7;
+      text-shadow:
+        0 1px 0 #7fa1b8,
+        0 2px 0 #5b7b91,
+        0 3px 0 #3c5669,
+        0 4px 0 #233645,
+        0 7px 14px rgba(0, 0, 0, 0.95),
+        0 0 18px rgba(0, 229, 255, 0.22);
+    }
+
+    /* سطر أبو يمنى ضخم وبارز 3D */
+    .title-line-2 {
+      font-size: 40px;
+      font-weight: 900;
+      line-height: 1.12;
+      margin-top: 2px;
+      color: #eef8ff;
+      text-shadow:
+        0 1px 0 #8fb5cc,
+        0 2px 0 #688da6,
+        0 3px 0 #476880,
+        0 4px 0 #2d4659,
+        0 5px 0 #192a38,
+        0 10px 18px rgba(0, 0, 0, 0.98),
+        0 0 24px rgba(0, 230, 118, 0.25);
     }
 
     /* وحدة الراوتر والموديل */
@@ -85,122 +108,124 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       flex-shrink: 0;
     }
 
     .router-badge {
-      background: rgba(0, 229, 255, 0.12);
+      background: linear-gradient(180deg, rgba(0, 229, 255, 0.22), rgba(0, 229, 255, 0.08));
       color: var(--cyan);
-      border: 1px solid rgba(0, 229, 255, 0.45);
-      padding: 3px 11px;
-      border-radius: 10px;
-      font-size: 12.5px;
+      border: 1.5px solid rgba(0, 229, 255, 0.55);
+      padding: 2px 13px;
+      border-radius: 12px;
+      font-size: 13px;
       font-weight: 900;
       direction: ltr;
-      box-shadow: 0 0 14px rgba(0, 229, 255, 0.2);
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
 
     .router-svg-box {
-      width: 68px;
-      height: 68px;
+      width: 92px;
+      height: 96px;
       display: flex;
       align-items: center;
       justify-content: center;
-      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.85))
-              drop-shadow(0 0 10px rgba(0, 229, 255, 0.18));
+      filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.95))
+              drop-shadow(0 0 14px rgba(0, 229, 255, 0.22));
     }
 
-    /* شريط الحالة + الساعة + الابتايم */
+    /* شريط الحالة + الساعة يمين + الابتايم شمال */
     .telemetry-panel {
       display: flex;
       flex-direction: column;
-      gap: 9px;
-      background: rgba(11, 19, 30, 0.72);
-      border: 1px solid rgba(30, 49, 72, 0.85);
-      border-radius: 16px;
-      padding: 10px 10px 9px;
-      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.55);
+      gap: 10px;
+      background: rgba(10, 17, 27, 0.78);
+      border: 1px solid rgba(34, 55, 82, 0.9);
+      border-radius: 18px;
+      padding: 11px 10px 9px;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.65);
     }
 
-    .status-row-3 {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 6px;
+    /* كبسولة السيرفر يعمل الآن في المنتصف بالأعلى */
+    .status-center-wrap {
+      display: flex;
+      justify-content: center;
     }
 
-    /* كبسولة السيرفر يعمل الآن */
     .status-pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      background: rgba(0, 230, 118, 0.15);
-      border: 1px solid rgba(0, 230, 118, 0.42);
-      color: var(--green);
-      padding: 5px 11px;
-      border-radius: 20px;
-      font-size: 12px;
+      gap: 8px;
+      background: linear-gradient(180deg, rgba(0, 230, 118, 0.22), rgba(0, 180, 90, 0.12));
+      border: 1.5px solid rgba(0, 230, 118, 0.5);
+      color: #5cffaa;
+      padding: 5px 18px;
+      border-radius: 22px;
+      font-size: 13px;
       font-weight: 900;
-      white-space: nowrap;
-      box-shadow: 0 0 18px rgba(0, 230, 118, 0.24);
+      box-shadow: 0 0 22px rgba(0, 230, 118, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .pulse-dot {
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 10px var(--green);
-      animation: pulse 1.6s infinite;
-      flex-shrink: 0;
+      background: #00ff88;
+      box-shadow: 0 0 12px #00ff88;
+      animation: pulse 1.5s infinite;
     }
 
     @keyframes pulse {
       0% { transform: scale(0.95); opacity: 1; }
-      50% { transform: scale(1.3); opacity: 0.55; }
+      50% { transform: scale(1.35); opacity: 0.55; }
       100% { transform: scale(0.95); opacity: 1; }
     }
 
-    /* خانة الساعة والابتايم المتداخلة مع الخلفية */
-    .embossed-chip {
-      background: linear-gradient(180deg, rgba(22, 36, 54, 0.75), rgba(10, 17, 27, 0.9));
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 5px 7px;
+    /* صف الساعة يمين والابتايم شمال بتجسيم بارز */
+    .dual-embossed-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .embossed-box {
+      background: linear-gradient(180deg, #162436 0%, #0b131e 100%);
+      border: 1px solid rgba(76, 114, 153, 0.35);
+      border-radius: 13px;
+      padding: 6px 10px;
       text-align: center;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08),
-                  0 3px 6px rgba(0, 0, 0, 0.6);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        0 4px 10px rgba(0, 0, 0, 0.75);
       direction: ltr;
     }
 
-    .chip-lbl {
+    .embossed-box .e-lbl {
       display: block;
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 800;
-      color: #6b85a3;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
+      color: #7d9ec0;
       margin-bottom: 1px;
     }
 
-    .chip-val {
+    .embossed-box .e-val {
       display: block;
-      font-size: 12px;
+      font-size: 16px;
       font-weight: 900;
-      background: linear-gradient(180deg, #e8f4fc 20%, #7ea4c4 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.9));
-      white-space: nowrap;
+      color: #e4f3ff;
+      letter-spacing: 0.5px;
+      text-shadow:
+        0 1px 0 #5a7d99,
+        0 2px 0 #2e4559,
+        0 4px 8px rgba(0, 0, 0, 0.9);
     }
 
     .quick-stats {
       width: 100%;
       display: flex;
       justify-content: space-around;
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 800;
       color: var(--text-sub);
       padding-top: 6px;
@@ -209,7 +234,7 @@
 
     .quick-stats span b {
       color: var(--green);
-      font-size: 13px;
+      font-size: 14px;
     }
 
     /* الكروت العريضة المتوهجة */
@@ -223,11 +248,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 13px 15px;
+      padding: 12px 15px;
       border-radius: 16px;
       background: var(--glass-bg);
       cursor: pointer;
-      transition: transform 0.18s ease, box-shadow 0.2s ease;
+      transition: transform 0.18s ease;
     }
 
     .action-card:active {
@@ -237,12 +262,12 @@
     .card-info {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
       text-align: right;
     }
 
     .card-title {
-      font-size: 16px;
+      font-size: 16.5px;
       font-weight: 900;
       color: #ffffff;
     }
@@ -250,7 +275,7 @@
     .card-desc {
       font-size: 11.5px;
       color: var(--text-sub);
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .card-icon-box {
@@ -308,12 +333,12 @@
     .btn-exit {
       width: 100%;
       margin-top: 2px;
-      padding: 12px;
+      padding: 11px;
       background: rgba(255, 61, 113, 0.14);
       border: 1.5px solid rgba(255, 61, 113, 0.55);
       color: var(--red);
       border-radius: 14px;
-      font-size: 14.5px;
+      font-size: 15px;
       font-weight: 900;
       cursor: pointer;
       display: flex;
@@ -327,47 +352,51 @@
 <body>
 
   <div class="hub-container">
-    <!-- الهيدر العلوي الفخم -->
+    <!-- الهيدر العلوي الضخم -->
     <div class="hero-header">
       <div class="embossed-title-wrap">
-        <div class="embossed-title">شبكة إنترنت<br>أبو يمنى</div>
+        <div class="title-line-1">شبكة إنترنت</div>
+        <div class="title-line-2">أبو يمنى</div>
       </div>
 
       <div class="router-unit">
         <div class="router-badge">hAP ax²</div>
-        <!-- رسمة مجسّمة لراوتر MikroTik hAP ax² البرجي -->
         <div class="router-svg-box">
-          <svg viewBox="0 0 90 90" width="66" height="66" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 110 115" width="90" height="94" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="towerFront" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#2a3544"/>
-                <stop offset="50%" stop-color="#151c26"/>
-                <stop offset="100%" stop-color="#0b0f15"/>
+              <linearGradient id="frontBody" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#354457"/>
+                <stop offset="45%" stop-color="#19222e"/>
+                <stop offset="100%" stop-color="#0b1017"/>
               </linearGradient>
-              <linearGradient id="towerSide" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#1e2733"/>
-                <stop offset="100%" stop-color="#090d12"/>
+              <linearGradient id="sideBody" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#222d3b"/>
+                <stop offset="100%" stop-color="#090d13"/>
               </linearGradient>
-              <linearGradient id="baseGrad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#324154"/>
-                <stop offset="100%" stop-color="#121922"/>
+              <linearGradient id="standGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#3c4e63"/>
+                <stop offset="100%" stop-color="#141c26"/>
               </linearGradient>
             </defs>
+            <!-- ظل أرضي -->
+            <ellipse cx="56" cy="103" rx="34" ry="6" fill="rgba(0,229,255,0.14)"/>
             <!-- القاعدة السفلية -->
-            <polygon points="20,76 52,83 74,73 42,67" fill="url(#baseGrad)" stroke="#3b4d63" stroke-width="1"/>
-            <!-- الجانب الأيمن للبرج -->
-            <polygon points="52,14 68,10 68,72 52,78" fill="url(#towerSide)" stroke="#2c3a4c" stroke-width="0.9"/>
-            <!-- الواجهة الأمامية للبرج -->
-            <polygon points="26,10 52,14 52,78 26,73" fill="url(#towerFront)" stroke="#435770" stroke-width="1"/>
+            <polygon points="22,95 62,104 90,91 50,83" fill="url(#standGrad)" stroke="#4c627d" stroke-width="1.2"/>
+            <!-- الجانب الأيمن -->
+            <polygon points="62,16 84,11 84,90 62,98" fill="url(#sideBody)" stroke="#334357" stroke-width="1.1"/>
+            <!-- الواجهة الأمامية -->
+            <polygon points="28,11 62,16 62,98 28,91" fill="url(#frontBody)" stroke="#536b87" stroke-width="1.2"/>
             <!-- السطح العلوي -->
-            <polygon points="26,10 42,6 68,10 52,14" fill="#324154" stroke="#4f6682" stroke-width="0.9"/>
-            <!-- فتحات التهوية ولمبات الحالة المضيئة -->
-            <line x1="60" y1="24" x2="60" y2="62" stroke="#00e5ff" stroke-width="1.6" stroke-dasharray="2.5 3.5" opacity="0.85"/>
-            <circle cx="46" cy="24" r="1.6" fill="#00e676"/>
-            <circle cx="46" cy="30" r="1.4" fill="#00e5ff"/>
-            <circle cx="46" cy="36" r="1.4" fill="#00e5ff" opacity="0.75"/>
-            <!-- شعار MikroTik مصغر -->
-            <text x="31" y="45" fill="#7c96b2" font-size="5.5" font-weight="bold" transform="skewY(8)">MikroTik</text>
+            <polygon points="28,11 50,6 84,11 62,16" fill="#3a4c61" stroke="#627e9e" stroke-width="1.1"/>
+            <!-- شريط فتحات التهوية الجانبية ولمبات LED -->
+            <line x1="73" y1="24" x2="73" y2="78" stroke="#00e5ff" stroke-width="2" stroke-dasharray="3 4" opacity="0.9"/>
+            <!-- لمبات الحالة -->
+            <circle cx="54" cy="26" r="2" fill="#00ff88"/>
+            <circle cx="54" cy="34" r="1.8" fill="#00e5ff"/>
+            <circle cx="54" cy="42" r="1.8" fill="#00e5ff" opacity="0.8"/>
+            <circle cx="54" cy="50" r="1.8" fill="#00e5ff" opacity="0.6"/>
+            <!-- شعار MikroTik -->
+            <text x="34" y="55" fill="#9bb8d6" font-size="7" font-weight="900" transform="skewY(8)">MikroTik</text>
           </svg>
         </div>
       </div>
@@ -375,23 +404,24 @@
 
     <!-- شريط الحالة + الساعة يمين + الابتايم شمال -->
     <div class="telemetry-panel">
-      <div class="status-row-3">
-        <!-- اليمين (في RTL): ساعة السيرفر -->
-        <div class="embossed-chip">
-          <span class="chip-lbl">🕒 ساعة السيرفر</span>
-          <span class="chip-val" id="srvClock">--:--:--</span>
-        </div>
-
-        <!-- المنتصف: السيرفر يعمل الآن -->
+      <div class="status-center-wrap">
         <div class="status-pill">
           <span class="pulse-dot"></span>
-          <span>السيرفر يعمل الآن</span>
+          <span>السيرفر يعمل الآن ونشط</span>
+        </div>
+      </div>
+
+      <div class="dual-embossed-row">
+        <!-- اليمين في RTL: ساعة السيرفر -->
+        <div class="embossed-box">
+          <span class="e-lbl">🕒 ساعة السيرفر</span>
+          <span class="e-val" id="srvClock">--:--:--</span>
         </div>
 
-        <!-- اليسار (في RTL): الابتايم -->
-        <div class="embossed-chip">
-          <span class="chip-lbl">⏱️ Uptime</span>
-          <span class="chip-val" id="srvUptime">--</span>
+        <!-- اليسار في RTL: الابتايم -->
+        <div class="embossed-box">
+          <span class="e-lbl">⏱️ مدة التشغيل Uptime</span>
+          <span class="e-val" id="srvUptime">نشط الآن</span>
         </div>
       </div>
 
@@ -454,7 +484,7 @@
     }
 
     function formatRouterUptime(raw) {
-      if (!raw) return '--';
+      if (!raw) return 'نشط الآن';
       let s = String(raw).trim();
       let weeks = 0, days = 0, hours = 0, mins = 0;
       const wM = s.match(/(\d+)w/);
@@ -468,28 +498,30 @@
       return `${hours}h ${mins}m`;
     }
 
-    let serverSeconds = null;
-    function startLiveClock(timeStr) {
-      if (!timeStr || !timeStr.includes(':')) return;
-      const parts = timeStr.split(':').map(Number);
-      if (parts.length < 3) return;
-      serverSeconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
-      renderClock();
-    }
+    // تشغيل الساعة فوراً بتوقيت مصر ثم ضبطها على ساعة السيرفر بمجرد وصولها
+    const nowInit = new Date();
+    let serverSeconds = nowInit.getHours() * 3600 + nowInit.getMinutes() * 60 + nowInit.getSeconds();
 
     function renderClock() {
-      if (serverSeconds === null) return;
       const h = String(Math.floor(serverSeconds / 3600) % 24).padStart(2, '0');
       const m = String(Math.floor((serverSeconds % 3600) / 60)).padStart(2, '0');
       const s = String(serverSeconds % 60).padStart(2, '0');
       document.getElementById('srvClock').innerText = `${h}:${m}:${s}`;
     }
 
-    setInterval(() => {
-      if (serverSeconds !== null) {
-        serverSeconds = (serverSeconds + 1) % 86400;
+    function syncClockFromServer(timeStr) {
+      if (!timeStr || !timeStr.includes(':')) return;
+      const parts = timeStr.split(':').map(Number);
+      if (parts.length >= 3) {
+        serverSeconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
         renderClock();
       }
+    }
+
+    renderClock();
+    setInterval(() => {
+      serverSeconds = (serverSeconds + 1) % 86400;
+      renderClock();
     }, 1000);
 
     async function loadLiveStats() {
@@ -511,13 +543,10 @@
         }
         if (sRes.ok) {
           const st = await sRes.json();
-          if (st.time) startLiveClock(st.time);
+          if (st.time) syncClockFromServer(st.time);
           if (st.uptime) document.getElementById('srvUptime').innerText = formatRouterUptime(st.uptime);
         }
-      } catch (e) {
-        document.getElementById('totalUsers').innerText = '--';
-        document.getElementById('activeUsers').innerText = '--';
-      }
+      } catch (e) {}
     }
 
     loadLiveStats();
