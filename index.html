@@ -1,417 +1,213 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>استعلام عن مشترك - WinBox</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>إضافة مستخدم - WinBox</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg-dark: #0e1621;
-      --card-bg: #17212b;
-      --inner-bg: #121a24;
-      --border-color: #243242;
-      --text-main: #f5f7fa;
-      --text-muted: #8b9bb0;
-      --green-neon: #00e676;
-      --green-deep: #00a854;
-      --red-neon: #ff3b5c;
-      --red-deep: #b81430;
-      --cyan-btn: #0088cc;
-      --gold-accent: #f5b041;
+      --bg: #0b111a;
+      --card-bg: #121c2a;
+      --item-bg: #0c141f;
+      --card-border: #263852;
+      --accent-cyan: #00e5ff;
+      --accent-amber: #ffab00;
+      --accent-green: #00e676;
+      --accent-red: #ff3d71;
+      --text-main: #ffffff;
+      --text-sub: #9cb2cc;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Tahoma, Arial, sans-serif;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
     body {
-      background-color: var(--bg-dark);
+      background: var(--bg);
       color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
       padding: 12px;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-
-    .container {
+    .winbox-window {
       width: 100%;
-      max-width: 440px;
+      max-width: 450px;
       background: var(--card-bg);
-      border: 1px solid var(--border-color);
+      border: 1.5px solid var(--card-border);
       border-radius: 18px;
-      padding: 14px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
     }
-
-    /* الهيدر */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 12px;
-    }
-
-    .header-title {
-      font-size: 17px;
-      font-weight: 700;
+    .win-header {
+      background: linear-gradient(90deg, #162638, #121c2a);
+      padding: 14px 16px;
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-
-    .badge-count {
-      background: rgba(0, 230, 118, 0.14);
-      color: var(--green-neon);
-      border: 1px solid rgba(0, 230, 118, 0.35);
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    /* شريط البحث والفلتر */
-    .search-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .filter-select {
-      background: var(--inner-bg);
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .search-input {
-      flex: 1;
-      background: var(--inner-bg);
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-size: 14px;
-      outline: none;
-      direction: ltr;
-      text-align: left;
-    }
-
-    .search-input:focus {
-      border-color: var(--cyan-btn);
-    }
-
-    /* بطاقة المشترك */
-    .user-card {
-      background: var(--inner-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 14px;
-    }
-
-    .user-header {
-      display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 8px;
+      border-bottom: 1px solid var(--card-border);
     }
+    .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); }
+    .win-badge { font-size: 12px; background: rgba(0, 229, 255, 0.14); color: var(--accent-cyan); padding: 4px 10px; border-radius: 8px; font-weight: 700; }
 
-    .user-title {
+    .form-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-label { font-size: 13px; color: var(--text-sub); font-weight: 700; }
+
+    .text-input {
+      width: 100%;
+      background: var(--item-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: #fff;
+      padding: 11px 12px;
       font-size: 15px;
-      font-weight: 700;
-      line-height: 1.45;
+      outline: none;
       direction: ltr;
       text-align: left;
-      color: #ffffff;
     }
+    .text-input:focus { border-color: var(--accent-cyan); }
 
-    .speed-badge {
-      background: rgba(0, 136, 204, 0.18);
-      color: #4fc3f7;
-      border: 1px solid rgba(79, 195, 247, 0.35);
-      padding: 3px 8px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-      direction: ltr;
-    }
-
-    .user-comment {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      direction: ltr;
-      text-align: left;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px dashed var(--border-color);
-    }
-
-    /* منطقة الدائرة الكبيرة المصمتة */
-    .pie-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 8px 0 14px;
-    }
-
-    .pie-wrapper {
-      position: relative;
-      width: 175px;
-      height: 175px;
-      border-radius: 50%;
-      /* التدرج الدائري: الأخضر للتحميل من 0% إلى النسبة، والأحمر للمتبقي */
-      background: conic-gradient(
-        from 0deg,
-        #00ff88 0%,
-        #00c853 var(--pct, 15%),
-        #ff3b5c var(--pct, 15%),
-        #b81430 100%
-      );
-      box-shadow:
-        0 0 28px rgba(255, 59, 92, 0.35),
-        0 0 18px rgba(0, 230, 118, 0.25),
-        inset 0 3px 10px rgba(255, 255, 255, 0.28),
-        inset 0 -6px 14px rgba(0, 0, 0, 0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.4s ease;
-    }
-
-    /* لمعة زجاجية خفيفة تعطي فخامة للقرص */
-    .pie-wrapper::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.22), transparent 60%);
-      pointer-events: none;
-    }
-
-    .pie-percent-text {
-      position: relative;
-      z-index: 2;
-      font-size: 34px;
-      font-weight: 800;
-      color: #ffffff;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.75);
-      letter-spacing: -0.5px;
-    }
-
-    /* شريط الأرقام أسفل الدائرة */
-    .stats-row {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 16px;
-      padding: 8px 10px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 10px;
-      font-size: 12.5px;
-      font-weight: 600;
-    }
-
-    .stat-used {
-      color: var(--green-neon);
-    }
-
-    .stat-total {
+    .btn-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .opt-btn {
+      background: var(--item-bg);
+      border: 1.5px solid var(--card-border);
       color: var(--text-main);
-    }
-
-    .stat-rem {
-      color: var(--red-neon);
-    }
-
-    /* زر تجديد / تعديل */
-    .renew-btn {
-      width: 100%;
-      margin-top: 12px;
-      padding: 9px;
-      background: rgba(245, 176, 65, 0.14);
-      color: var(--gold-accent);
-      border: 1px solid rgba(245, 176, 65, 0.4);
+      padding: 10px 6px;
       border-radius: 10px;
-      font-size: 13.5px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    /* الأزرار السفلية */
-    .footer-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .btn-back {
-      padding: 11px;
-      background: rgba(0, 136, 204, 0.16);
-      color: #4fc3f7;
-      border: 1px solid rgba(79, 195, 247, 0.45);
-      border-radius: 12px;
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
+      text-align: center;
+      transition: 0.15s;
+    }
+    .opt-btn.active {
+      background: linear-gradient(135deg, #ffab00, #ff6d00);
+      border-color: #ffd54f;
+      color: #0b111a;
+      font-weight: 900;
+      box-shadow: 0 4px 14px rgba(255, 171, 0, 0.35);
     }
 
-    .btn-close {
-      padding: 11px;
-      background: rgba(255, 59, 92, 0.16);
-      color: var(--red-neon);
-      border: 1px solid rgba(255, 59, 92, 0.45);
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
+    .actions-row { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-top: 6px; }
+    .btn-cancel {
+      background: rgba(255, 61, 113, 0.15);
+      border: 1px solid var(--accent-red);
+      color: var(--accent-red);
+      padding: 12px;
+      border-radius: 11px;
+      font-size: 15px;
+      font-weight: 800;
       cursor: pointer;
+    }
+    .btn-submit {
+      background: linear-gradient(90deg, #00e676, #00b0ff);
+      border: none;
+      color: #08121e;
+      padding: 12px;
+      border-radius: 11px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0, 230, 118, 0.3);
     }
   </style>
 </head>
 <body>
-
-  <div class="container">
-    <!-- الرأس -->
-    <div class="header">
-      <div class="header-title">📋 استعلام عن مشترك</div>
-      <div class="badge-count" id="totalUsersBadge">57 مشترك</div>
+  <div class="winbox-window">
+    <div class="win-header">
+      <div class="win-title">➕ إضافة مشترك جديد</div>
+      <div class="win-badge">Hotspot • out</div>
     </div>
 
-    <!-- البحث والفلترة -->
-    <div class="search-row">
-      <select class="filter-select" id="filterSelect">
-        <option value="all">الكل</option>
-        <option value="active">النشطين</option>
-        <option value="expired">المنتهين</option>
-      </select>
-      <input type="text" class="search-input" id="searchInput" placeholder="ابحث باسم المشترك..." value="Yousef Ahmed Abdelaziz" />
-    </div>
-
-    <!-- بطاقة بيانات المشترك -->
-    <div class="user-card" id="userCard">
-      <div class="user-header">
-        <div class="user-title" id="userTitle">
-          👤 Yousef Ahmed Abdelaziz To 14-12-2026 (Dev: V2061) [Rem: 29 Days]
-        </div>
-        <span class="speed-badge" id="userSpeed">512+</span>
+    <div class="form-body">
+      <div class="field-group">
+        <label class="field-label">👤 اسم المستخدم (User)</label>
+        <input type="text" id="uName" class="text-input" placeholder="مثال: ahmed2026" oninput="updateAutoComment()">
       </div>
 
-      <div class="user-comment" id="userComment">
-        💬 Yousef Ahmed Abdelaziz To 14-12-2026 (Dev: V2061) [Rem: 29 Days]
+      <div class="field-group">
+        <label class="field-label">🔑 كلمة المرور (Password)</label>
+        <input type="text" id="uPass" class="text-input" placeholder="مثال: 1234">
       </div>
 
-      <!-- الدائرة المصمتة الكبيرة مكان الشريط -->
-      <div class="pie-section">
-        <div class="pie-wrapper" id="pieChart" style="--pct: 15%;">
-          <span class="pie-percent-text" id="piePercent">15%</span>
-        </div>
-
-        <div class="stats-row">
-          <span class="stat-used" id="statUsed">الاستهلاك: 1.84 GB</span>
-          <span class="stat-total" id="statTotal">الباقة: 12 GB</span>
-          <span class="stat-rem" id="statRem">المتبقي: 10.16 GB</span>
+      <div class="field-group">
+        <label class="field-label">🚀 البروفايل (السرعة)</label>
+        <div class="btn-grid-2">
+          <button type="button" class="opt-btn active" onclick="selectProf('512+', this)">512+ (الأساسي)</button>
+          <button type="button" class="opt-btn" onclick="selectProf('120K/400K', this)">120K/400K</button>
         </div>
       </div>
 
-      <button class="renew-btn" onclick="triggerRenew()">🔄 تجديد / تعديل</button>
-    </div>
+      <div class="field-group">
+        <label class="field-label">📦 الباقة (الجيجات)</label>
+        <div class="btn-grid-3">
+          <button type="button" class="opt-btn" onclick="selectGb('12', this)">12 جيجا</button>
+          <button type="button" class="opt-btn active" onclick="selectGb('15', this)">15 جيجا</button>
+          <button type="button" class="opt-btn" onclick="selectGb('20', this)">20 جيجا</button>
+        </div>
+      </div>
 
-    <!-- أزرار التحكم السفلية -->
-    <div class="footer-actions">
-      <button class="btn-back" onclick="showActiveUsers()">↩️ رجوع للنشطين</button>
-      <button class="btn-close" onclick="closeWebApp()">إغلاق</button>
+      <div class="field-group">
+        <label class="field-label">💬 الكومنت (تاريخ الانتهاء تلقائي +30 يوم)</label>
+        <input type="text" id="uComm" class="text-input" placeholder="Name To DD-MM-YYYY">
+      </div>
+
+      <div class="actions-row">
+        <button type="button" class="btn-cancel" onclick="if(tg) tg.close()">إلغاء</button>
+        <button type="button" class="btn-submit" onclick="submitUser()">✅ إنشاء الكارت</button>
+      </div>
     </div>
   </div>
 
   <script>
-    const tg = window.Telegram && window.Telegram.WebApp;
-    if (tg) {
-      tg.ready();
-      tg.expand();
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    if (tg) { tg.ready(); tg.expand(); }
+
+    let selectedProf = '512+';
+    let selectedGb = '15';
+    let commEdited = false;
+
+    document.getElementById('uComm').addEventListener('input', () => { commEdited = true; });
+
+    function getExpiryDate() {
+      const d = new Date();
+      d.setDate(d.getDate() + 30);
+      return `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
     }
 
-    // رابط ملف البيانات في مستودع GitHub الخاص بك
-    const DATA_URL = "https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json";
-    let allUsers = [];
-
-    // دالة تحديث الدائرة والأرقام لأي مشترك
-    function renderUser(user) {
-      const totalGB = parseFloat(user.limit_gb || 12);
-      const usedGB = parseFloat(user.used_gb || 1.84);
-      const remGB = Math.max(0, totalGB - usedGB);
-      const pct = totalGB > 0 ? Math.min(100, Math.round((usedGB / totalGB) * 100)) : 0;
-
-      document.getElementById("userTitle").textContent = "👤 " + (user.name || "");
-      document.getElementById("userComment").textContent = "💬 " + (user.comment || user.name || "");
-      document.getElementById("userSpeed").textContent = user.profile || "default";
-
-      const pie = document.getElementById("pieChart");
-      pie.style.setProperty("--pct", pct + "%");
-      document.getElementById("piePercent").textContent = pct + "%";
-
-      document.getElementById("statUsed").textContent = `الاستهلاك: ${usedGB.toFixed(2)} GB`;
-      document.getElementById("statTotal").textContent = `الباقة: ${totalGB} GB`;
-      document.getElementById("statRem").textContent = `المتبقي: ${remGB.toFixed(2)} GB`;
+    function updateAutoComment() {
+      if (commEdited) return;
+      const name = document.getElementById('uName').value.trim();
+      document.getElementById('uComm').value = name ? `${name} To ${getExpiryDate()}` : '';
     }
 
-    // جلب البيانات من GitHub تلقائياً عند فتح الواجهة
-    async function loadUsers() {
-      try {
-        const res = await fetch(DATA_URL + "?t=" + Date.now());
-        if (!res.ok) return;
-        const data = await res.json();
-        allUsers = Array.isArray(data) ? data : (data.users || []);
-        if (allUsers.length > 0) {
-          document.getElementById("totalUsersBadge").textContent = `${allUsers.length} مشترك`;
-          renderUser(allUsers[0]);
-        }
-      } catch (e) {
-        console.log("Using default preview data");
+    function selectProf(val, el) {
+      selectedProf = val;
+      el.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function selectGb(val, el) {
+      selectedGb = val;
+      el.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function submitUser() {
+      const u = document.getElementById('uName').value.trim();
+      const p = document.getElementById('uPass').value.trim();
+      const c = document.getElementById('uComm').value.trim() || `${u} To ${getExpiryDate()}`;
+      if (!u || !p) {
+        alert('برجاء إدخال اسم المستخدم وكلمة المرور');
+        return;
+      }
+      const payload = `/add_user|${u}|${p}|${selectedProf}|${selectedGb}|${c}`;
+      if (tg) {
+        tg.sendData(payload);
+      } else {
+        alert(payload);
       }
     }
-
-    // البحث الفوري بالاسم
-    document.getElementById("searchInput").addEventListener("input", function (e) {
-      const q = e.target.value.trim().toLowerCase();
-      if (!q || allUsers.length === 0) return;
-      const found = allUsers.find(u =>
-        (u.name && u.name.toLowerCase().includes(q)) ||
-        (u.comment && u.comment.toLowerCase().includes(q))
-      );
-      if (found) renderUser(found);
-    });
-
-    function triggerRenew() {
-      const name = document.getElementById("searchInput").value;
-      if (tg) tg.sendData(JSON.stringify({ action: "renew", user: name }));
-    }
-
-    function showActiveUsers() {
-      if (tg) tg.sendData(JSON.stringify({ action: "active_list" }));
-    }
-
-    function closeWebApp() {
-      if (tg) tg.close();
-    }
-
-    loadUsers();
   </script>
 </body>
 </html>
