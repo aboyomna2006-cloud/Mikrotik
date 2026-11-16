@@ -268,7 +268,7 @@
         <span>تصفير عداد الـ 750 GB وبدء باقة جديدة</span>
       </label>
       <div class="modal-btns">
-        <button type="button" class="btn-save-cycle" onclick="saveCycleSettings()">✅ حفظ وبدء الحساب</button>
+        <button type="button" class="btn-save-cycle" id="btnSaveCycle" onclick="saveCycleSettings()">✅ حفظ وبدء الحساب</button>
         <button type="button" class="btn-cancel-cycle" onclick="closeCycleModal()">إلغاء</button>
       </div>
     </div>
@@ -280,12 +280,10 @@
 
     const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
     let syncTimer = null;
+    let lastStatusObj = null;
 
     function stopLiveSync() {
-      if (syncTimer) {
-        clearInterval(syncTimer);
-        syncTimer = null;
-      }
+      if (syncTimer) { clearInterval(syncTimer); syncTimer = null; }
     }
 
     function startLiveSync() {
@@ -296,19 +294,11 @@
       }
     }
 
-    function go(page) {
-      stopLiveSync();
-      window.location.href = page;
-    }
-
-    function exitDash() {
-      stopLiveSync();
-      if (tg) tg.close();
-    }
+    function go(page) { stopLiveSync(); window.location.href = page; }
+    function exitDash() { stopLiveSync(); if (tg) tg.close(); }
 
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) stopLiveSync();
-      else startLiveSync();
+      if (document.hidden) stopLiveSync(); else startLiveSync();
     });
     window.addEventListener('pagehide', stopLiveSync);
 
@@ -331,15 +321,49 @@
     }
     function closeCycleModal() { document.getElementById('cycleModal').classList.remove('open'); }
 
-    function saveCycleSettings() {
+    async function updateGitHubFileDirect(fileName, contentStr) {
+      const apiUrl = `https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/${fileName}`;
+      const headers = {
+        'Authorization': `Bearer ${GH_TK}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      };
+      let sha = "";
+      try {
+        const gRes = await fetch(`${apiUrl}?_=${Date.now()}`, { headers, cache: 'no-store' });
+        if (gRes.ok) { const gJson = await gRes.json(); sha = gJson.sha || ""; }
+      } catch (e) {}
+      const b64 = btoa(unescape(encodeURIComponent(contentStr)));
+      const body = sha
+        ? JSON.stringify({ message: `Update ${fileName}`, content: b64, sha })
+        : JSON.stringify({ message: `Create ${fileName}`, content: b64 });
+      await fetch(apiUrl, { method: 'PUT', headers, body });
+    }
+
+    async function saveCycleSettings() {
       const chosen = document.getElementById('cycleStartInput').value || getTodayCairoISO();
       const doReset = document.getElementById('resetCycleCheck').checked ? '1' : '0';
+      const btn = document.getElementById('btnSaveCycle');
+      btn.innerText = "⏳ جاري الحفظ...";
+      btn.disabled = true;
+
       cycleStartDate = chosen;
       localStorage.setItem('abo_yomna_cycle_start', chosen);
       updateCycle30DaysUI(chosen);
+
+      try {
+        if (lastStatusObj) {
+          lastStatusObj.cycle_start = chosen;
+          if (doReset === '1') lastStatusObj.cycle_mb = lastStatusObj.day_mb || 0;
+          await updateGitHubFileDirect('status.json', JSON.stringify(lastStatusObj));
+        }
+      } catch (e) {}
+
+      btn.innerText = "✅ حفظ وبدء الحساب";
+      btn.disabled = false;
       closeCycleModal();
-      stopLiveSync();
-      if (tg) tg.sendData(`/set_cycle|${chosen}|${doReset}`);
+      loadLiveStats();
+      if (tg) tg.sendData(`set_cycle|${chosen}|${doReset}`);
     }
 
     function updateCycle30DaysUI(isoStart) {
@@ -361,10 +385,7 @@
       const url = `https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/${fileName}?ref=main&_=${Date.now()}`;
       const res = await fetch(url, {
         cache: 'no-store',
-        headers: {
-          'Authorization': `Bearer ${GH_TK}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
+        headers: { 'Authorization': `Bearer ${GH_TK}`, 'Accept': 'application/vnd.github.v3+json' }
       });
       if (!res.ok) return null;
       const meta = await res.json();
@@ -428,19 +449,16 @@
           fetchGitHubJsonNoCache('status.json')
         ]);
 
-        if (Array.isArray(users)) {
-          document.getElementById('totalUsers').innerText = users.length;
-        }
+        if (Array.isArray(users)) document.getElementById('totalUsers').innerText = users.length;
 
         if (st) {
+          lastStatusObj = st;
           const pill = document.getElementById('serverStatusPill');
           const statusTxt = document.getElementById('serverStatusText');
           const clockBox = document.getElementById('clockBox');
           const uptimeBox = document.getElementById('uptimeBox');
 
-          if (st.ver) {
-            document.getElementById('rosVerVal').innerText = st.ver;
-          }
+          if (st.ver) document.getElementById('rosVerVal').innerText = st.ver;
 
           if (st.cycle_start && st.cycle_start.length >= 8) {
             cycleStartDate = st.cycle_start.replace(/\//g, '-');
@@ -481,9 +499,7 @@
               uptimeTotalSeconds = baseUp;
               renderUptime();
             }
-            if (Array.isArray(active)) {
-              document.getElementById('activeUsers').innerText = active.length;
-            }
+            if (Array.isArray(active)) document.getElementById('activeUsers').innerText = active.length;
           } else {
             isServerOnline = false;
             pill.classList.add('offline');
