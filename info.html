@@ -96,7 +96,7 @@
     .ic-prof { font-size: 12px; font-weight: 800; color: var(--accent-cyan); background: rgba(0, 229, 255, 0.12); padding: 2px 8px; border-radius: 6px; direction: ltr; white-space: nowrap; }
     .ic-comm { font-size: 12px; color: var(--text-sub); direction: ltr; padding-bottom: 8px; border-bottom: 1px dashed rgba(38, 56, 82, 0.7); }
 
-    /* الدائرة الكبيرة المصمتة مكان الشريط */
+    /* الدائرة الكبيرة المصمتة مكان الشريط - معكوسة الألوان: المسحوب أحمر نيون والمتبقي أخضر نيون */
     .pie-container {
       display: flex;
       flex-direction: column;
@@ -111,15 +111,15 @@
       border-radius: 50%;
       background: conic-gradient(
         from 0deg,
-        #00ff88 0%,
-        #00c853 var(--pct, 0%),
-        #ff3b5c var(--pct, 0%),
-        #b81430 100%
+        #ff1744 0%,
+        #ff4d6d var(--pct, 0%),
+        #00ff88 var(--pct, 0%),
+        #00c853 100%
       );
       box-shadow:
-        0 0 26px rgba(255, 59, 92, 0.35),
-        0 0 18px rgba(0, 230, 118, 0.28),
-        inset 0 3px 10px rgba(255, 255, 255, 0.3),
+        0 0 28px rgba(255, 23, 68, 0.48),
+        0 0 24px rgba(0, 255, 136, 0.38),
+        inset 0 3px 10px rgba(255, 255, 255, 0.35),
         inset 0 -6px 14px rgba(0, 0, 0, 0.5);
       display: flex;
       align-items: center;
@@ -131,7 +131,7 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.24), transparent 60%);
+      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%);
       pointer-events: none;
     }
     .pie-label {
@@ -140,7 +140,7 @@
       font-size: 32px;
       font-weight: 900;
       color: #ffffff;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85), 0 0 14px rgba(255, 255, 255, 0.45);
       letter-spacing: -0.5px;
     }
 
@@ -155,9 +155,9 @@
       border-radius: 9px;
       border: 1px solid rgba(38, 56, 82, 0.5);
     }
-    .st-used { color: var(--accent-green); }
+    .st-used { color: var(--accent-red); text-shadow: 0 0 10px rgba(255, 61, 113, 0.45); }
     .st-total { color: var(--text-main); }
-    .st-rem { color: var(--accent-red); }
+    .st-rem { color: var(--accent-green); text-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
 
     .ic-actions { display: flex; justify-content: center; margin-top: 2px; }
     .btn-renew-mini {
