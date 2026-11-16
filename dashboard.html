@@ -11,7 +11,6 @@
   <style>
     :root {
       --bg: #070d14;
-      --card-bg: #0d1622;
       --glass-bg: rgba(16, 26, 40, 0.88);
       --border: #1e3148;
       --cyan: #00e5ff;
@@ -23,37 +22,35 @@
       --text-sub: #8fa6c2;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Cairo', system-ui, -apple-system, sans-serif;
-      -webkit-tap-highlight-color: transparent;
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100dvh;
+      overflow: hidden;
+      background: radial-gradient(circle at top, #132840 0%, var(--bg) 78%);
+      color: var(--text-main);
     }
 
     body {
-      background: radial-gradient(circle at top, #132840 0%, var(--bg) 75%);
-      color: var(--text-main);
-      min-height: 100dvh;
-      padding: 4px 8px 8px;
+      padding: 4px 8px;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      overflow-x: hidden;
+      align-items: stretch;
     }
 
     .hub-container {
       width: 100%;
       max-width: 450px;
+      height: 100%;
       background: linear-gradient(180deg, #111e2f 0%, #0b131e 100%);
       border: 1.5px solid var(--border);
       border-radius: 20px;
-      padding: 6px 11px 9px;
-      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.85);
+      padding: 5px 10px 7px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      position: relative;
+      justify-content: space-between;
+      gap: 4px;
     }
 
     .hero-header {
@@ -61,129 +58,91 @@
       align-items: center;
       justify-content: space-between;
       gap: 4px;
-      margin-top: -2px;
+      flex-shrink: 0;
     }
 
-    .embossed-title-wrap {
-      flex: 1;
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
+    .embossed-title-wrap { flex: 1; text-align: right; }
 
     .title-line-1 {
-      font-size: 21px;
+      font-size: 23px;
       font-weight: 900;
-      line-height: 1.1;
+      line-height: 1.08;
       background: linear-gradient(180deg, #ffffff 15%, #b8e8f8 55%, #4fa3c7 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 1px rgba(10, 22, 36, 0.98))
-              drop-shadow(0 4px 6px rgba(0, 0, 0, 0.92))
-              drop-shadow(0 0 14px rgba(0, 229, 255, 0.42));
+      filter: drop-shadow(0 2px 1px rgba(10, 22, 36, 0.98)) drop-shadow(0 0 14px rgba(0, 229, 255, 0.42));
     }
 
     .title-line-2 {
-      font-size: 33px;
+      font-size: 36px;
       font-weight: 900;
-      line-height: 1.08;
+      line-height: 1.04;
       background: linear-gradient(180deg, #ffffff 10%, #ccf5ff 48%, #54c5d0 78%, #267d8e 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 0 #173c4d)
-              drop-shadow(0 4px 1px #0c212c)
-              drop-shadow(0 8px 14px rgba(0, 0, 0, 0.96))
-              drop-shadow(0 0 22px rgba(0, 229, 255, 0.55));
+      filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 22px rgba(0, 229, 255, 0.55));
     }
 
     .router-visual {
-      width: 124px;
-      height: 108px;
+      width: 132px;
+      height: 112px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      position: relative;
-      z-index: 20;
-      touch-action: none;
       cursor: zoom-in;
-      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.95))
-              drop-shadow(0 0 14px rgba(0, 229, 255, 0.28));
+      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 14px rgba(0, 229, 255, 0.3));
     }
-
-    .router-visual.zooming { z-index: 9999; }
-
-    .router-visual img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 10px;
-      transform-origin: center center;
-      will-change: transform;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
+    .router-visual img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
 
     .gauges-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      background: rgba(10, 17, 27, 0.82);
+      gap: 7px;
+      background: rgba(10, 17, 27, 0.84);
       border: 1px solid rgba(34, 55, 82, 0.95);
-      border-radius: 16px;
-      padding: 8px 8px 7px;
-      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 6px 7px 5px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7);
+      flex-shrink: 0;
     }
 
     .gauge-card {
       background: linear-gradient(180deg, #132133 0%, #0b131e 100%);
       border: 1px solid rgba(76, 114, 153, 0.32);
-      border-radius: 14px;
-      padding: 6px 6px 7px;
+      border-radius: 12px;
+      padding: 5px 5px 4px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      position: relative;
+      justify-content: space-between;
+      gap: 3px;
     }
 
     .gauge-head {
+      height: 18px;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-    }
-
-    .gauge-title {
       font-size: 11px;
       font-weight: 900;
       color: var(--cyan);
-      text-align: center;
-      line-height: 1.2;
     }
 
-    .btn-renew-day {
-      background: rgba(255, 171, 0, 0.16);
-      border: 1px solid rgba(255, 171, 0, 0.55);
-      color: var(--amber);
-      border-radius: 7px;
-      padding: 1px 6px;
-      font-size: 10.5px;
-      font-weight: 900;
-      cursor: pointer;
-      display: inline-flex;
+    .disc-stage {
+      position: relative;
+      width: 100%;
+      height: 82px;
+      display: flex;
       align-items: center;
-      gap: 3px;
-      box-shadow: 0 0 10px rgba(255, 171, 0, 0.25);
+      justify-content: center;
     }
-    .btn-renew-day:active { transform: scale(0.93); }
 
     .neon-disc {
       position: relative;
-      width: 104px;
-      height: 104px;
+      width: 82px;
+      height: 82px;
       border-radius: 50%;
       background: conic-gradient(
         from 0deg,
@@ -192,15 +151,12 @@
         #00ff88 var(--pct, 0%),
         #00c853 100%
       );
-      box-shadow:
-        0 0 20px rgba(255, 23, 68, 0.42),
-        0 0 18px rgba(0, 255, 136, 0.35),
-        inset 0 2px 8px rgba(255, 255, 255, 0.35),
-        inset 0 -5px 10px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 0 16px rgba(255, 23, 68, 0.38), 0 0 14px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
 
     .neon-disc::after {
@@ -208,52 +164,76 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%);
+      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.26), transparent 60%);
       pointer-events: none;
     }
 
     .disc-main-val {
       position: relative;
       z-index: 2;
-      font-size: 19px;
+      font-size: 15.5px;
       font-weight: 900;
-      color: #ffffff;
-      line-height: 1.1;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.92), 0 0 10px rgba(255, 255, 255, 0.4);
+      color: #fff;
+      line-height: 1.05;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
       direction: ltr;
     }
 
     .disc-sub-val {
       position: relative;
       z-index: 2;
-      font-size: 10.5px;
+      font-size: 9.5px;
       font-weight: 900;
       color: #e8f8ff;
-      background: rgba(7, 13, 20, 0.62);
-      padding: 1px 7px;
-      border-radius: 8px;
+      background: rgba(7, 13, 20, 0.68);
+      padding: 0 5px;
+      border-radius: 7px;
       margin-top: 2px;
       direction: ltr;
     }
 
+    .btn-renew-side {
+      position: absolute;
+      left: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: linear-gradient(180deg, rgba(255, 171, 0, 0.25), rgba(255, 140, 0, 0.14));
+      border: 1px solid rgba(255, 171, 0, 0.65);
+      color: var(--amber);
+      border-radius: 8px;
+      padding: 3px 5px;
+      font-size: 9.5px;
+      font-weight: 900;
+      line-height: 1.15;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 0 10px rgba(255, 171, 0, 0.25);
+    }
+    .btn-renew-side:active { transform: translateY(-50%) scale(0.93); }
+
     .gauge-foot {
-      font-size: 10.5px;
+      height: 16px;
+      font-size: 10px;
       font-weight: 800;
       color: var(--text-sub);
-      text-align: center;
-      line-height: 1.25;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
     }
     .gauge-foot b { color: #fff; }
 
     .telemetry-panel {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
       background: rgba(10, 17, 27, 0.78);
       border: 1px solid rgba(34, 55, 82, 0.9);
-      border-radius: 14px;
-      padding: 6px 8px 5px;
-      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.65);
+      border-radius: 12px;
+      padding: 4px 7px;
+      flex-shrink: 0;
     }
 
     .status-center-wrap { display: flex; justify-content: center; }
@@ -261,155 +241,105 @@
     .status-pill {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      background: linear-gradient(180deg, rgba(0, 230, 118, 0.22), rgba(0, 180, 90, 0.12));
-      border: 1.5px solid rgba(0, 230, 118, 0.5);
+      gap: 5px;
+      background: rgba(0, 230, 118, 0.16);
+      border: 1px solid rgba(0, 230, 118, 0.5);
       color: #5cffaa;
-      padding: 2px 14px;
-      border-radius: 20px;
-      font-size: 11.5px;
+      padding: 1px 12px;
+      border-radius: 16px;
+      font-size: 10.5px;
       font-weight: 900;
-      box-shadow: 0 0 18px rgba(0, 230, 118, 0.28);
     }
+    .status-pill.offline { background: rgba(255, 23, 68, 0.2); border-color: rgba(255, 61, 113, 0.65); color: #ff6b8b; }
 
-    .status-pill.offline {
-      background: linear-gradient(180deg, rgba(255, 23, 68, 0.26), rgba(180, 15, 45, 0.14));
-      border: 1.5px solid rgba(255, 61, 113, 0.65);
-      color: #ff6b8b;
-      box-shadow: 0 0 20px rgba(255, 23, 68, 0.4);
-    }
+    .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #00ff88; animation: pulse 1.5s infinite; }
+    .status-pill.offline .pulse-dot { background: #ff1744; animation: none; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    .pulse-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #00ff88;
-      box-shadow: 0 0 10px #00ff88;
-      animation: pulse 1.5s infinite;
-    }
-
-    .status-pill.offline .pulse-dot {
-      background: #ff1744;
-      box-shadow: 0 0 10px #ff1744;
-      animation: none;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(0.95); opacity: 1; }
-      50% { transform: scale(1.35); opacity: 0.55; }
-      100% { transform: scale(0.95); opacity: 1; }
-    }
-
-    .dual-embossed-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 7px;
-    }
+    .dual-embossed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 
     .embossed-box {
       background: linear-gradient(180deg, #162436 0%, #0b131e 100%);
       border: 1px solid rgba(76, 114, 153, 0.35);
-      border-radius: 10px;
-      padding: 3px 6px;
+      border-radius: 8px;
+      padding: 2px 5px;
       text-align: center;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 3px 8px rgba(0, 0, 0, 0.75);
       direction: ltr;
     }
-
-    .embossed-box .e-lbl {
-      display: block;
-      font-size: 9px;
-      font-weight: 800;
-      color: #7d9ec0;
-      line-height: 1.15;
-    }
-
-    .embossed-box .e-val {
-      display: block;
-      font-size: 13.5px;
-      font-weight: 900;
-      color: #e4f3ff;
-      line-height: 1.2;
-      text-shadow: 0 1px 0 #5a7d99, 0 3px 6px rgba(0, 0, 0, 0.9);
-    }
-
+    .embossed-box .e-lbl { display: block; font-size: 8.5px; font-weight: 800; color: #7d9ec0; line-height: 1.1; }
+    .embossed-box .e-val { display: block; font-size: 12px; font-weight: 900; color: #e4f3ff; line-height: 1.15; }
     .embossed-box.frozen .e-val { color: #ff8fa3; }
 
     .quick-stats {
-      width: 100%;
       display: flex;
       justify-content: space-around;
-      font-size: 11.5px;
+      font-size: 10.5px;
       font-weight: 800;
       color: var(--text-sub);
-      padding-top: 3px;
+      padding-top: 2px;
       border-top: 1px dashed rgba(255, 255, 255, 0.08);
     }
-
-    .quick-stats span b { color: var(--green); font-size: 13px; }
+    .quick-stats span b { color: var(--green); font-size: 12px; }
 
     .cards-stack {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      justify-content: space-between;
+      gap: 4px;
+      flex: 1;
     }
 
     .action-card {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 12px;
-      border-radius: 13px;
+      padding: 3px 11px;
+      border-radius: 11px;
       background: var(--glass-bg);
       cursor: pointer;
-      transition: transform 0.18s ease;
     }
-
     .action-card:active { transform: scale(0.98); }
 
     .card-info { display: flex; flex-direction: column; text-align: right; }
-    .card-title { font-size: 14.5px; font-weight: 900; color: #ffffff; line-height: 1.2; }
-    .card-desc { font-size: 10.5px; color: var(--text-sub); font-weight: 700; line-height: 1.2; }
+    .card-title { font-size: 13.5px; font-weight: 900; color: #fff; line-height: 1.15; }
+    .card-desc { font-size: 9.5px; color: var(--text-sub); font-weight: 700; line-height: 1.15; }
 
     .card-icon-box {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 900;
       flex-shrink: 0;
     }
 
-    .card-add { border: 1.5px solid rgba(0, 229, 255, 0.45); box-shadow: 0 3px 12px rgba(0, 229, 255, 0.12); }
+    .card-add { border: 1.5px solid rgba(0, 229, 255, 0.45); }
     .card-add .card-icon-box { background: rgba(0, 229, 255, 0.14); border: 1px solid rgba(0, 229, 255, 0.4); color: var(--cyan); }
 
-    .card-info-btn { border: 1.5px solid rgba(0, 230, 118, 0.45); box-shadow: 0 3px 12px rgba(0, 230, 118, 0.12); }
+    .card-info-btn { border: 1.5px solid rgba(0, 230, 118, 0.45); }
     .card-info-btn .card-icon-box { background: rgba(0, 230, 118, 0.14); border: 1px solid rgba(0, 230, 118, 0.4); color: var(--green); }
 
-    .card-renew { border: 1.5px solid rgba(255, 171, 0, 0.45); box-shadow: 0 3px 12px rgba(255, 171, 0, 0.12); }
+    .card-renew { border: 1.5px solid rgba(255, 171, 0, 0.45); }
     .card-renew .card-icon-box { background: rgba(255, 171, 0, 0.14); border: 1px solid rgba(255, 171, 0, 0.4); color: var(--amber); }
 
-    .card-active { border: 1.5px solid rgba(29, 233, 182, 0.45); box-shadow: 0 3px 12px rgba(29, 233, 182, 0.12); }
+    .card-active { border: 1.5px solid rgba(29, 233, 182, 0.45); }
     .card-active .card-icon-box { background: rgba(29, 233, 182, 0.14); border: 1px solid rgba(29, 233, 182, 0.4); color: var(--lime); }
 
     .btn-exit {
       width: 100%;
-      padding: 7px;
+      padding: 5px;
       background: rgba(255, 61, 113, 0.14);
       border: 1.5px solid rgba(255, 61, 113, 0.55);
       color: var(--red);
-      border-radius: 12px;
-      font-size: 13.5px;
+      border-radius: 10px;
+      font-size: 12.5px;
       font-weight: 900;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      flex-shrink: 0;
     }
 
     .modal-overlay {
@@ -427,29 +357,29 @@
 
     .modal-box {
       width: 100%;
-      max-width: 360px;
+      max-width: 350px;
       background: linear-gradient(180deg, #132236 0%, #0a121d 100%);
       border: 1.5px solid rgba(0, 229, 255, 0.5);
-      border-radius: 20px;
-      padding: 16px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
+      border-radius: 18px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
-    .modal-title { font-size: 16px; font-weight: 900; color: var(--cyan); text-align: center; }
-    .modal-desc { font-size: 12px; color: var(--text-sub); text-align: center; font-weight: 700; }
+    .modal-title { font-size: 15px; font-weight: 900; color: var(--cyan); text-align: center; }
+    .modal-desc { font-size: 11.5px; color: var(--text-sub); text-align: center; font-weight: 700; }
 
-    .day-select {
+    .date-input {
       width: 100%;
       background: #0b131e;
       border: 1.5px solid var(--border);
       color: #fff;
-      padding: 10px 12px;
-      border-radius: 11px;
-      font-size: 14px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 15px;
       font-weight: 800;
-      outline: none;
+      text-align: center;
+      color-scheme: dark;
     }
 
     .check-row {
@@ -458,69 +388,18 @@
       gap: 8px;
       background: rgba(255, 171, 0, 0.1);
       border: 1px solid rgba(255, 171, 0, 0.35);
-      padding: 9px 11px;
+      padding: 8px 10px;
       border-radius: 10px;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 800;
       color: var(--amber);
       cursor: pointer;
     }
-    .check-row input { width: 17px; height: 17px; accent-color: var(--amber); }
+    .check-row input { width: 16px; height: 16px; accent-color: var(--amber); }
 
     .modal-btns { display: flex; gap: 8px; }
-    .btn-save-cycle {
-      flex: 1;
-      background: linear-gradient(135deg, #00e676, #00b259);
-      color: #04120a;
-      border: none;
-      padding: 10px;
-      border-radius: 11px;
-      font-size: 14px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-    .btn-cancel-cycle {
-      flex: 1;
-      background: rgba(255, 61, 113, 0.15);
-      border: 1px solid var(--red);
-      color: var(--red);
-      padding: 10px;
-      border-radius: 11px;
-      font-size: 14px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .center-zoom-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(4, 9, 15, 0.88);
-      backdrop-filter: blur(8px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.26s ease;
-      padding: 18px;
-    }
-    .center-zoom-modal.open { opacity: 1; pointer-events: auto; }
-    .center-zoom-card {
-      width: 92vw;
-      max-width: 400px;
-      background: linear-gradient(180deg, #132236 0%, #0a121d 100%);
-      border: 1.5px solid rgba(0, 229, 255, 0.55);
-      border-radius: 22px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-    .center-zoom-card img { width: 100%; max-height: 62vh; object-fit: contain; border-radius: 14px; }
-    .zoom-hint { font-size: 12px; font-weight: 800; color: var(--cyan); }
+    .btn-save-cycle { flex: 1; background: linear-gradient(135deg, #00e676, #00b259); color: #04120a; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
+    .btn-cancel-cycle { flex: 1; background: rgba(255, 61, 113, 0.15); border: 1px solid var(--red); color: var(--red); padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -539,37 +418,34 @@
 
     <div class="gauges-row">
       <div class="gauge-card">
-        <div class="gauge-head">
-          <span class="gauge-title">📊 سحب اليوم (in1)</span>
-          <button type="button" class="btn-renew-day" onclick="openCycleModal()" title="ضبط يوم التجديد">
+        <div class="gauge-head">📊 سحب اليوم (in1)</div>
+
+        <div class="disc-stage">
+          <div class="neon-disc" id="dailyDisc" style="--pct:0%;">
+            <span class="disc-main-val" id="dailyGbVal">0.0 GB</span>
+            <span class="disc-sub-val" id="dailyPctVal">0%</span>
+          </div>
+
+          <button type="button" class="btn-renew-side" onclick="openCycleModal()" title="اختيار تاريخ بداية الـ 30 يوم">
             <span>📅</span>
-            <span id="renewDayBadge">يوم 1</span>
+            <span id="startBadge">البداية</span>
           </button>
         </div>
 
-        <div class="neon-disc" id="dailyDisc" style="--pct:0%;">
-          <span class="disc-main-val" id="dailyGbVal">0.0 GB</span>
-          <span class="disc-sub-val" id="dailyPctVal">0%</span>
-        </div>
-
-        <div class="gauge-foot">
-          منذ 12:00 ص | المعدل: <b>26.8 GB</b>
-        </div>
+        <div class="gauge-foot">المعدل اليومي: <b>25.0 GB</b></div>
       </div>
 
       <div class="gauge-card">
-        <div class="gauge-head">
-          <span class="gauge-title">📦 الباقة (28 يوم / 750G)</span>
+        <div class="gauge-head">📦 الباقة (30 يوم / 750G)</div>
+
+        <div class="disc-stage">
+          <div class="neon-disc" id="cycleDisc" style="--pct:0%;">
+            <span class="disc-main-val" id="daysRemVal">30 يوم</span>
+            <span class="disc-sub-val" id="cycleGbVal">0 / 750</span>
+          </div>
         </div>
 
-        <div class="neon-disc" id="cycleDisc" style="--pct:0%;">
-          <span class="disc-main-val" id="daysRemVal">28 يوم</span>
-          <span class="disc-sub-val" id="cycleGbVal">0 / 750 GB</span>
-        </div>
-
-        <div class="gauge-foot">
-          متبقي: <b id="cycleRemGbVal">750 GB</b> (<span id="cyclePctVal">0%</span>)
-        </div>
+        <div class="gauge-foot">متبقي: <b id="cycleRemGbVal">750 GB</b> (<span id="cyclePctVal">0%</span>)</div>
       </div>
     </div>
 
@@ -586,7 +462,6 @@
           <span class="e-lbl">🕒 ساعة السيرفر</span>
           <span class="e-val" id="srvClock">--:--:--</span>
         </div>
-
         <div class="embossed-box" id="uptimeBox">
           <span class="e-lbl">⏱️ مدة التشغيل Uptime</span>
           <span class="e-val" id="srvUptime">جاري الجلب...</span>
@@ -633,34 +508,25 @@
       </div>
     </div>
 
-    <button type="button" class="btn-exit" onclick="if(tg) tg.close()">
-      <span>🚪 الخروج من اللوحة</span>
-    </button>
+    <button type="button" class="btn-exit" onclick="if(tg) tg.close()">🚪 الخروج من اللوحة</button>
   </div>
 
   <div class="modal-overlay" id="cycleModal">
     <div class="modal-box">
-      <div class="modal-title">📅 ضبط يوم تجديد الباقة (750 GB)</div>
-      <div class="modal-desc">اختر يوم التجديد الشهري لحساب الـ 28 يوم وإجمالي السحب التراكمي بدقة</div>
+      <div class="modal-title">📅 تاريخ بداية الباقة (30 يوم)</div>
+      <div class="modal-desc">اختر أي يوم بدأت فيه الباقة ليحسب منه الـ 30 يوم وإجمالي الـ 750 GB</div>
 
-      <select id="renewDaySelect" class="day-select"></select>
+      <input type="date" id="cycleStartInput" class="date-input">
 
       <label class="check-row">
-        <input type="checkbox" id="resetCycleCheck">
-        <span>تصفير عداد الـ 750 GB الآن (بدء باقة جديدة)</span>
+        <input type="checkbox" id="resetCycleCheck" checked>
+        <span>تصفير عداد الـ 750 GB وبدء باقة جديدة</span>
       </label>
 
       <div class="modal-btns">
-        <button type="button" class="btn-save-cycle" onclick="saveCycleSettings()">✅ حفظ وإرسال</button>
+        <button type="button" class="btn-save-cycle" onclick="saveCycleSettings()">✅ حفظ وبدء الحساب</button>
         <button type="button" class="btn-cancel-cycle" onclick="closeCycleModal()">إلغاء</button>
       </div>
-    </div>
-  </div>
-
-  <div class="center-zoom-modal" id="centerZoomModal" onclick="closeCenterZoom()">
-    <div class="center-zoom-card" onclick="closeCenterZoom()">
-      <img id="modalRouterImg" src="https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/router.png" alt="MikroTik hAP ax²">
-      <div class="zoom-hint">MikroTik hAP ax² — اضغط في أي مكان للإغلاق</div>
     </div>
   </div>
 
@@ -670,99 +536,70 @@
 
     function go(page) { window.location.href = page; }
 
-    const daySel = document.getElementById('renewDaySelect');
-    for (let d = 1; d <= 31; d++) {
-      const opt = document.createElement('option');
-      opt.value = d;
-      opt.textContent = `يوم ${d} من كل شهر`;
-      daySel.appendChild(opt);
+    function getTodayCairoISO() {
+      const now = new Date();
+      const cairo = new Date(now.toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
+      const y = cairo.getFullYear();
+      const m = String(cairo.getMonth() + 1).padStart(2, '0');
+      const d = String(cairo.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
     }
 
-    let currentRenewDay = parseInt(localStorage.getItem('abo_yomna_renew_day') || '1', 10);
-    daySel.value = currentRenewDay;
-    document.getElementById('renewDayBadge').innerText = `يوم ${currentRenewDay}`;
+    let cycleStartDate = localStorage.getItem('abo_yomna_cycle_start') || getTodayCairoISO();
+
+    function formatShortBadge(isoStr) {
+      const parts = String(isoStr).replace(/\//g, '-').split('-');
+      if (parts.length === 3) return `${parseInt(parts[2], 10)}/${parseInt(parts[1], 10)}`;
+      return 'البداية';
+    }
 
     function openCycleModal() {
-      daySel.value = currentRenewDay;
-      document.getElementById('resetCycleCheck').checked = false;
+      document.getElementById('cycleStartInput').value = cycleStartDate;
+      document.getElementById('resetCycleCheck').checked = true;
       document.getElementById('cycleModal').classList.add('open');
     }
-
-    function closeCycleModal() {
-      document.getElementById('cycleModal').classList.remove('open');
-    }
+    function closeCycleModal() { document.getElementById('cycleModal').classList.remove('open'); }
 
     function saveCycleSettings() {
-      const chosenDay = parseInt(daySel.value, 10);
+      const chosen = document.getElementById('cycleStartInput').value || getTodayCairoISO();
       const doReset = document.getElementById('resetCycleCheck').checked ? '1' : '0';
-      currentRenewDay = chosenDay;
-      localStorage.setItem('abo_yomna_renew_day', String(chosenDay));
-      document.getElementById('renewDayBadge').innerText = `يوم ${chosenDay}`;
+      cycleStartDate = chosen;
+      localStorage.setItem('abo_yomna_cycle_start', chosen);
+      updateCycle30DaysUI(chosen);
       closeCycleModal();
-
-      if (tg) {
-        tg.sendData(`/set_cycle|${chosenDay}|${doReset}`);
-      }
+      if (tg) tg.sendData(`/set_cycle|${chosen}|${doReset}`);
     }
 
-    function updateCycleDaysUI(renewDay) {
+    function updateCycle30DaysUI(isoStart) {
+      document.getElementById('startBadge').innerText = formatShortBadge(isoStart);
+      const parts = String(isoStart).replace(/\//g, '-').split('-');
+      if (parts.length !== 3) return;
+
+      const start = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
       const now = new Date();
       const cairoNow = new Date(now.toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
-      const curYear = cairoNow.getFullYear();
-      const curMonth = cairoNow.getMonth();
-      const curDate = cairoNow.getDate();
+      const todayMid = new Date(cairoNow.getFullYear(), cairoNow.getMonth(), cairoNow.getDate());
 
-      let startDate;
-      if (curDate >= renewDay) {
-        startDate = new Date(curYear, curMonth, renewDay);
-      } else {
-        startDate = new Date(curYear, curMonth - 1, renewDay);
-      }
-
-      const diffDays = Math.floor((cairoNow - startDate) / (1000 * 60 * 60 * 24));
-      const elapsed = Math.max(0, Math.min(28, diffDays));
-      const remaining = Math.max(0, 28 - elapsed);
-      const pctElapsed = Math.min(100, Math.round((elapsed / 28) * 100));
+      const elapsed = Math.max(0, Math.min(30, Math.floor((todayMid - start) / 86400000)));
+      const remaining = Math.max(0, 30 - elapsed);
+      const pctElapsed = Math.min(100, Math.round((elapsed / 30) * 100));
 
       document.getElementById('daysRemVal').innerText = `${remaining} يوم`;
       document.getElementById('cycleDisc').style.setProperty('--pct', `${pctElapsed}%`);
     }
-    updateCycleDaysUI(currentRenewDay);
-
-    const routerZone = document.getElementById('routerZone');
-    const routerImg = document.getElementById('routerImg');
-    const centerZoomModal = document.getElementById('centerZoomModal');
-    const modalRouterImg = document.getElementById('modalRouterImg');
-
-    function openCenterZoom() {
-      modalRouterImg.src = routerImg.currentSrc || routerImg.src;
-      centerZoomModal.classList.add('open');
-    }
-    function closeCenterZoom() { centerZoomModal.classList.remove('open'); }
-
-    routerZone.addEventListener('dblclick', (e) => { e.preventDefault(); openCenterZoom(); });
-    let lastTapTime = 0;
-    routerZone.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        const now = Date.now();
-        if (now - lastTapTime < 320) { e.preventDefault(); openCenterZoom(); lastTapTime = 0; return; }
-        lastTapTime = now;
-      }
-    }, { passive: false });
+    updateCycle30DaysUI(cycleStartDate);
 
     let uptimeTotalSeconds = null;
     let isServerOnline = false;
 
     function parseUptimeToSeconds(raw) {
       if (!raw) return null;
-      let s = String(raw).trim();
-      let weeks = 0, days = 0, hours = 0, mins = 0, secs = 0;
+      let s = String(raw).trim(), weeks = 0, days = 0, hours = 0, mins = 0, secs = 0;
       const wM = s.match(/(\d+)w/); if (wM) { weeks = parseInt(wM[1], 10); s = s.replace(wM[0], ''); }
       const dM = s.match(/(\d+)d/); if (dM) { days = parseInt(dM[1], 10); s = s.replace(dM[0], ''); }
       const cM = s.match(/(\d+):(\d+):(\d+)/);
-      if (cM) {
-        hours = parseInt(cM[1], 10); mins = parseInt(cM[2], 10); secs = parseInt(cM[3], 10);
-      } else {
+      if (cM) { hours = parseInt(cM[1], 10); mins = parseInt(cM[2], 10); secs = parseInt(cM[3], 10); }
+      else {
         const hM = s.match(/(\d+)h/); if (hM) hours = parseInt(hM[1], 10);
         const mM = s.match(/(\d+)m/); if (mM) mins = parseInt(mM[1], 10);
         const sM = s.match(/(\d+)s/); if (sM) secs = parseInt(sM[1], 10);
@@ -776,16 +613,14 @@
       const h = Math.floor((uptimeTotalSeconds % 86400) / 3600);
       const m = Math.floor((uptimeTotalSeconds % 3600) / 60);
       const s = uptimeTotalSeconds % 60;
-      const el = document.getElementById('srvUptime');
-      el.innerText = d > 0
+      document.getElementById('srvUptime').innerText = d > 0
         ? `${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m`
         : `${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
     }
 
     function renderCairoClock() {
       if (!isServerOnline) return;
-      const now = new Date();
-      document.getElementById('srvClock').innerText = now.toLocaleTimeString('en-GB', {
+      document.getElementById('srvClock').innerText = new Date().toLocaleTimeString('en-GB', {
         timeZone: 'Africa/Cairo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'
       });
     }
@@ -817,15 +652,14 @@
           const clockBox = document.getElementById('clockBox');
           const uptimeBox = document.getElementById('uptimeBox');
 
-          if (typeof st.renew_day === 'number' && st.renew_day >= 1 && st.renew_day <= 31) {
-            currentRenewDay = st.renew_day;
-            localStorage.setItem('abo_yomna_renew_day', String(currentRenewDay));
-            document.getElementById('renewDayBadge').innerText = `يوم ${currentRenewDay}`;
-            updateCycleDaysUI(currentRenewDay);
+          if (st.cycle_start && st.cycle_start.length >= 8) {
+            cycleStartDate = st.cycle_start.replace(/\//g, '-');
+            localStorage.setItem('abo_yomna_cycle_start', cycleStartDate);
+            updateCycle30DaysUI(cycleStartDate);
           }
 
           const dayGB = ((st.day_mb || 0) / 1024);
-          const dailyQuota = 750 / 28;
+          const dailyQuota = 750 / 30;
           const dailyPct = Math.min(100, Math.round((dayGB / dailyQuota) * 100));
           document.getElementById('dailyGbVal').innerText = `${dayGB.toFixed(1)} GB`;
           document.getElementById('dailyPctVal').innerText = `${dailyPct}%`;
@@ -834,14 +668,13 @@
           const cycleGB = ((st.cycle_mb || st.day_mb || 0) / 1024);
           const remCycleGB = Math.max(0, 750 - cycleGB);
           const cyclePct = Math.min(100, Math.round((cycleGB / 750) * 100));
-          document.getElementById('cycleGbVal').innerText = `${cycleGB.toFixed(0)} / 750 GB`;
+          document.getElementById('cycleGbVal').innerText = `${cycleGB.toFixed(0)} / 750`;
           document.getElementById('cycleRemGbVal').innerText = `${remCycleGB.toFixed(0)} GB`;
           document.getElementById('cyclePctVal').innerText = `${cyclePct}%`;
 
           let diffSec = 999999;
           if (st.date && st.time) {
-            const cleanDate = st.date.replace(/\//g, '-');
-            const parsed = Date.parse(`${cleanDate} ${st.time} GMT+0200`);
+            const parsed = Date.parse(`${st.date.replace(/\//g, '-')} ${st.time} GMT+0200`);
             if (!isNaN(parsed)) diffSec = Math.floor((Date.now() - parsed) / 1000);
           }
 
@@ -852,14 +685,12 @@
             uptimeBox.classList.remove('frozen');
             statusTxt.innerText = "السيرفر يعمل الآن ونشط";
             renderCairoClock();
-
             if (st.uptime) {
               let baseUp = parseUptimeToSeconds(st.uptime);
               if (diffSec > 0) baseUp += diffSec;
               uptimeTotalSeconds = baseUp;
               renderUptime();
             }
-
             if (aRes.ok) {
               const active = await aRes.json();
               document.getElementById('activeUsers').innerText = Array.isArray(active) ? active.length : 0;
@@ -871,10 +702,7 @@
             uptimeBox.classList.add('frozen');
             statusTxt.innerText = "السيرفر مفصول حالياً (انقطاع كهرباء)";
             document.getElementById('srvClock').innerText = st.time || "--:--:--";
-            if (st.uptime) {
-              uptimeTotalSeconds = parseUptimeToSeconds(st.uptime);
-              renderUptime();
-            }
+            if (st.uptime) { uptimeTotalSeconds = parseUptimeToSeconds(st.uptime); renderUptime(); }
             document.getElementById('activeUsers').innerText = "0";
           }
         }
@@ -882,7 +710,7 @@
     }
 
     loadLiveStats();
-    setInterval(loadLiveStats, 30000);
+    setInterval(loadLiveStats, 20000);
   </script>
 </body>
 </html>
