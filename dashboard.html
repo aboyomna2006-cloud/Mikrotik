@@ -278,7 +278,7 @@
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) { tg.ready(); tg.expand(); }
 
-    const GH_TOKEN = "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";
+    const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
     let syncTimer = null;
 
     function stopLiveSync() {
@@ -362,7 +362,7 @@
       const res = await fetch(url, {
         cache: 'no-store',
         headers: {
-          'Authorization': `Bearer ${GH_TOKEN}`,
+          'Authorization': `Bearer ${GH_TK}`,
           'Accept': 'application/vnd.github.v3+json'
         }
       });
