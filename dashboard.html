@@ -239,7 +239,7 @@
       </div>
     </div>
 
-    <button type="button" class="btn-exit" onclick="if(tg) tg.close()">🚪 الخروج من اللوحة</button>
+    <button type="button" class="btn-exit" onclick="exitDash()">🚪 الخروج من اللوحة</button>
   </div>
 
   <div class="modal-overlay" id="cycleModal">
@@ -261,7 +261,40 @@
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) { tg.ready(); tg.expand(); }
-    function go(page) { window.location.href = page; }
+
+    const GH_TOKEN = "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";
+    let syncTimer = null;
+
+    function stopLiveSync() {
+      if (syncTimer) {
+        clearInterval(syncTimer);
+        syncTimer = null;
+      }
+    }
+
+    function startLiveSync() {
+      stopLiveSync();
+      if (!document.hidden) {
+        loadLiveStats();
+        syncTimer = setInterval(loadLiveStats, 3000);
+      }
+    }
+
+    function go(page) {
+      stopLiveSync();
+      window.location.href = page;
+    }
+
+    function exitDash() {
+      stopLiveSync();
+      if (tg) tg.close();
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopLiveSync();
+      else startLiveSync();
+    });
+    window.addEventListener('pagehide', stopLiveSync);
 
     function getTodayCairoISO() {
       const cairo = new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
@@ -289,6 +322,7 @@
       localStorage.setItem('abo_yomna_cycle_start', chosen);
       updateCycle30DaysUI(chosen);
       closeCycleModal();
+      stopLiveSync();
       if (tg) tg.sendData(`/set_cycle|${chosen}|${doReset}`);
     }
 
@@ -307,12 +341,14 @@
     }
     updateCycle30DaysUI(cycleStartDate);
 
-    // جلب JSON مباشرة من GitHub API بدون أي Cache نهائياً
     async function fetchGitHubJsonNoCache(fileName) {
       const url = `https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/${fileName}?ref=main&_=${Date.now()}`;
       const res = await fetch(url, {
         cache: 'no-store',
-        headers: { 'Accept': 'application/vnd.github.v3+json' }
+        headers: {
+          'Authorization': `Bearer ${GH_TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
       });
       if (!res.ok) return null;
       const meta = await res.json();
@@ -359,7 +395,7 @@
     }
 
     setInterval(() => {
-      if (isServerOnline) {
+      if (!document.hidden && isServerOnline) {
         renderCairoClock();
         if (uptimeTotalSeconds !== null) { uptimeTotalSeconds += 1; renderUptime(); }
       }
@@ -367,7 +403,7 @@
 
     let isFetching = false;
     async function loadLiveStats() {
-      if (isFetching) return;
+      if (document.hidden || isFetching) return;
       isFetching = true;
       try {
         const [users, active, st] = await Promise.all([
@@ -443,8 +479,7 @@
       isFetching = false;
     }
 
-    loadLiveStats();
-    setInterval(loadLiveStats, 3000);
+    startLiveSync();
   </script>
 </body>
 </html>
