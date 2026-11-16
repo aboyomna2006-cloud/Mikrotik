@@ -39,6 +39,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow-x: hidden;
     }
 
     .hub-container {
@@ -52,6 +53,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      position: relative;
     }
 
     /* الهيدر العلوي */
@@ -60,7 +62,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding: 0 2px 2px;
+      padding: 0 2px;
     }
 
     .embossed-title-wrap {
@@ -71,7 +73,6 @@
       justify-content: center;
     }
 
-    /* خط مكتمل لامع 3D بتدرج معدني وتوهج نيون */
     .title-line-1 {
       font-size: 25px;
       font-weight: 900;
@@ -98,41 +99,34 @@
               drop-shadow(0 0 22px rgba(0, 229, 255, 0.55));
     }
 
-    /* وحدة راوتر hAP ax² */
-    .router-unit {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      flex-shrink: 0;
-    }
-
-    .router-badge {
-      background: linear-gradient(180deg, rgba(0, 229, 255, 0.22), rgba(0, 229, 255, 0.08));
-      color: var(--cyan);
-      border: 1.5px solid rgba(0, 229, 255, 0.55);
-      padding: 1px 12px;
-      border-radius: 11px;
-      font-size: 12px;
-      font-weight: 900;
-      direction: ltr;
-      box-shadow: 0 0 16px rgba(0, 229, 255, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    }
-
+    /* صورة الراوتر الكبيرة بدون شارة علوية مع دعم التكبير بإصبعين */
     .router-visual {
-      width: 82px;
-      height: 82px;
+      width: 118px;
+      height: 114px;
       display: flex;
       align-items: center;
       justify-content: center;
-      filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.95))
-              drop-shadow(0 0 14px rgba(0, 229, 255, 0.24));
+      flex-shrink: 0;
+      position: relative;
+      z-index: 20;
+      touch-action: none;
+      filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.95))
+              drop-shadow(0 0 14px rgba(0, 229, 255, 0.25));
+    }
+
+    .router-visual.zooming {
+      z-index: 9999;
     }
 
     .router-visual img {
-      max-width: 100%;
-      max-height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
+      border-radius: 10px;
+      transform-origin: center center;
+      will-change: transform;
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
     /* شريط الحالة + الساعة يمين + الابتايم شمال */
@@ -237,7 +231,7 @@
       font-size: 13.5px;
     }
 
-    /* الكروت العريضة بارتفاع مدمج ومريح للعين */
+    /* الكروت العريضة بارتفاع مدمج */
     .cards-stack {
       display: flex;
       flex-direction: column;
@@ -361,11 +355,9 @@
         <div class="title-line-2">أبو يمنى</div>
       </div>
 
-      <div class="router-unit">
-        <div class="router-badge">hAP ax²</div>
-        <div class="router-visual">
-          <img src="https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/router.png" alt="hAP ax²" onerror="this.src='https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/images%20(4).jpeg'">
-        </div>
+      <!-- صورة الراوتر الكبيرة مع دعم Pinch-to-Zoom -->
+      <div class="router-visual" id="routerZone">
+        <img id="routerImg" src="https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/router.png" alt="hAP ax²" onerror="this.src='https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/images%20(4).jpeg'">
       </div>
     </div>
 
@@ -450,6 +442,63 @@
       window.location.href = page;
     }
 
+    // ==========================================
+    // Pinch-to-Zoom مع الارتداد المرن عند رفع الإصبع
+    // ==========================================
+    const routerZone = document.getElementById('routerZone');
+    const routerImg = document.getElementById('routerImg');
+    let initDist = 0;
+    let initMidX = 0;
+    let initMidY = 0;
+    let isPinching = false;
+
+    function getTouchDist(t1, t2) {
+      return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+    }
+
+    routerZone.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        isPinching = true;
+        routerZone.classList.add('zooming');
+        routerImg.style.transition = 'none';
+        initDist = getTouchDist(e.touches[0], e.touches[1]);
+        initMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        initMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      }
+    }, { passive: false });
+
+    routerZone.addEventListener('touchmove', (e) => {
+      if (isPinching && e.touches.length === 2) {
+        e.preventDefault();
+        const curDist = getTouchDist(e.touches[0], e.touches[1]);
+        const curMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const curMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
+        const scale = Math.max(1, Math.min(3.8, curDist / initDist));
+        const dx = curMidX - initMidX;
+        const dy = curMidY - initMidY;
+
+        routerImg.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+      }
+    }, { passive: false });
+
+    function resetPinchZoom() {
+      if (!isPinching) return;
+      isPinching = false;
+      routerImg.style.transition = 'transform 0.32s cubic-bezier(0.22, 1, 0.36, 1)';
+      routerImg.style.transform = 'translate(0px, 0px) scale(1)';
+      setTimeout(() => {
+        routerZone.classList.remove('zooming');
+      }, 330);
+    }
+
+    routerZone.addEventListener('touchend', resetPinchZoom);
+    routerZone.addEventListener('touchcancel', resetPinchZoom);
+
+    // ==========================================
+    // الساعة والابتايم والإحصائيات الحية
+    // ==========================================
     let uptimeTotalSeconds = null;
 
     function parseUptimeToSeconds(raw) {
