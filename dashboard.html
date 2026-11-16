@@ -54,7 +54,7 @@
       gap: 11px;
     }
 
-    /* الهيدر العلوي الضخم والمجسم */
+    /* الهيدر العلوي */
     .hero-header {
       display: flex;
       align-items: center;
@@ -71,37 +71,36 @@
       justify-content: center;
     }
 
+    /* نفس لون الخلفية بالظبط مع بروز 3D وإضاءة نيون سماوي على الحواف */
     .title-line-1 {
       font-size: 27px;
       font-weight: 900;
-      line-height: 1.15;
-      color: #d6ebf7;
+      line-height: 1.18;
+      color: #132236;
+      -webkit-text-stroke: 1px rgba(0, 229, 255, 0.55);
       text-shadow:
-        0 1px 0 #7fa1b8,
-        0 2px 0 #5b7b91,
-        0 3px 0 #3c5669,
-        0 4px 0 #233645,
-        0 7px 14px rgba(0, 0, 0, 0.95),
-        0 0 18px rgba(0, 229, 255, 0.22);
+        0 -1px 1px rgba(0, 229, 255, 0.45),
+        0 2px 3px rgba(0, 0, 0, 0.95),
+        0 5px 10px rgba(0, 0, 0, 0.9),
+        0 0 18px rgba(0, 229, 255, 0.35);
     }
 
     .title-line-2 {
-      font-size: 40px;
+      font-size: 42px;
       font-weight: 900;
-      line-height: 1.12;
+      line-height: 1.15;
       margin-top: 2px;
-      color: #eef8ff;
+      color: #132236;
+      -webkit-text-stroke: 1.2px rgba(0, 229, 255, 0.75);
       text-shadow:
-        0 1px 0 #8fb5cc,
-        0 2px 0 #688da6,
-        0 3px 0 #476880,
-        0 4px 0 #2d4659,
-        0 5px 0 #192a38,
-        0 10px 18px rgba(0, 0, 0, 0.98),
-        0 0 24px rgba(0, 230, 118, 0.25);
+        0 -1px 2px rgba(120, 240, 255, 0.65),
+        0 2px 2px #080f18,
+        0 4px 4px #050a10,
+        0 8px 16px rgba(0, 0, 0, 0.98),
+        0 0 26px rgba(0, 229, 255, 0.48);
     }
 
-    /* وحدة راوتر hAP ax² النحيف */
+    /* وحدة راوتر hAP ax² */
     .router-unit {
       display: flex;
       flex-direction: column;
@@ -353,7 +352,7 @@
 <body>
 
   <div class="hub-container">
-    <!-- الهيدر العلوي الضخم -->
+    <!-- الهيدر العلوي -->
     <div class="hero-header">
       <div class="embossed-title-wrap">
         <div class="title-line-1">شبكة إنترنت</div>
@@ -362,45 +361,8 @@
 
       <div class="router-unit">
         <div class="router-badge">hAP ax²</div>
-        <div class="router-visual" id="routerBox">
-          <!-- يحاول تحميل router.png من المستودع أولاً، ولو غير موجود يعرض تصميم hAP ax² النحيف الدقيق -->
-          <img src="https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/router.png" alt="hAP ax²" onerror="this.style.display='none'; document.getElementById('hapSvg').style.display='block';">
-          <svg id="hapSvg" style="display:none;" viewBox="0 0 120 120" width="94" height="96" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="hapFace" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#364659"/>
-                <stop offset="55%" stop-color="#1b2430"/>
-                <stop offset="100%" stop-color="#0d131b"/>
-              </linearGradient>
-              <linearGradient id="hapSlimSide" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#222e3d"/>
-                <stop offset="100%" stop-color="#090d12"/>
-              </linearGradient>
-              <linearGradient id="hapFoot" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#3e5166"/>
-                <stop offset="100%" stop-color="#151e29"/>
-              </linearGradient>
-            </defs>
-            <!-- هالة نيون خفيفة -->
-            <ellipse cx="60" cy="108" rx="36" ry="6" fill="rgba(0,229,255,0.18)"/>
-            <!-- القاعدة العريضة المسطحة المميزة لـ hAP ax² -->
-            <polygon points="24,101 76,107 98,96 46,90" fill="url(#hapFoot)" stroke="#536b87" stroke-width="1.2"/>
-            <!-- الجسم النحيف المسطح العريض (Flat Slim Tower) -->
-            <!-- الجانب الرفيع الأيمن -->
-            <polygon points="78,14 90,11 90,94 78,100" fill="url(#hapSlimSide)" stroke="#384a5e" stroke-width="1"/>
-            <!-- الواجهة العريضة النحيفة -->
-            <polygon points="30,11 78,14 78,100 30,94" fill="url(#hapFace)" stroke="#566f8c" stroke-width="1.2"/>
-            <!-- السطح العلوي النحيف -->
-            <polygon points="30,11 42,8 90,11 78,14" fill="#3f5269" stroke="#6683a3" stroke-width="1"/>
-            <!-- خط الإضاءة ولمبات الحالة الجانبية -->
-            <circle cx="84" cy="24" r="1.8" fill="#00ff88"/>
-            <circle cx="84" cy="31" r="1.6" fill="#00e5ff"/>
-            <circle cx="84" cy="38" r="1.6" fill="#00e5ff" opacity="0.8"/>
-            <circle cx="84" cy="45" r="1.6" fill="#00e5ff" opacity="0.6"/>
-            <!-- شعار MikroTik في المنتصف -->
-            <text x="41" y="54" fill="#a8c6e3" font-size="8" font-weight="900" transform="skewY(3)">MikroTik</text>
-            <text x="45" y="64" fill="#00e5ff" font-size="6" font-weight="800" transform="skewY(3)">hAP ax²</text>
-          </svg>
+        <div class="router-visual">
+          <img src="https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/router.png" alt="hAP ax²" onerror="this.src='https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/images%20(4).jpeg'">
         </div>
       </div>
     </div>
@@ -486,7 +448,6 @@
       window.location.href = page;
     }
 
-    // تحليل مدة التشغيل (مثل 3h59m10s أو 2d04:15:00) وتحويلها لثواني للعد الحي
     let uptimeTotalSeconds = null;
 
     function parseUptimeToSeconds(raw) {
@@ -531,30 +492,22 @@
       }
     }
 
-    // الساعة الحية
-    const nowInit = new Date();
-    let serverSeconds = nowInit.getHours() * 3600 + nowInit.getMinutes() * 60 + nowInit.getSeconds();
-
-    function renderClock() {
-      const h = String(Math.floor(serverSeconds / 3600) % 24).padStart(2, '0');
-      const m = String(Math.floor((serverSeconds % 3600) / 60)).padStart(2, '0');
-      const s = String(serverSeconds % 60).padStart(2, '0');
-      document.getElementById('srvClock').innerText = `${h}:${m}:${s}`;
+    // الساعة الحية بتوقيت القاهرة (مصر) دائماً بدقة الثانية
+    function renderCairoClock() {
+      const now = new Date();
+      const cairoStr = now.toLocaleTimeString('en-GB', {
+        timeZone: 'Africa/Cairo',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      document.getElementById('srvClock').innerText = cairoStr;
     }
 
-    function syncClockFromServer(timeStr) {
-      if (!timeStr || !timeStr.includes(':')) return;
-      const parts = timeStr.split(':').map(Number);
-      if (parts.length >= 3) {
-        serverSeconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
-        renderClock();
-      }
-    }
-
-    renderClock();
+    renderCairoClock();
     setInterval(() => {
-      serverSeconds = (serverSeconds + 1) % 86400;
-      renderClock();
+      renderCairoClock();
       if (uptimeTotalSeconds !== null) {
         uptimeTotalSeconds += 1;
         renderUptime();
@@ -580,17 +533,23 @@
         }
         if (sRes.ok) {
           const st = await sRes.json();
-          if (st.time) syncClockFromServer(st.time);
           if (st.uptime) {
-            uptimeTotalSeconds = parseUptimeToSeconds(st.uptime);
+            let baseUp = parseUptimeToSeconds(st.uptime);
+            // تعويض فرق الوقت تلقائياً لو كان status.json مرفوع من دقايق أو ساعات
+            if (st.time && st.time.includes(':')) {
+              const nowC = new Date().toLocaleTimeString('en-GB', { timeZone: 'Africa/Cairo', hour12: false }).split(':').map(Number);
+              const stP = st.time.split(':').map(Number);
+              const nowSec = nowC[0] * 3600 + nowC[1] * 60 + nowC[2];
+              const stSec = stP[0] * 3600 + stP[1] * 60 + stP[2];
+              let diff = nowSec - stSec;
+              if (diff < 0) diff += 86400;
+              if (diff > 0 && diff < 50000) baseUp += diff;
+            }
+            uptimeTotalSeconds = baseUp;
             renderUptime();
           }
-        } else {
-          document.getElementById('srvUptime').innerText = 'نشط الآن';
         }
-      } catch (e) {
-        document.getElementById('srvUptime').innerText = 'نشط الآن';
-      }
+      } catch (e) {}
     }
 
     loadLiveStats();
