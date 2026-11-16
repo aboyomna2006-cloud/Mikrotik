@@ -221,6 +221,15 @@
       font-size: 12.5px;
       font-weight: 900;
       box-shadow: 0 0 22px rgba(0, 230, 118, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    /* حالة السيرفر مفصول (تظهر تلقائياً عند انقطاع الاتصال لأكثر من دقيقتين ونصف) */
+    .status-pill.offline {
+      background: linear-gradient(180deg, rgba(255, 23, 68, 0.26), rgba(180, 15, 45, 0.14));
+      border: 1.5px solid rgba(255, 61, 113, 0.65);
+      color: #ff6b8b;
+      box-shadow: 0 0 24px rgba(255, 23, 68, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
 
     .pulse-dot {
@@ -230,6 +239,11 @@
       background: #00ff88;
       box-shadow: 0 0 12px #00ff88;
       animation: pulse 1.5s infinite;
+    }
+
+    .status-pill.offline .pulse-dot {
+      background: #ff1744;
+      box-shadow: 0 0 12px #ff1744;
     }
 
     @keyframes pulse {
@@ -426,9 +440,9 @@
     <!-- شريط الحالة + الساعة يمين + الابتايم شمال -->
     <div class="telemetry-panel">
       <div class="status-center-wrap">
-        <div class="status-pill">
+        <div class="status-pill" id="serverStatusPill">
           <span class="pulse-dot"></span>
-          <span>السيرفر يعمل الآن ونشط</span>
+          <span id="serverStatusText">جاري فحص السيرفر...</span>
         </div>
       </div>
 
@@ -595,9 +609,10 @@
     routerZone.addEventListener('touchcancel', resetPinchZoom);
 
     // ==========================================
-    // الساعة والابتايم والإحصائيات الحية
+    // الساعة والابتايم وفحص اتصال السيرفر الحقيقي
     // ==========================================
     let uptimeTotalSeconds = null;
+    let isServerOnline = false;
 
     function parseUptimeToSeconds(raw) {
       if (!raw) return null;
@@ -656,7 +671,7 @@
     renderCairoClock();
     setInterval(() => {
       renderCairoClock();
-      if (uptimeTotalSeconds !== null) {
+      if (isServerOnline && uptimeTotalSeconds !== null) {
         uptimeTotalSeconds += 1;
         renderUptime();
       }
@@ -675,30 +690,51 @@
           const users = await uRes.json();
           document.getElementById('totalUsers').innerText = Array.isArray(users) ? users.length : 0;
         }
-        if (aRes.ok) {
-          const active = await aRes.json();
-          document.getElementById('activeUsers').innerText = Array.isArray(active) ? active.length : 0;
-        }
         if (sRes.ok) {
           const st = await sRes.json();
-          if (st.uptime) {
-            let baseUp = parseUptimeToSeconds(st.uptime);
-            if (st.date && st.time) {
-              const cleanDate = st.date.replace(/\//g, '-');
-              const parsed = Date.parse(`${cleanDate} ${st.time} GMT+0200`);
-              if (!isNaN(parsed)) {
-                const diffSec = Math.floor((Date.now() - parsed) / 1000);
-                if (diffSec > 0 && diffSec < 2592000) baseUp += diffSec;
-              }
+          const pill = document.getElementById('serverStatusPill');
+          const statusTxt = document.getElementById('serverStatusText');
+
+          let diffSec = 999999;
+          if (st.date && st.time) {
+            const cleanDate = st.date.replace(/\//g, '-');
+            const parsed = Date.parse(`${cleanDate} ${st.time} GMT+0200`);
+            if (!isNaN(parsed)) {
+              diffSec = Math.floor((Date.now() - parsed) / 1000);
             }
-            uptimeTotalSeconds = baseUp;
-            renderUptime();
+          }
+
+          // لو آخر نبضة من الراوتر خلال أقل من 150 ثانية (دقيقتين ونصف) يبقى السيرفر شغال فعلاً
+          if (diffSec <= 150) {
+            isServerOnline = true;
+            pill.classList.remove('offline');
+            statusTxt.innerText = "السيرفر يعمل الآن ونشط";
+
+            if (st.uptime) {
+              let baseUp = parseUptimeToSeconds(st.uptime);
+              if (diffSec > 0) baseUp += diffSec;
+              uptimeTotalSeconds = baseUp;
+              renderUptime();
+            }
+
+            if (aRes.ok) {
+              const active = await aRes.json();
+              document.getElementById('activeUsers').innerText = Array.isArray(active) ? active.length : 0;
+            }
+          } else {
+            // السيرفر مفصول (انقطاع كهرباء / توقف المزامنة)
+            isServerOnline = false;
+            pill.classList.add('offline');
+            statusTxt.innerText = "السيرفر مفصول حالياً (انقطاع كهرباء)";
+            document.getElementById('srvUptime').innerText = "متوقف (" + (st.time || "--:--") + ")";
+            document.getElementById('activeUsers').innerText = "0";
           }
         }
       } catch (e) {}
     }
 
     loadLiveStats();
+    setInterval(loadLiveStats, 30000);
   </script>
 </body>
 </html>
