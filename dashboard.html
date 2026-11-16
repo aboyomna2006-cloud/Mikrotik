@@ -56,7 +56,6 @@
       position: relative;
     }
 
-    /* الهيدر العلوي */
     .hero-header {
       display: flex;
       align-items: center;
@@ -99,7 +98,6 @@
               drop-shadow(0 0 22px rgba(0, 229, 255, 0.55));
     }
 
-    /* صورة الراوتر المكبّرة مع دعم Double-Tap + Pinch-to-Zoom */
     .router-visual {
       width: 148px;
       height: 132px;
@@ -130,7 +128,6 @@
       -webkit-user-drag: none;
     }
 
-    /* نافذة تكبير الصورة في منتصف الشاشة عند الضغط مرتين */
     .center-zoom-modal {
       position: fixed;
       inset: 0;
@@ -191,7 +188,6 @@
       border-radius: 20px;
     }
 
-    /* شريط الحالة + الساعة يمين + الابتايم شمال */
     .telemetry-panel {
       display: flex;
       flex-direction: column;
@@ -224,7 +220,6 @@
       transition: all 0.3s ease;
     }
 
-    /* حالة السيرفر مفصول (تظهر تلقائياً عند انقطاع الاتصال لأكثر من دقيقتين ونصف) */
     .status-pill.offline {
       background: linear-gradient(180deg, rgba(255, 23, 68, 0.26), rgba(180, 15, 45, 0.14));
       border: 1.5px solid rgba(255, 61, 113, 0.65);
@@ -244,6 +239,7 @@
     .status-pill.offline .pulse-dot {
       background: #ff1744;
       box-shadow: 0 0 12px #ff1744;
+      animation: none;
     }
 
     @keyframes pulse {
@@ -291,6 +287,10 @@
         0 4px 8px rgba(0, 0, 0, 0.9);
     }
 
+    .embossed-box.frozen .e-val {
+      color: #ff8fa3;
+    }
+
     .quick-stats {
       width: 100%;
       display: flex;
@@ -307,7 +307,6 @@
       font-size: 13.5px;
     }
 
-    /* الكروت العريضة بارتفاع مدمج */
     .cards-stack {
       display: flex;
       flex-direction: column;
@@ -448,13 +447,13 @@
 
       <div class="dual-embossed-row">
         <!-- اليمين في RTL: ساعة السيرفر -->
-        <div class="embossed-box">
+        <div class="embossed-box" id="clockBox">
           <span class="e-lbl">🕒 ساعة السيرفر</span>
           <span class="e-val" id="srvClock">--:--:--</span>
         </div>
 
         <!-- اليسار في RTL: الابتايم -->
-        <div class="embossed-box">
+        <div class="embossed-box" id="uptimeBox">
           <span class="e-lbl">⏱️ مدة التشغيل Uptime</span>
           <span class="e-val" id="srvUptime">جاري الجلب...</span>
         </div>
@@ -657,6 +656,7 @@
     }
 
     function renderCairoClock() {
+      if (!isServerOnline) return; // لو السيرفر مفصول، تظل ساعة السيرفر متوقفة على آخر وقت مسجل من السيرفر
       const now = new Date();
       const cairoStr = now.toLocaleTimeString('en-GB', {
         timeZone: 'Africa/Cairo',
@@ -668,12 +668,13 @@
       document.getElementById('srvClock').innerText = cairoStr;
     }
 
-    renderCairoClock();
     setInterval(() => {
-      renderCairoClock();
-      if (isServerOnline && uptimeTotalSeconds !== null) {
-        uptimeTotalSeconds += 1;
-        renderUptime();
+      if (isServerOnline) {
+        renderCairoClock();
+        if (uptimeTotalSeconds !== null) {
+          uptimeTotalSeconds += 1;
+          renderUptime();
+        }
       }
     }, 1000);
 
@@ -694,6 +695,8 @@
           const st = await sRes.json();
           const pill = document.getElementById('serverStatusPill');
           const statusTxt = document.getElementById('serverStatusText');
+          const clockBox = document.getElementById('clockBox');
+          const uptimeBox = document.getElementById('uptimeBox');
 
           let diffSec = 999999;
           if (st.date && st.time) {
@@ -704,11 +707,13 @@
             }
           }
 
-          // لو آخر نبضة من الراوتر خلال أقل من 150 ثانية (دقيقتين ونصف) يبقى السيرفر شغال فعلاً
           if (diffSec <= 150) {
             isServerOnline = true;
             pill.classList.remove('offline');
+            clockBox.classList.remove('frozen');
+            uptimeBox.classList.remove('frozen');
             statusTxt.innerText = "السيرفر يعمل الآن ونشط";
+            renderCairoClock();
 
             if (st.uptime) {
               let baseUp = parseUptimeToSeconds(st.uptime);
@@ -722,11 +727,19 @@
               document.getElementById('activeUsers').innerText = Array.isArray(active) ? active.length : 0;
             }
           } else {
-            // السيرفر مفصول (انقطاع كهرباء / توقف المزامنة)
+            // السيرفر مفصول: تجميد ساعة السيرفر ومدة التشغيل عند آخر لحظة سجلها السيرفر
             isServerOnline = false;
             pill.classList.add('offline');
+            clockBox.classList.add('frozen');
+            uptimeBox.classList.add('frozen');
             statusTxt.innerText = "السيرفر مفصول حالياً (انقطاع كهرباء)";
-            document.getElementById('srvUptime').innerText = "متوقف (" + (st.time || "--:--") + ")";
+            document.getElementById('srvClock').innerText = st.time || "--:--:--";
+            if (st.uptime) {
+              uptimeTotalSeconds = parseUptimeToSeconds(st.uptime);
+              renderUptime();
+            } else {
+              document.getElementById('srvUptime').innerText = "--:--:--";
+            }
             document.getElementById('activeUsers').innerText = "0";
           }
         }
