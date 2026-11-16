@@ -71,18 +71,17 @@
       justify-content: center;
     }
 
-    /* نفس لون الخلفية بالظبط مع بروز 3D وإضاءة نيون سماوي على الحواف */
+    /* خط مكتمل لامع 3D بتدرج معدني وتوهج نيون */
     .title-line-1 {
       font-size: 27px;
       font-weight: 900;
       line-height: 1.18;
-      color: #132236;
-      -webkit-text-stroke: 1px rgba(0, 229, 255, 0.55);
-      text-shadow:
-        0 -1px 1px rgba(0, 229, 255, 0.45),
-        0 2px 3px rgba(0, 0, 0, 0.95),
-        0 5px 10px rgba(0, 0, 0, 0.9),
-        0 0 18px rgba(0, 229, 255, 0.35);
+      background: linear-gradient(180deg, #ffffff 15%, #b8e8f8 55%, #4fa3c7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 1px rgba(10, 22, 36, 0.98))
+              drop-shadow(0 4px 6px rgba(0, 0, 0, 0.92))
+              drop-shadow(0 0 14px rgba(0, 229, 255, 0.42));
     }
 
     .title-line-2 {
@@ -90,14 +89,13 @@
       font-weight: 900;
       line-height: 1.15;
       margin-top: 2px;
-      color: #132236;
-      -webkit-text-stroke: 1.2px rgba(0, 229, 255, 0.75);
-      text-shadow:
-        0 -1px 2px rgba(120, 240, 255, 0.65),
-        0 2px 2px #080f18,
-        0 4px 4px #050a10,
-        0 8px 16px rgba(0, 0, 0, 0.98),
-        0 0 26px rgba(0, 229, 255, 0.48);
+      background: linear-gradient(180deg, #ffffff 10%, #ccf5ff 48%, #54c5d0 78%, #267d8e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 0 #173c4d)
+              drop-shadow(0 4px 1px #0c212c)
+              drop-shadow(0 8px 14px rgba(0, 0, 0, 0.96))
+              drop-shadow(0 0 22px rgba(0, 229, 255, 0.55));
     }
 
     /* وحدة راوتر hAP ax² */
@@ -492,7 +490,6 @@
       }
     }
 
-    // الساعة الحية بتوقيت القاهرة (مصر) دائماً بدقة الثانية
     function renderCairoClock() {
       const now = new Date();
       const cairoStr = now.toLocaleTimeString('en-GB', {
@@ -535,7 +532,6 @@
           const st = await sRes.json();
           if (st.uptime) {
             let baseUp = parseUptimeToSeconds(st.uptime);
-            // تعويض فرق الوقت تلقائياً لو كان status.json مرفوع من دقايق أو ساعات
             if (st.time && st.time.includes(':')) {
               const nowC = new Date().toLocaleTimeString('en-GB', { timeZone: 'Africa/Cairo', hour12: false }).split(':').map(Number);
               const stP = st.time.split(':').map(Number);
