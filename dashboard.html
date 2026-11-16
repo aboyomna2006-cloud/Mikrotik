@@ -529,7 +529,6 @@
       centerZoomModal.classList.remove('open');
     }
 
-    // دعم النقر المزدوج بالماوس أو اللمس
     routerZone.addEventListener('dblclick', (e) => {
       e.preventDefault();
       openCenterZoom();
@@ -684,14 +683,13 @@
           const st = await sRes.json();
           if (st.uptime) {
             let baseUp = parseUptimeToSeconds(st.uptime);
-            if (st.time && st.time.includes(':')) {
-              const nowC = new Date().toLocaleTimeString('en-GB', { timeZone: 'Africa/Cairo', hour12: false }).split(':').map(Number);
-              const stP = st.time.split(':').map(Number);
-              const nowSec = nowC[0] * 3600 + nowC[1] * 60 + nowC[2];
-              const stSec = stP[0] * 3600 + stP[1] * 60 + stP[2];
-              let diff = nowSec - stSec;
-              if (diff < 0) diff += 86400;
-              if (diff > 0 && diff < 50000) baseUp += diff;
+            if (st.date && st.time) {
+              const cleanDate = st.date.replace(/\//g, '-');
+              const parsed = Date.parse(`${cleanDate} ${st.time} GMT+0200`);
+              if (!isNaN(parsed)) {
+                const diffSec = Math.floor((Date.now() - parsed) / 1000);
+                if (diffSec > 0 && diffSec < 2592000) baseUp += diffSec;
+              }
             }
             uptimeTotalSeconds = baseUp;
             renderUptime();
