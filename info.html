@@ -3,294 +3,589 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>استعلام عن مشترك - WinBox</title>
+  <title>استعلام عن مشترك - أبو يمنى</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b111a;
-      --card-bg: #121c2a;
-      --item-bg: #0c141f;
-      --card-border: #263852;
-      --accent-cyan: #00e5ff;
-      --accent-amber: #ffab00;
-      --accent-green: #00e676;
-      --accent-red: #ff3d71;
+      --bg: #070d14;
+      --card-bg: #0d1622;
+      --glass-bg: rgba(16, 26, 40, 0.9);
+      --border: #1e3148;
+      --cyan: #00e5ff;
+      --neon-green: #00ff88;
+      --neon-red: #ff1744;
+      --amber: #ffab00;
       --text-main: #ffffff;
-      --text-sub: #9cb2cc;
+      --text-sub: #8fa6c2;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-      background: var(--bg);
+      background: radial-gradient(circle at top, #132840 0%, var(--bg) 75%);
       color: var(--text-main);
-      padding: 12px;
       min-height: 100dvh;
+      padding: 10px 12px;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
     }
-    .winbox-window {
+
+    .container {
       width: 100%;
       max-width: 450px;
-      background: var(--card-bg);
-      border: 1.5px solid var(--card-border);
-      border-radius: 18px;
-      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7);
-      overflow: hidden;
+      background: linear-gradient(180deg, #111e2f 0%, #0b131e 100%);
+      border: 1.5px solid var(--border);
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
     }
-    .win-header {
-      background: linear-gradient(90deg, #162638, #121c2a);
-      padding: 14px 16px;
+
+    /* الهيدر */
+    .header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--card-border);
     }
-    .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); }
-    .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.16); color: var(--accent-green); padding: 4px 10px; border-radius: 8px; font-weight: 700; }
 
-    .body-wrap { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
-    .search-row { display: flex; gap: 8px; align-items: center; }
-    .search-input {
+    .page-title {
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      text-shadow: 0 0 14px rgba(0, 229, 255, 0.4);
+    }
+
+    .count-badge {
+      background: rgba(0, 230, 118, 0.14);
+      border: 1px solid rgba(0, 230, 118, 0.45);
+      color: #5cffaa;
+      padding: 3px 12px;
+      border-radius: 14px;
+      font-size: 12.5px;
+      font-weight: 900;
+      box-shadow: 0 0 12px rgba(0, 230, 118, 0.2);
+    }
+
+    /* شريط البحث والفلتر */
+    .search-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .filter-select {
+      background: #0d1724;
+      border: 1.5px solid #253d59;
+      color: #ffffff;
+      border-radius: 13px;
+      padding: 9px 10px;
+      font-size: 13px;
+      font-weight: 800;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .search-input-wrap {
       flex: 1;
-      background: var(--item-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      color: #fff;
-      padding: 11px 12px;
-      font-size: 15px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 100%;
+      background: #0d1724;
+      border: 1.5px solid #253d59;
+      color: #ffffff;
+      border-radius: 13px;
+      padding: 9px 12px 9px 32px;
+      font-size: 13.5px;
+      font-weight: 800;
       outline: none;
       direction: ltr;
       text-align: left;
     }
-    .search-input:focus { border-color: var(--accent-cyan); }
-    .btn-clear {
-      background: var(--item-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-sub);
-      border-radius: 10px;
-      padding: 0 12px;
-      height: 42px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
+
+    .search-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.25);
     }
 
-    .list-box {
-      max-height: 62vh;
+    .clear-btn {
+      position: absolute;
+      left: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #9bb4d0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-size: 12px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* قائمة الاقتراحات السريعة */
+    .suggestions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 280px;
       overflow-y: auto;
+    }
+
+    .sug-item {
+      background: rgba(15, 25, 39, 0.9);
+      border: 1px solid #223852;
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .sug-item:active {
+      border-color: var(--cyan);
+    }
+
+    .sug-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #ffffff;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .sug-prof {
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--cyan);
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+
+    /* بطاقة تفاصيل المشترك */
+    .user-card {
+      background: rgba(11, 19, 30, 0.85);
+      border: 1.5px solid #223852;
+      border-radius: 18px;
+      padding: 13px;
       display: flex;
       flex-direction: column;
       gap: 12px;
+      box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.6);
     }
-    .info-card {
-      background: var(--item-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 14px;
+
+    .user-top-info {
       display: flex;
-      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
       gap: 10px;
     }
-    .ic-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .ic-name { font-size: 15px; font-weight: 800; color: #fff; direction: ltr; }
-    .ic-prof { font-size: 12px; font-weight: 800; color: var(--accent-cyan); background: rgba(0, 229, 255, 0.12); padding: 2px 8px; border-radius: 6px; direction: ltr; white-space: nowrap; }
-    .ic-comm { font-size: 12px; color: var(--text-sub); direction: ltr; padding-bottom: 8px; border-bottom: 1px dashed rgba(38, 56, 82, 0.7); }
 
-    /* الدائرة الكبيرة المصمتة مكان الشريط */
-    .pie-container {
+    .user-title-block {
+      flex: 1;
+      text-align: left;
+      direction: ltr;
+    }
+
+    .user-main-name {
+      font-size: 15.5px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.35;
+    }
+
+    .user-sub-comm {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-top: 3px;
+      line-height: 1.3;
+    }
+
+    .prof-pill {
+      background: linear-gradient(180deg, rgba(0, 229, 255, 0.2), rgba(0, 229, 255, 0.08));
+      border: 1.5px solid rgba(0, 229, 255, 0.5);
+      color: var(--cyan);
+      padding: 4px 11px;
+      border-radius: 11px;
+      font-size: 12.5px;
+      font-weight: 900;
+      direction: ltr;
+      flex-shrink: 0;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.25);
+    }
+
+    /* =======================================================
+       الدائرة النيون اللامعة 3D (المسحوب أحمر نيون / المتبقي أخضر نيون)
+       ======================================================= */
+    .neon-chart-stage {
       display: flex;
-      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 6px 0;
+      position: relative;
+    }
+
+    .neon-pie-orb {
+      width: 176px;
+      height: 176px;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 6px 0 4px;
-    }
-    .pie-disc {
-      position: relative;
-      width: 165px;
-      height: 165px;
-      border-radius: 50%;
+      /* الافتراضي قبل التحديث */
       background: conic-gradient(
         from 0deg,
-        #00ff88 0%,
-        #00c853 var(--pct, 0%),
-        #ff3b5c var(--pct, 0%),
-        #b81430 100%
+        #ff1744 0deg,
+        #ff5252 140deg,
+        #00ff88 140deg,
+        #00c853 360deg
       );
+      /* هالة نيون مزدوجة متوهجة + ظل عميق 3D */
       box-shadow:
-        0 0 26px rgba(255, 59, 92, 0.35),
-        0 0 18px rgba(0, 230, 118, 0.28),
-        inset 0 3px 10px rgba(255, 255, 255, 0.3),
-        inset 0 -6px 14px rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.25s ease;
+        0 0 26px rgba(255, 23, 68, 0.45),
+        0 0 34px rgba(0, 255, 136, 0.38),
+        0 14px 28px rgba(0, 0, 0, 0.9),
+        inset 0 4px 10px rgba(255, 255, 255, 0.45),
+        inset 0 -8px 16px rgba(0, 0, 0, 0.65);
+      border: 2px solid rgba(255, 255, 255, 0.22);
+      transition: background 0.45s ease;
     }
-    .pie-disc::after {
+
+    /* لمعة زجاجية علوية 3D */
+    .neon-pie-orb::before {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle at 32% 22%,
+        rgba(255, 255, 255, 0.48) 0%,
+        rgba(255, 255, 255, 0.12) 32%,
+        transparent 62%
+      );
+      pointer-events: none;
+    }
+
+    /* حلقة نيون داخلية خفيفة */
+    .neon-pie-orb::after {
       content: "";
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.24), transparent 60%);
+      box-shadow: inset 0 0 18px rgba(0, 229, 255, 0.25);
       pointer-events: none;
     }
-    .pie-label {
+
+    .pie-percent-text {
       position: relative;
       z-index: 2;
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 900;
       color: #ffffff;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
-      letter-spacing: -0.5px;
+      letter-spacing: 0.5px;
+      text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.95),
+        0 0 14px rgba(255, 255, 255, 0.75),
+        0 0 26px rgba(255, 23, 68, 0.65);
     }
 
-    .ic-stats {
+    /* شريط الأرقام أسفل الدائرة */
+    .stats-bar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      background: rgba(8, 14, 23, 0.9);
+      border: 1px solid #1e334d;
+      border-radius: 13px;
+      padding: 8px 11px;
       font-size: 12px;
-      font-weight: 800;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 8px 10px;
-      border-radius: 9px;
-      border: 1px solid rgba(38, 56, 82, 0.5);
+      font-weight: 900;
     }
-    .st-used { color: var(--accent-green); }
-    .st-total { color: var(--text-main); }
-    .st-rem { color: var(--accent-red); }
 
-    .ic-actions { display: flex; justify-content: center; margin-top: 2px; }
-    .btn-renew-mini {
+    /* المسحوب بالأحمر النيون */
+    .stat-used {
+      color: #ff4d6d;
+      text-shadow: 0 0 10px rgba(255, 23, 68, 0.5);
+    }
+
+    /* الباقة بالأبيض السماوي */
+    .stat-total {
+      color: #e6f4ff;
+    }
+
+    /* المتبقي بالأخضر النيون */
+    .stat-rem {
+      color: #00ff88;
+      text-shadow: 0 0 10px rgba(0, 255, 136, 0.45);
+    }
+
+    /* زر تجديد / تعديل */
+    .btn-renew-link {
       width: 100%;
-      background: rgba(255, 171, 0, 0.14);
-      border: 1px solid rgba(255, 171, 0, 0.45);
-      color: var(--accent-amber);
-      padding: 8px 12px;
-      border-radius: 9px;
-      font-size: 13px;
-      font-weight: 800;
+      padding: 10px;
+      background: linear-gradient(180deg, rgba(255, 171, 0, 0.22), rgba(255, 145, 0, 0.1));
+      border: 1.5px solid rgba(255, 171, 0, 0.55);
+      color: #ffca28;
+      border-radius: 13px;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      box-shadow: 0 4px 16px rgba(255, 171, 0, 0.16);
+    }
+
+    /* أزرار التنقل السفلية */
+    .bottom-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 2px;
+    }
+
+    .btn-home {
+      padding: 10px;
+      background: rgba(0, 229, 255, 0.12);
+      border: 1.5px solid rgba(0, 229, 255, 0.5);
+      color: var(--cyan);
+      border-radius: 13px;
+      font-size: 14px;
+      font-weight: 900;
       cursor: pointer;
     }
 
-    .footer-btns { display: flex; gap: 8px; }
-    .btn-back {
-      flex: 1;
-      background: rgba(0, 229, 255, 0.14);
-      border: 1px solid var(--accent-cyan);
-      color: var(--accent-cyan);
-      padding: 11px;
-      border-radius: 11px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-    }
     .btn-close {
-      flex: 1;
-      background: rgba(255, 61, 113, 0.15);
-      border: 1px solid var(--accent-red);
-      color: var(--accent-red);
-      padding: 11px;
-      border-radius: 11px;
-      font-size: 15px;
-      font-weight: 800;
+      padding: 10px;
+      background: rgba(255, 61, 113, 0.12);
+      border: 1.5px solid rgba(255, 61, 113, 0.5);
+      color: #ff5277;
+      border-radius: 13px;
+      font-size: 14px;
+      font-weight: 900;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="winbox-window">
-    <div class="win-header">
-      <div class="win-title">📋 استعلام عن مشترك</div>
-      <div class="win-badge" id="countBadge">جاري التحميل...</div>
+
+  <div class="container">
+    <!-- الهيدر -->
+    <div class="header-row">
+      <div class="page-title">
+        <span>📋</span>
+        <span>استعلام عن مشترك</span>
+      </div>
+      <div class="count-badge" id="usersCountBadge">... مشترك</div>
     </div>
 
-    <div class="body-wrap">
-      <div class="search-row">
-        <input type="text" id="qInput" class="search-input" placeholder="اكتب اسم المشترك أو الكومنت..." oninput="renderCards()">
-        <button type="button" class="btn-clear" onclick="clearSearch()">الكل</button>
+    <!-- البحث والفلترة -->
+    <div class="search-row">
+      <select class="filter-select" id="profFilter" onchange="filterUsers()">
+        <option value="ALL">الكل</option>
+      </select>
+      <div class="search-input-wrap">
+        <input type="text" class="search-input" id="searchInput" placeholder="ابحث بالاسم أو الكومنت..." oninput="filterUsers()">
+        <button type="button" class="clear-btn" id="clearSearchBtn" onclick="clearSearch()">✕</button>
       </div>
-      <div class="list-box" id="cardsBox"></div>
-      <div class="footer-btns">
-        <button type="button" class="btn-back" onclick="window.location.href='dashboard.html'">🏠 الرئيسية</button>
-        <button type="button" class="btn-close" onclick="if(tg) tg.close()">إغلاق</button>
+    </div>
+
+    <!-- قائمة الاقتراحات -->
+    <div class="suggestions-list" id="suggestionsList"></div>
+
+    <!-- بطاقة تفاصيل المشترك -->
+    <div class="user-card" id="userDetailCard" style="display:none;">
+      <div class="user-top-info">
+        <div class="user-title-block">
+          <div class="user-main-name" id="dispTitle">-</div>
+          <div class="user-sub-comm" id="dispComm">-</div>
+        </div>
+        <div class="prof-pill" id="dispProf">-</div>
       </div>
+
+      <!-- الدائرة النيون المجسمة: المسحوب أحمر نيون / المتبقي أخضر نيون -->
+      <div class="neon-chart-stage">
+        <div class="neon-pie-orb" id="neonPieOrb">
+          <span class="pie-percent-text" id="piePercentText">0%</span>
+        </div>
+      </div>
+
+      <!-- الأرقام التفصيلية -->
+      <div class="stats-bar">
+        <span class="stat-used" id="statUsed">الاستهلاك: 0 GB</span>
+        <span class="stat-total" id="statTotal">الباقة: 0 GB</span>
+        <span class="stat-rem" id="statRem">المتبقي: 0 GB</span>
+      </div>
+
+      <button type="button" class="btn-renew-link" id="goRenewBtn">
+        <span>🔄 تجديد / تعديل</span>
+      </button>
+    </div>
+
+    <!-- أزرار التحكم السفلية -->
+    <div class="bottom-nav">
+      <button type="button" class="btn-home" onclick="window.location.href='dashboard.html'">🏠 الرئيسية</button>
+      <button type="button" class="btn-close" onclick="if(tg) tg.close()">إغلاق</button>
     </div>
   </div>
 
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
-    if (tg) { tg.ready(); tg.expand(); }
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
 
     let allUsers = [];
-    const urlParams = new URLSearchParams(window.location.search);
-    const preUser = urlParams.get('user');
+    let selectedUser = null;
 
-    if (preUser) {
-      document.getElementById('qInput').value = preUser;
+    const urlParams = new URLSearchParams(window.location.search);
+    const preselectUser = urlParams.get('user');
+
+    async function loadUsers() {
+      const base = "https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main";
+      try {
+        const res = await fetch(`${base}/users.json?t=${Date.now()}`);
+        if (res.ok) {
+          allUsers = await res.json();
+          document.getElementById('usersCountBadge').innerText = `${allUsers.length} مشترك`;
+
+          // تعبئة فلتر البروفايلات
+          const profs = [...new Set(allUsers.map(u => u.p).filter(Boolean))];
+          const sel = document.getElementById('profFilter');
+          profs.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p;
+            opt.innerText = p;
+            sel.appendChild(opt);
+          });
+
+          if (preselectUser) {
+            const found = allUsers.find(u => u.n === preselectUser || u.id === preselectUser);
+            if (found) {
+              selectUser(found);
+              return;
+            }
+          }
+          filterUsers();
+        }
+      } catch (e) {}
     }
 
     function clearSearch() {
-      document.getElementById('qInput').value = '';
-      renderCards();
+      document.getElementById('searchInput').value = '';
+      document.getElementById('clearSearchBtn').style.display = 'none';
+      document.getElementById('userDetailCard').style.display = 'none';
+      filterUsers();
     }
 
-    async function fetchUsers() {
-      try {
-        const res = await fetch(`https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?t=${Date.now()}`);
-        allUsers = await res.json();
-        document.getElementById('countBadge').innerText = `${allUsers.length} مشترك`;
-        renderCards();
-      } catch (e) {
-        document.getElementById('countBadge').innerText = 'خطأ في التحميل';
-      }
-    }
+    function filterUsers() {
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const pf = document.getElementById('profFilter').value;
+      document.getElementById('clearSearchBtn').style.display = q.length > 0 ? 'flex' : 'none';
 
-    function renderCards() {
-      const q = document.getElementById('qInput').value.trim().toLowerCase();
-      const filtered = q
-        ? allUsers.filter(u => (u.n && u.n.toLowerCase().includes(q)) || (u.c && u.c.toLowerCase().includes(q)))
-        : allUsers.slice(0, 15);
+      const listEl = document.getElementById('suggestionsList');
+      listEl.innerHTML = '';
 
-      if (filtered.length === 0) {
-        document.getElementById('cardsBox').innerHTML = '<div style="text-align:center;color:#9cb2cc;padding:20px;">لا توجد بيانات مطابقة لهذا المشترك</div>';
+      const filtered = allUsers.filter(u => {
+        const matchProf = (pf === 'ALL' || u.p === pf);
+        const matchText = !q ||
+          (u.n && u.n.toLowerCase().includes(q)) ||
+          (u.c && u.c.toLowerCase().includes(q));
+        return matchProf && matchText;
+      });
+
+      if (filtered.length === 1 && q.length > 0) {
+        selectUser(filtered[0]);
         return;
       }
 
-      document.getElementById('cardsBox').innerHTML = filtered.map(u => {
-        const title = u.n.startsWith('Arabic_User_') ? (u.c || u.n) : u.n;
-        const usedNum = (u.u / 1024);
-        const usedGB = usedNum.toFixed(2);
-        const limGB = u.l || 0;
-        const remGB = Math.max(0, limGB - usedNum).toFixed(2);
-        const pct = limGB > 0 ? Math.min(100, Math.round((usedNum / limGB) * 100)) : 0;
-
-        return `<div class="info-card">
-          <div class="ic-head">
-            <span class="ic-name">👤 ${title}</span>
-            <span class="ic-prof">${u.p}</span>
-          </div>
-          <div class="ic-comm">💬 ${u.c || 'بدون كومنت'}</div>
-
-          <div class="pie-container">
-            <div class="pie-disc" style="--pct:${pct}%;">
-              <span class="pie-label">${pct}%</span>
-            </div>
-          </div>
-
-          <div class="ic-stats">
-            <span class="st-used">الاستهلاك: ${usedGB} GB</span>
-            <span class="st-total">الباقة: ${limGB} GB</span>
-            <span class="st-rem">المتبقي: ${remGB} GB</span>
-          </div>
-
-          <div class="ic-actions">
-            <button type="button" class="btn-renew-mini" onclick="window.location.href='renew.html?user=${encodeURIComponent(u.n)}'">🔄 تجديد / تعديل</button>
-          </div>
-        </div>`;
-      }).join('');
+      listEl.style.display = 'flex';
+      filtered.slice(0, 30).forEach(u => {
+        const div = document.createElement('div');
+        div.className = 'sug-item';
+        const disp = (u.c && u.c.trim().length > 0) ? u.c : u.n;
+        div.innerHTML = `
+          <span class="sug-name">👤 ${disp}</span>
+          <span class="sug-prof">${u.p || '-'}</span>
+        `;
+        div.onclick = () => selectUser(u);
+        listEl.appendChild(div);
+      });
     }
 
-    fetchUsers();
+    function selectUser(u) {
+      selectedUser = u;
+      document.getElementById('suggestionsList').style.display = 'none';
+      document.getElementById('userDetailCard').style.display = 'flex';
+
+      const mainLabel = (u.c && u.c.trim().length > 0) ? u.c : u.n;
+      document.getElementById('searchInput').value = mainLabel.split(' To ')[0];
+      document.getElementById('clearSearchBtn').style.display = 'flex';
+
+      document.getElementById('dispTitle').innerText = `👤 ${mainLabel}`;
+      document.getElementById('dispComm').innerText = `💬 ${u.c || u.n}`;
+      document.getElementById('dispProf').innerText = u.p || '-';
+
+      const limitGB = Number(u.l) || 0;
+      const usedGB = +(Number(u.u || 0) / 1024).toFixed(2);
+      const remGB = Math.max(0, +(limitGB - usedGB).toFixed(2));
+
+      let pct = 0;
+      if (limitGB > 0) {
+        pct = Math.min(100, Math.round((usedGB / limitGB) * 100));
+      }
+
+      const deg = Math.round((pct / 100) * 360);
+      const orb = document.getElementById('neonPieOrb');
+
+      // المسحوب = أحمر نيون متوهج (#ff1744 -> #ff5252)
+      // المتبقي = أخضر نيون ساطع (#00ff88 -> #00c853)
+      orb.style.background = `conic-gradient(
+        from 0deg,
+        #ff1744 0deg,
+        #ff4d6d ${deg}deg,
+        #00ff88 ${deg}deg,
+        #00c853 360deg
+      )`;
+
+      document.getElementById('piePercentText').innerText = `${pct}%`;
+      document.getElementById('statUsed').innerText = `الاستهلاك: ${usedGB} GB`;
+      document.getElementById('statTotal').innerText = `الباقة: ${limitGB} GB`;
+      document.getElementById('statRem').innerText = `المتبقي: ${remGB} GB`;
+
+      document.getElementById('goRenewBtn').onclick = () => {
+        window.location.href = `renew.html?user=${encodeURIComponent(u.n)}`;
+      };
+    }
+
+    loadUsers();
   </script>
 </body>
 </html>
