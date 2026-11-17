@@ -245,7 +245,7 @@
       if (tg && tg.HapticFeedback) {
         tg.HapticFeedback.impactOccurred('light');
       }
-      window.location.href = `info.html?user=${encodeURIComponent(userName)}`;
+      window.location.href = `info.html?user=${encodeURIComponent(userName)}&from=active`;
     }
 
     function formatUptime(raw) {
