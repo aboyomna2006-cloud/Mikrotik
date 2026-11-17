@@ -96,7 +96,6 @@
     .ic-prof { font-size: 12px; font-weight: 800; color: var(--accent-cyan); background: rgba(0, 229, 255, 0.12); padding: 2px 8px; border-radius: 6px; direction: ltr; white-space: nowrap; }
     .ic-comm { font-size: 12px; color: var(--text-sub); direction: ltr; padding-bottom: 8px; border-bottom: 1px dashed rgba(38, 56, 82, 0.7); }
 
-    /* الدائرة الكبيرة المصمتة مكان الشريط - معكوسة الألوان: المسحوب أحمر نيون والمتبقي أخضر نيون */
     .pie-container {
       display: flex;
       flex-direction: column;
@@ -211,7 +210,7 @@
       </div>
       <div class="list-box" id="cardsBox"></div>
       <div class="footer-btns">
-        <button type="button" class="btn-back" onclick="window.location.href='dashboard.html'">🏠 الرئيسية</button>
+        <button type="button" class="btn-back" id="navBackBtn" onclick="goBackNav()">🏠 الرئيسية</button>
         <button type="button" class="btn-close" onclick="if(tg) tg.close()">إغلاق</button>
       </div>
     </div>
@@ -224,6 +223,20 @@
     let allUsers = [];
     const urlParams = new URLSearchParams(window.location.search);
     const preUser = urlParams.get('user');
+    const fromPage = urlParams.get('from');
+
+    const navBtn = document.getElementById('navBackBtn');
+    if (fromPage === 'active') {
+      navBtn.innerText = '🔙 رجوع للنشطين';
+    }
+
+    function goBackNav() {
+      if (fromPage === 'active') {
+        window.location.href = 'active.html';
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    }
 
     if (preUser) {
       document.getElementById('qInput').value = preUser;
