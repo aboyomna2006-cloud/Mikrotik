@@ -42,43 +42,42 @@
     }
 
     .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; }
-    .embossed-title-wrap { flex: 1; text-align: right; padding-right: 10px; padding-top: 4px; display: flex; flex-direction: column; align-items: flex-start; }
+    .embossed-title-wrap { flex: 1; text-align: right; padding-right: 12px; padding-top: 6px; }
     .title-line-1 {
-      font-size: 20px; font-weight: 900; line-height: 1.1;
+      font-size: 21px; font-weight: 900; line-height: 1.15;
       background: linear-gradient(180deg, #ffffff 15%, #b8e8f8 55%, #4fa3c7 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 2px 1px rgba(10, 22, 36, 0.98)) drop-shadow(0 0 14px rgba(0, 229, 255, 0.42));
     }
     .title-line-2 {
-      font-size: 31px; font-weight: 900; line-height: 1.15; padding-bottom: 4px;
+      font-size: 32px; font-weight: 900; line-height: 1.2; padding-bottom: 2px;
       background: linear-gradient(180deg, #ffffff 10%, #ccf5ff 48%, #54c5d0 78%, #267d8e 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
 
-    /* شارة حالة السيرفر المكبرة تحت الاسم مع مؤشر الثانية 1 */
+    /* حالة السيرفر سطر واحد بدون أي مستطيل مع عداد ثواني رقمين */
     .hero-status-row {
-      display: inline-flex; align-items: center; gap: 6px; margin-top: 2px;
-      background: rgba(0, 230, 118, 0.16); border: 1.5px solid rgba(0, 230, 118, 0.55);
-      color: #5cffaa; padding: 3px 10px; border-radius: 18px;
-      font-size: 12px; font-weight: 900; box-shadow: 0 0 14px rgba(0, 230, 118, 0.25);
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 3px;
+      background: transparent; border: none; padding: 0;
+      color: #5cffaa; font-size: 13px; font-weight: 900;
+      white-space: nowrap; text-shadow: 0 0 10px rgba(0, 230, 118, 0.45);
     }
     .hero-status-row.offline {
-      background: rgba(255, 23, 68, 0.2); border-color: rgba(255, 61, 113, 0.65);
-      color: #ff6b8b; box-shadow: 0 0 14px rgba(255, 23, 68, 0.25);
+      color: #ff6b8b; text-shadow: 0 0 10px rgba(255, 23, 68, 0.45);
     }
-    .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #00ff88; animation: pulse 1.2s infinite; flex-shrink: 0; }
-    .hero-status-row.offline .pulse-dot { background: #ff1744; animation: none; }
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: #00ff88; animation: pulse 1s infinite; flex-shrink: 0; box-shadow: 0 0 8px #00ff88; }
+    .hero-status-row.offline .pulse-dot { background: #ff1744; box-shadow: none; animation: none; }
 
     .sec-tick-badge {
       display: inline-flex; align-items: center; justify-content: center;
-      min-width: 19px; height: 19px; padding: 0 4px; border-radius: 50%;
-      background: rgba(0, 229, 255, 0.22); border: 1px solid var(--cyan);
-      color: #ffffff; font-family: system-ui, sans-serif; font-size: 11px; font-weight: 900;
-      direction: ltr; transition: transform 0.15s ease, box-shadow 0.15s ease;
+      min-width: 24px; height: 20px; padding: 0 5px; border-radius: 10px;
+      background: rgba(0, 229, 255, 0.18); border: 1px solid rgba(0, 229, 255, 0.65);
+      color: #ffffff; font-family: system-ui, sans-serif; font-size: 11.5px; font-weight: 900;
+      direction: ltr; transition: transform 0.15s ease, background 0.15s ease;
     }
     .sec-tick-badge.flash {
-      transform: scale(1.22);
+      transform: scale(1.15);
       background: var(--cyan);
       color: #06101a;
       box-shadow: 0 0 10px var(--cyan);
@@ -87,10 +86,10 @@
       background: rgba(255, 61, 113, 0.2); border-color: #ff6b8b; color: #ff8fa3;
     }
 
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
     .router-box { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-    .router-visual { width: 146px; height: 110px; display: flex; align-items: center; justify-content: center; }
+    .router-visual { width: 150px; height: 112px; display: flex; align-items: center; justify-content: center; }
     .router-visual img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
 
     .ros-badge {
@@ -138,28 +137,21 @@
       flex-shrink: 0;
       overflow: hidden;
     }
-    .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; z-index: 2; }
+    .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; z-index: 3; }
 
-    /* طبقة الفلاش المتداخل للجزء الأخضر المتبقي عند الاقتراب من 3 جيجا */
-    .green-flash-layer {
+    /* طبقة الفلاش وعكس اللون للجزء الأخضر المتبقي فقط (من var(--pct) إلى 100%) */
+    .green-invert-layer {
       position: absolute; inset: 0; border-radius: 50%;
-      background: conic-gradient(from 0deg, transparent 0%, transparent var(--pct, 0%), #b9ffdf var(--pct, 0%), #00ff88 100%);
-      opacity: 0; pointer-events: none; z-index: 1;
+      background: conic-gradient(from 0deg, transparent 0%, transparent var(--pct, 0%), #ffea00 var(--pct, 0%), #00e5ff 100%);
+      opacity: 0; pointer-events: none; z-index: 2;
     }
-    .neon-disc.low-quota-warn {
-      animation: discHaloFlash 0.85s ease-in-out infinite alternate;
-    }
-    .neon-disc.low-quota-warn .green-flash-layer {
-      animation: greenSliceFlash 0.55s ease-in-out infinite alternate;
+    .neon-disc.low-quota-warn .green-invert-layer {
+      animation: greenSliceInvert 0.55s ease-in-out infinite alternate;
     }
 
-    @keyframes greenSliceFlash {
-      0% { opacity: 0.05; filter: brightness(0.85); }
-      100% { opacity: 0.98; filter: brightness(1.65) drop-shadow(0 0 8px #00ff88); }
-    }
-    @keyframes discHaloFlash {
-      0% { box-shadow: 0 0 12px rgba(255, 23, 68, 0.4), 0 0 8px rgba(0, 255, 136, 0.35); }
-      100% { box-shadow: 0 0 16px rgba(255, 23, 68, 0.45), 0 0 24px rgba(0, 255, 136, 0.95), 0 0 34px rgba(185, 255, 223, 0.75); }
+    @keyframes greenSliceInvert {
+      0% { opacity: 0; filter: brightness(1); }
+      100% { opacity: 1; filter: brightness(1.45); }
     }
 
     /* قسم الوقت بدون إطار وبخط أكبر */
@@ -167,7 +159,7 @@
     .dual-embossed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .embossed-box { background: rgba(16, 28, 44, 0.55); border: none; border-radius: 10px; padding: 4px 6px; text-align: center; direction: ltr; }
     .embossed-box .e-lbl { display: block; font-size: 10px; font-weight: 800; color: #8fb3d9; line-height: 1.15; }
-    .embossed-box .e-val { display: block; font-size: 16px; font-weight: 900; color: #ffffff; line-height: 1.2; letter-spacing: 0.4px; text-shadow: 0 0 10px rgba(0, 229, 255, 0.3); }
+    .embossed-box .e-val { display: block; font-size: 16.5px; font-weight: 900; color: #ffffff; line-height: 1.2; letter-spacing: 0.4px; text-shadow: 0 0 10px rgba(0, 229, 255, 0.3); }
     .embossed-box.frozen .e-val { color: #ff8fa3; text-shadow: none; }
 
     .quick-stats { display: flex; justify-content: space-around; font-size: 11.5px; font-weight: 800; color: var(--text-sub); padding-top: 3px; }
@@ -214,7 +206,7 @@
         <div class="hero-status-row" id="serverStatusPill">
           <span class="pulse-dot"></span>
           <span id="serverStatusText">جاري فحص السيرفر...</span>
-          <span class="sec-tick-badge" id="secTickBadge">1</span>
+          <span class="sec-tick-badge" id="secTickBadge">01</span>
         </div>
       </div>
 
@@ -239,7 +231,7 @@
           <div class="gauge-sub-line">المعدل: <b>25.0 GB</b></div>
         </div>
         <div class="neon-disc" id="dailyDisc" style="--pct:0%;">
-          <div class="green-flash-layer"></div>
+          <div class="green-invert-layer"></div>
         </div>
       </div>
 
@@ -252,7 +244,7 @@
           <div class="gauge-sub-line">مسحوب: <b id="cycleUsedGbVal">0 GB</b> (<span id="cyclePctVal">0%</span>)</div>
         </div>
         <div class="neon-disc" id="cycleDisc" style="--pct:0%;">
-          <div class="green-flash-layer"></div>
+          <div class="green-invert-layer"></div>
         </div>
       </div>
     </div>
@@ -455,6 +447,7 @@
 
     let uptimeTotalSeconds = null;
     let isServerOnline = false;
+    let tickCounter = 1;
 
     function parseUptimeToSeconds(raw) {
       if (!raw) return null;
@@ -492,9 +485,10 @@
     function pulseSecondTick() {
       const tickEl = document.getElementById('secTickBadge');
       if (!tickEl) return;
-      tickEl.innerText = "1";
+      tickEl.innerText = String(tickCounter).padStart(2, '0');
+      tickCounter = tickCounter >= 59 ? 1 : tickCounter + 1;
       tickEl.classList.add('flash');
-      setTimeout(() => tickEl.classList.remove('flash'), 250);
+      setTimeout(() => tickEl.classList.remove('flash'), 220);
     }
 
     setInterval(() => {
@@ -533,7 +527,7 @@
             updateCycle30DaysUI(cycleStartDate);
           }
 
-          // سحب اليوم + تحذير فلاش متداخل للجزء الأخضر عند الاقتراب من 3 جيجا متبقية
+          // سحب اليوم + عكس لون الجزء الأخضر المتبقي فقط عند الاقتراب من 3 جيجا
           const dayGB = ((st.day_mb || 0) / 1024);
           const dailyQuota = 750 / 30;
           const dailyRemGB = Math.max(0, dailyQuota - dayGB);
@@ -548,7 +542,7 @@
             dailyDiscEl.classList.remove('low-quota-warn');
           }
 
-          // الباقة 30 يوم + تحذير فلاش متداخل للجزء الأخضر عند الاقتراب من 3 جيجا متبقية
+          // الباقة 30 يوم + عكس لون الجزء الأخضر المتبقي فقط عند الاقتراب من 3 جيجا
           const cycleGB = ((st.cycle_mb || st.day_mb || 0) / 1024);
           const remCycleGB = Math.max(0, 750 - cycleGB);
           const cyclePct = Math.min(100, Math.round((cycleGB / 750) * 100));
@@ -573,7 +567,7 @@
             pill.classList.remove('offline');
             clockBox.classList.remove('frozen');
             uptimeBox.classList.remove('frozen');
-            statusTxt.innerText = "السيرفر يعمل الآن ونشط";
+            statusTxt.innerText = "السيرفر نشط الآن";
             renderCairoClock();
             if (st.uptime) {
               let baseUp = parseUptimeToSeconds(st.uptime);
@@ -588,7 +582,7 @@
             clockBox.classList.add('frozen');
             uptimeBox.classList.add('frozen');
             statusTxt.innerText = "السيرفر مفصول حالياً";
-            document.getElementById('secTickBadge').innerText = "0";
+            document.getElementById('secTickBadge').innerText = "00";
             document.getElementById('srvClock').innerText = st.time || "--:--:--";
             if (st.uptime) { uptimeTotalSeconds = parseUptimeToSeconds(st.uptime); renderUptime(); }
             document.getElementById('activeUsers').innerText = "0";
