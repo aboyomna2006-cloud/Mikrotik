@@ -56,7 +56,7 @@
       filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
 
-    /* حالة السيرفر سطر واحد بدون أي مستطيل مع عداد ثواني رقمين */
+    /* حالة السيرفر سطر واحد بدون أي مستطيل مع عداد ثواني المزامنة الفعلي */
     .hero-status-row {
       display: inline-flex; align-items: center; gap: 6px; margin-top: 3px;
       background: transparent; border: none; padding: 0;
@@ -71,16 +71,17 @@
 
     .sec-tick-badge {
       display: inline-flex; align-items: center; justify-content: center;
-      min-width: 24px; height: 20px; padding: 0 5px; border-radius: 10px;
-      background: rgba(0, 229, 255, 0.18); border: 1px solid rgba(0, 229, 255, 0.65);
+      min-width: 26px; height: 20px; padding: 0 5px; border-radius: 10px;
+      background: rgba(0, 229, 255, 0.16); border: 1px solid rgba(0, 229, 255, 0.6);
       color: #ffffff; font-family: system-ui, sans-serif; font-size: 11.5px; font-weight: 900;
-      direction: ltr; transition: transform 0.15s ease, background 0.15s ease;
+      direction: ltr; transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
     }
-    .sec-tick-badge.flash {
-      transform: scale(1.15);
-      background: var(--cyan);
-      color: #06101a;
-      box-shadow: 0 0 10px var(--cyan);
+    .sec-tick-badge.synced-now {
+      transform: scale(1.22);
+      background: #00ff88;
+      border-color: #ffffff;
+      color: #04140b;
+      box-shadow: 0 0 14px #00ff88;
     }
     .hero-status-row.offline .sec-tick-badge {
       background: rgba(255, 61, 113, 0.2); border-color: #ff6b8b; color: #ff8fa3;
@@ -139,7 +140,6 @@
     }
     .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; z-index: 3; }
 
-    /* طبقة الفلاش وعكس اللون للجزء الأخضر المتبقي فقط (من var(--pct) إلى 100%) */
     .green-invert-layer {
       position: absolute; inset: 0; border-radius: 50%;
       background: conic-gradient(from 0deg, transparent 0%, transparent var(--pct, 0%), #ffea00 var(--pct, 0%), #00e5ff 100%);
@@ -154,7 +154,6 @@
       100% { opacity: 1; filter: brightness(1.45); }
     }
 
-    /* قسم الوقت بدون إطار وبخط أكبر */
     .telemetry-panel { display: flex; flex-direction: column; gap: 4px; background: transparent; border: none; padding: 2px 4px; flex-shrink: 0; }
     .dual-embossed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .embossed-box { background: rgba(16, 28, 44, 0.55); border: none; border-radius: 10px; padding: 4px 6px; text-align: center; direction: ltr; }
@@ -206,7 +205,7 @@
         <div class="hero-status-row" id="serverStatusPill">
           <span class="pulse-dot"></span>
           <span id="serverStatusText">جاري فحص السيرفر...</span>
-          <span class="sec-tick-badge" id="secTickBadge">01</span>
+          <span class="sec-tick-badge" id="secTickBadge">00</span>
         </div>
       </div>
 
@@ -447,7 +446,8 @@
 
     let uptimeTotalSeconds = null;
     let isServerOnline = false;
-    let tickCounter = 1;
+    let lastRouterStamp = "";
+    let secondsSinceRouterSync = 0;
 
     function parseUptimeToSeconds(raw) {
       if (!raw) return null;
@@ -482,19 +482,22 @@
       });
     }
 
-    function pulseSecondTick() {
+    function renderSyncAgeBadge(flashZero = false) {
       const tickEl = document.getElementById('secTickBadge');
       if (!tickEl) return;
-      tickEl.innerText = String(tickCounter).padStart(2, '0');
-      tickCounter = tickCounter >= 59 ? 1 : tickCounter + 1;
-      tickEl.classList.add('flash');
-      setTimeout(() => tickEl.classList.remove('flash'), 220);
+      const clamped = Math.max(0, Math.min(99, secondsSinceRouterSync));
+      tickEl.innerText = String(clamped).padStart(2, '0');
+      if (flashZero) {
+        tickEl.classList.add('synced-now');
+        setTimeout(() => tickEl.classList.remove('synced-now'), 650);
+      }
     }
 
     setInterval(() => {
       if (!document.hidden && isServerOnline) {
         renderCairoClock();
-        pulseSecondTick();
+        secondsSinceRouterSync += 1;
+        renderSyncAgeBadge(false);
         if (uptimeTotalSeconds !== null) { uptimeTotalSeconds += 1; renderUptime(); }
       }
     }, 1000);
@@ -527,7 +530,6 @@
             updateCycle30DaysUI(cycleStartDate);
           }
 
-          // سحب اليوم + عكس لون الجزء الأخضر المتبقي فقط عند الاقتراب من 3 جيجا
           const dayGB = ((st.day_mb || 0) / 1024);
           const dailyQuota = 750 / 30;
           const dailyRemGB = Math.max(0, dailyQuota - dayGB);
@@ -542,7 +544,6 @@
             dailyDiscEl.classList.remove('low-quota-warn');
           }
 
-          // الباقة 30 يوم + عكس لون الجزء الأخضر المتبقي فقط عند الاقتراب من 3 جيجا
           const cycleGB = ((st.cycle_mb || st.day_mb || 0) / 1024);
           const remCycleGB = Math.max(0, 750 - cycleGB);
           const cyclePct = Math.min(100, Math.round((cycleGB / 750) * 100));
@@ -562,6 +563,8 @@
             if (!isNaN(parsed)) diffSec = Math.floor((Date.now() - parsed) / 1000);
           }
 
+          const currentStamp = `${st.date || ""}_${st.time || ""}_${st.uptime || ""}`;
+
           if (diffSec <= 120) {
             isServerOnline = true;
             pill.classList.remove('offline');
@@ -569,6 +572,15 @@
             uptimeBox.classList.remove('frozen');
             statusTxt.innerText = "السيرفر نشط الآن";
             renderCairoClock();
+
+            // إذا وصل طابع زمني جديد فعلياً من الراوتر، صفّر العداد فوراً لـ 00 مع فلاش أخضر!
+            if (currentStamp !== lastRouterStamp) {
+              const isFirstLoad = (lastRouterStamp === "");
+              lastRouterStamp = currentStamp;
+              secondsSinceRouterSync = isFirstLoad ? Math.max(0, diffSec) : 0;
+              renderSyncAgeBadge(!isFirstLoad);
+            }
+
             if (st.uptime) {
               let baseUp = parseUptimeToSeconds(st.uptime);
               if (diffSec > 0) baseUp += diffSec;
@@ -582,7 +594,8 @@
             clockBox.classList.add('frozen');
             uptimeBox.classList.add('frozen');
             statusTxt.innerText = "السيرفر مفصول حالياً";
-            document.getElementById('secTickBadge').innerText = "00";
+            secondsSinceRouterSync = Math.min(99, Math.max(0, diffSec));
+            renderSyncAgeBadge(false);
             document.getElementById('srvClock').innerText = st.time || "--:--:--";
             if (st.uptime) { uptimeTotalSeconds = parseUptimeToSeconds(st.uptime); renderUptime(); }
             document.getElementById('activeUsers').innerText = "0";
