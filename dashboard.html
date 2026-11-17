@@ -41,8 +41,8 @@
       display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
     }
 
-    .hero-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; }
-    .embossed-title-wrap { flex: 1; text-align: right; margin-top: -2px; padding-bottom: 6px; }
+    .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; }
+    .embossed-title-wrap { flex: 1; text-align: right; padding-right: 14px; padding-top: 8px; }
     .title-line-1 {
       font-size: 21px; font-weight: 900; line-height: 1.15;
       background: linear-gradient(180deg, #ffffff 15%, #b8e8f8 55%, #4fa3c7 100%);
@@ -57,57 +57,59 @@
     }
 
     .router-box { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-    .router-visual { width: 138px; height: 106px; display: flex; align-items: center; justify-content: center; }
+    .router-visual { width: 152px; height: 114px; display: flex; align-items: center; justify-content: center; }
     .router-visual img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
 
     .ros-badge {
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       font-size: 11.5px; font-weight: 800; letter-spacing: 0.3px;
       color: #ffffff; background: transparent; border: none;
-      padding: 0; margin-top: -3px;
+      padding: 0; margin-top: -4px;
       direction: ltr; text-shadow: 0 1px 5px rgba(0, 0, 0, 0.95);
     }
     .ros-badge span { color: var(--cyan); font-weight: 900; }
 
     .gauges-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 7px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
       background: rgba(10, 17, 27, 0.84); border: 1px solid rgba(34, 55, 82, 0.95);
-      border-radius: 15px; padding: 6px 7px 5px; box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7); flex-shrink: 0;
+      border-radius: 15px; padding: 6px; box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7); flex-shrink: 0;
     }
 
     .gauge-card {
       background: linear-gradient(180deg, #132133 0%, #0b131e 100%);
       border: 1px solid rgba(76, 114, 153, 0.32); border-radius: 12px;
-      padding: 5px 5px 4px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 3px;
+      padding: 6px 7px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 5px;
+      min-height: 98px;
     }
 
-    .gauge-head { height: 18px; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: var(--cyan); }
-    .disc-stage { position: relative; width: 100%; height: 86px; display: flex; align-items: center; justify-content: center; }
+    .gauge-info-col {
+      flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; text-align: right;
+    }
+
+    .gauge-title-side { font-size: 10.5px; font-weight: 900; color: var(--cyan); line-height: 1.2; }
+    .gauge-sub-line { font-size: 9.5px; font-weight: 800; color: var(--text-sub); line-height: 1.25; }
+    .gauge-sub-line b { color: #ffffff; font-weight: 900; }
+
+    .btn-renew-inline {
+      background: linear-gradient(180deg, rgba(255, 171, 0, 0.25), rgba(255, 140, 0, 0.14));
+      border: 1px solid rgba(255, 171, 0, 0.65); color: var(--amber); border-radius: 8px;
+      padding: 2px 8px; font-size: 10px; font-weight: 900; line-height: 1.2;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+    }
 
     .neon-disc {
-      position: relative; width: 86px; height: 86px; border-radius: 50%;
+      position: relative; width: 74px; height: 74px; border-radius: 50%;
       background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
-      box-shadow: 0 0 16px rgba(255, 23, 68, 0.38), 0 0 14px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; padding: 4px; text-align: center;
+      box-shadow: 0 0 15px rgba(255, 23, 68, 0.38), 0 0 13px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; padding: 3px; text-align: center;
     }
     .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.26), transparent 60%); pointer-events: none; }
 
-    .disc-main-val { position: relative; z-index: 2; font-size: 15.5px; font-weight: 900; color: #fff; line-height: 1.05; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95); direction: ltr; }
-    .disc-sub-val { position: relative; z-index: 2; font-size: 9.5px; font-weight: 900; color: #e8f8ff; background: rgba(7, 13, 20, 0.68); padding: 0 5px; border-radius: 7px; margin-top: 2px; direction: ltr; }
+    .disc-main-val { position: relative; z-index: 2; font-size: 14px; font-weight: 900; color: #fff; line-height: 1.05; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95); direction: ltr; }
+    .disc-sub-val { position: relative; z-index: 2; font-size: 9px; font-weight: 900; color: #e8f8ff; background: rgba(7, 13, 20, 0.68); padding: 0 5px; border-radius: 7px; margin-top: 2px; direction: ltr; }
 
-    .disc-cycle-main { position: relative; z-index: 2; font-size: 11.5px; font-weight: 900; color: #fff; line-height: 1.15; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.98); }
-    .disc-cycle-sub { position: relative; z-index: 2; font-size: 8.2px; font-weight: 800; color: #e8f8ff; line-height: 1.15; margin-top: 2px; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.98); }
-
-    .btn-renew-side {
-      position: absolute; left: 2px; top: 50%; transform: translateY(-50%);
-      background: linear-gradient(180deg, rgba(255, 171, 0, 0.25), rgba(255, 140, 0, 0.14));
-      border: 1px solid rgba(255, 171, 0, 0.65); color: var(--amber); border-radius: 8px;
-      padding: 3px 5px; font-size: 9.5px; font-weight: 900; line-height: 1.15;
-      cursor: pointer; display: flex; flex-direction: column; align-items: center;
-    }
-
-    .gauge-foot { height: 16px; font-size: 10px; font-weight: 800; color: var(--text-sub); display: flex; align-items: center; justify-content: center; gap: 3px; }
-    .gauge-foot b { color: #fff; }
+    .disc-cycle-main { position: relative; z-index: 2; font-size: 10.5px; font-weight: 900; color: #fff; line-height: 1.15; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.98); }
+    .disc-cycle-sub { position: relative; z-index: 2; font-size: 7.4px; font-weight: 800; color: #e8f8ff; line-height: 1.15; margin-top: 2px; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.98); }
 
     .telemetry-panel { display: flex; flex-direction: column; gap: 4px; background: rgba(10, 17, 27, 0.78); border: 1px solid rgba(34, 55, 82, 0.9); border-radius: 12px; padding: 4px 7px; flex-shrink: 0; }
     .status-center-wrap { display: flex; justify-content: center; }
@@ -175,30 +177,33 @@
     </div>
 
     <div class="gauges-row">
+      <!-- مربع سحب اليوم (اليمين) -->
       <div class="gauge-card">
-        <div class="gauge-head">📊 سحب اليوم (in1)</div>
-        <div class="disc-stage">
-          <div class="neon-disc" id="dailyDisc" style="--pct:0%;">
-            <span class="disc-main-val" id="dailyGbVal">0.0 GB</span>
-            <span class="disc-sub-val" id="dailyPctVal">0%</span>
-          </div>
-          <button type="button" class="btn-renew-side" onclick="openCycleModal()">
+        <div class="gauge-info-col">
+          <div class="gauge-title-side">📊 سحب اليوم (in1)</div>
+          <button type="button" class="btn-renew-inline" onclick="openCycleModal()">
             <span>📅</span>
             <span id="startBadge">البداية</span>
           </button>
+          <div class="gauge-sub-line">المعدل: <b>25.0 GB</b></div>
         </div>
-        <div class="gauge-foot">المعدل اليومي: <b>25.0 GB</b></div>
+        <div class="neon-disc" id="dailyDisc" style="--pct:0%;">
+          <span class="disc-main-val" id="dailyGbVal">0.0 GB</span>
+          <span class="disc-sub-val" id="dailyPctVal">0%</span>
+        </div>
       </div>
 
+      <!-- مربع الباقة (الشمال) -->
       <div class="gauge-card">
-        <div class="gauge-head">📦 الباقة (30 يوم / 750G)</div>
-        <div class="disc-stage">
-          <div class="neon-disc" id="cycleDisc" style="--pct:0%;">
-            <span class="disc-cycle-main" id="daysRemVal">متبقي 30 يوم</span>
-            <span class="disc-cycle-sub">علي انتهاء وقت الباقة</span>
-          </div>
+        <div class="gauge-info-col">
+          <div class="gauge-title-side">📦 الباقة 30 يوم</div>
+          <div class="gauge-sub-line">متبقي: <b id="cycleRemGbVal">750 GB</b></div>
+          <div class="gauge-sub-line">مسحوب: <b id="cycleUsedGbVal">0 GB</b> (<span id="cyclePctVal">0%</span>)</div>
         </div>
-        <div class="gauge-foot">متبقي: <b id="cycleRemGbVal">750 GB</b> (<span id="cyclePctVal">0%</span>)</div>
+        <div class="neon-disc" id="cycleDisc" style="--pct:0%;">
+          <span class="disc-cycle-main" id="daysRemVal">متبقي 30 يوم</span>
+          <span class="disc-cycle-sub">علي انتهاء وقت الباقة</span>
+        </div>
       </div>
     </div>
 
@@ -280,19 +285,27 @@
     if (tg) { tg.ready(); tg.expand(); }
 
     const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
-    let syncTimer = null;
+    let syncLoopId = null;
+    let isPageActive = true;
     let lastStatusObj = null;
 
     function stopLiveSync() {
-      if (syncTimer) { clearInterval(syncTimer); syncTimer = null; }
+      isPageActive = false;
+      if (syncLoopId) { clearTimeout(syncLoopId); syncLoopId = null; }
+    }
+
+    async function runFastSyncLoop() {
+      if (!isPageActive || document.hidden) return;
+      await loadLiveStats();
+      if (isPageActive && !document.hidden) {
+        syncLoopId = setTimeout(runFastSyncLoop, 800);
+      }
     }
 
     function startLiveSync() {
       stopLiveSync();
-      if (!document.hidden) {
-        loadLiveStats();
-        syncTimer = setInterval(loadLiveStats, 2000);
-      }
+      isPageActive = true;
+      if (!document.hidden) runFastSyncLoop();
     }
 
     function go(page) { stopLiveSync(); window.location.href = page; }
@@ -478,6 +491,7 @@
           const remCycleGB = Math.max(0, 750 - cycleGB);
           const cyclePct = Math.min(100, Math.round((cycleGB / 750) * 100));
           document.getElementById('cycleRemGbVal').innerText = `${remCycleGB.toFixed(0)} GB`;
+          document.getElementById('cycleUsedGbVal').innerText = `${cycleGB.toFixed(0)} GB`;
           document.getElementById('cyclePctVal').innerText = `${cyclePct}%`;
 
           let diffSec = 999999;
