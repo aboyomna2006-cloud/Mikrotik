@@ -115,6 +115,7 @@
       min-height: 104px;
       transition: all 0.36s cubic-bezier(0.22, 1, 0.36, 1);
       user-select: none;
+      cursor: pointer;
     }
 
     .gauge-info-col {
@@ -168,7 +169,6 @@
       100% { opacity: 1; filter: brightness(1.45); }
     }
 
-    /* خلفية ضبابية عند تكبير الدائرة اليمين */
     .zoom-backdrop {
       position: fixed; inset: 0;
       background: rgba(4, 9, 16, 0.82);
@@ -181,16 +181,16 @@
       opacity: 1; pointer-events: auto;
     }
 
-    /* حالة تكبير كارت سحب اليوم (اليمين) لـ ~88% من الشاشة */
+    /* حالة التكبير لكارت سحب اليوم */
     #dailyCard.is-expanded {
       position: fixed;
-      inset: 5.5dvh 4.5vw;
+      inset: 6dvh 5vw;
       z-index: 950;
       border-radius: 24px;
       border: 2px solid rgba(0, 229, 255, 0.65);
       background: linear-gradient(180deg, #16283e 0%, #0a121d 100%);
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.92), 0 0 32px rgba(0, 229, 255, 0.25);
-      padding: 22px 20px;
+      padding: 24px 20px;
       flex-direction: column-reverse;
       justify-content: center;
       align-items: center;
@@ -327,11 +327,11 @@
     </div>
 
     <div class="gauges-row">
-      <!-- مربع سحب اليوم (اليمين - قابل للتكبير والتصغير بالضغط مرتين) -->
+      <!-- مربع سحب اليوم (اليمين - قابل للتكبير والتصغير بالضغط مرتين في أي مكان) -->
       <div class="gauge-card" id="dailyCard">
         <div class="gauge-info-col">
           <div class="gauge-title-side">📊 سحب اليوم (in1)</div>
-          <button type="button" class="btn-renew-inline" id="btnCycleEdit" onclick="event.stopPropagation(); openCycleModal()">
+          <button type="button" class="btn-renew-inline" id="btnCycleEdit" onclick="openCycleModal()">
             <span>📅</span>
             <span id="startBadge">البداية</span>
           </button>
@@ -436,7 +436,7 @@
     let isPageActive = true;
     let lastStatusObj = null;
 
-    // التحكم في تكبير وتصغير كارت الدائرة اليمين بالضغط مرتين
+    // تفعيل الضغط مرتين في أي مكان على كارت سحب اليوم للتكبير والتصغير
     const dailyCardEl = document.getElementById('dailyCard');
     const zoomBackdropEl = document.getElementById('zoomBackdrop');
     let lastCardTapTime = 0;
@@ -456,9 +456,10 @@
     }
 
     dailyCardEl.addEventListener('click', (e) => {
+      // السماح بزر البداية بالعمل طبيعياً بدون تعارض
       if (e.target.closest('#btnCycleEdit')) return;
       const now = Date.now();
-      if (now - lastCardTapTime < 340) {
+      if (now - lastCardTapTime < 350) {
         toggleDailyCardExpand();
         lastCardTapTime = 0;
       } else {
@@ -466,14 +467,8 @@
       }
     });
 
-    zoomBackdropEl.addEventListener('click', (e) => {
-      const now = Date.now();
-      if (now - lastCardTapTime < 340) {
-        toggleDailyCardExpand(false);
-        lastCardTapTime = 0;
-      } else {
-        lastCardTapTime = now;
-      }
+    zoomBackdropEl.addEventListener('click', () => {
+      toggleDailyCardExpand(false);
     });
 
     function stopLiveSync() {
@@ -588,7 +583,6 @@
     }
     updateCycle30DaysUI(cycleStartDate);
 
-    // تحديث نص زر البداية تلقائياً عند التكبير أو التصغير
     const observer = new MutationObserver(() => updateStartButtonLabels(cycleStartDate));
     observer.observe(dailyCardEl, { attributes: true, attributeFilter: ['class'] });
 
