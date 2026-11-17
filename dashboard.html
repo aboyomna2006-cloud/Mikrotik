@@ -37,37 +37,35 @@
       width: 100%; max-width: 450px; height: 100%;
       background: linear-gradient(180deg, #111e2f 0%, #0b131e 100%);
       border: 1.5px solid var(--border); border-radius: 20px;
-      padding: 5px 10px 7px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+      padding: 4px 10px 7px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
       display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
     }
 
-    .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; }
-    .embossed-title-wrap { flex: 1; text-align: right; }
+    .hero-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; }
+    .embossed-title-wrap { flex: 1; text-align: right; margin-top: -2px; padding-bottom: 6px; }
     .title-line-1 {
-      font-size: 22px; font-weight: 900; line-height: 1.08;
+      font-size: 21px; font-weight: 900; line-height: 1.15;
       background: linear-gradient(180deg, #ffffff 15%, #b8e8f8 55%, #4fa3c7 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 2px 1px rgba(10, 22, 36, 0.98)) drop-shadow(0 0 14px rgba(0, 229, 255, 0.42));
     }
     .title-line-2 {
-      font-size: 34px; font-weight: 900; line-height: 1.04;
+      font-size: 32px; font-weight: 900; line-height: 1.22; padding-bottom: 4px;
       background: linear-gradient(180deg, #ffffff 10%, #ccf5ff 48%, #54c5d0 78%, #267d8e 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 22px rgba(0, 229, 255, 0.55));
+      filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
 
     .router-box { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-    .router-visual { width: 122px; height: 96px; display: flex; align-items: center; justify-content: center; }
+    .router-visual { width: 138px; height: 106px; display: flex; align-items: center; justify-content: center; }
     .router-visual img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
 
     .ros-badge {
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      font-size: 11px; font-weight: 800; letter-spacing: 0.3px;
-      color: #ffffff; background: rgba(0, 229, 255, 0.12);
-      border: 1px solid rgba(0, 229, 255, 0.4);
-      padding: 1px 8px; border-radius: 7px; margin-top: -2px;
-      direction: ltr; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
-      box-shadow: 0 0 10px rgba(0, 229, 255, 0.22);
+      font-size: 11.5px; font-weight: 800; letter-spacing: 0.3px;
+      color: #ffffff; background: transparent; border: none;
+      padding: 0; margin-top: -3px;
+      direction: ltr; text-shadow: 0 1px 5px rgba(0, 0, 0, 0.95);
     }
     .ros-badge span { color: var(--cyan); font-weight: 900; }
 
@@ -84,18 +82,21 @@
     }
 
     .gauge-head { height: 18px; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: var(--cyan); }
-    .disc-stage { position: relative; width: 100%; height: 82px; display: flex; align-items: center; justify-content: center; }
+    .disc-stage { position: relative; width: 100%; height: 86px; display: flex; align-items: center; justify-content: center; }
 
     .neon-disc {
-      position: relative; width: 82px; height: 82px; border-radius: 50%;
+      position: relative; width: 86px; height: 86px; border-radius: 50%;
       background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
       box-shadow: 0 0 16px rgba(255, 23, 68, 0.38), 0 0 14px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; padding: 4px; text-align: center;
     }
     .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.26), transparent 60%); pointer-events: none; }
 
     .disc-main-val { position: relative; z-index: 2; font-size: 15.5px; font-weight: 900; color: #fff; line-height: 1.05; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95); direction: ltr; }
     .disc-sub-val { position: relative; z-index: 2; font-size: 9.5px; font-weight: 900; color: #e8f8ff; background: rgba(7, 13, 20, 0.68); padding: 0 5px; border-radius: 7px; margin-top: 2px; direction: ltr; }
+
+    .disc-cycle-main { position: relative; z-index: 2; font-size: 11.5px; font-weight: 900; color: #fff; line-height: 1.15; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.98); }
+    .disc-cycle-sub { position: relative; z-index: 2; font-size: 8.2px; font-weight: 800; color: #e8f8ff; line-height: 1.15; margin-top: 2px; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.98); }
 
     .btn-renew-side {
       position: absolute; left: 2px; top: 50%; transform: translateY(-50%);
@@ -193,8 +194,8 @@
         <div class="gauge-head">📦 الباقة (30 يوم / 750G)</div>
         <div class="disc-stage">
           <div class="neon-disc" id="cycleDisc" style="--pct:0%;">
-            <span class="disc-main-val" id="daysRemVal">30 يوم</span>
-            <span class="disc-sub-val" id="cycleGbVal">0 / 750</span>
+            <span class="disc-cycle-main" id="daysRemVal">متبقي 30 يوم</span>
+            <span class="disc-cycle-sub">علي انتهاء وقت الباقة</span>
           </div>
         </div>
         <div class="gauge-foot">متبقي: <b id="cycleRemGbVal">750 GB</b> (<span id="cyclePctVal">0%</span>)</div>
@@ -290,7 +291,7 @@
       stopLiveSync();
       if (!document.hidden) {
         loadLiveStats();
-        syncTimer = setInterval(loadLiveStats, 3000);
+        syncTimer = setInterval(loadLiveStats, 2000);
       }
     }
 
@@ -376,7 +377,7 @@
       const elapsed = Math.max(0, Math.min(30, Math.floor((todayMid - start) / 86400000)));
       const remaining = Math.max(0, 30 - elapsed);
       const pctElapsed = Math.min(100, Math.round((elapsed / 30) * 100));
-      document.getElementById('daysRemVal').innerText = `${remaining} يوم`;
+      document.getElementById('daysRemVal').innerText = `متبقي ${remaining} يوم`;
       document.getElementById('cycleDisc').style.setProperty('--pct', `${pctElapsed}%`);
     }
     updateCycle30DaysUI(cycleStartDate);
@@ -476,7 +477,6 @@
           const cycleGB = ((st.cycle_mb || st.day_mb || 0) / 1024);
           const remCycleGB = Math.max(0, 750 - cycleGB);
           const cyclePct = Math.min(100, Math.round((cycleGB / 750) * 100));
-          document.getElementById('cycleGbVal').innerText = `${cycleGB.toFixed(0)} / 750`;
           document.getElementById('cycleRemGbVal').innerText = `${remCycleGB.toFixed(0)} GB`;
           document.getElementById('cyclePctVal').innerText = `${cyclePct}%`;
 
@@ -486,7 +486,7 @@
             if (!isNaN(parsed)) diffSec = Math.floor((Date.now() - parsed) / 1000);
           }
 
-          if (diffSec <= 600) {
+          if (diffSec <= 120) {
             isServerOnline = true;
             pill.classList.remove('offline');
             clockBox.classList.remove('frozen');
@@ -505,7 +505,7 @@
             pill.classList.add('offline');
             clockBox.classList.add('frozen');
             uptimeBox.classList.add('frozen');
-            statusTxt.innerText = "السيرفر مفصول حالياً (انقطاع كهرباء)";
+            statusTxt.innerText = "السيرفر مفصول حالياً";
             document.getElementById('srvClock').innerText = st.time || "--:--:--";
             if (st.uptime) { uptimeTotalSeconds = parseUptimeToSeconds(st.uptime); renderUptime(); }
             document.getElementById('activeUsers').innerText = "0";
