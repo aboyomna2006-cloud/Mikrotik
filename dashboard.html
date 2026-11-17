@@ -109,24 +109,35 @@
     }
 
     .gauge-card {
+      position: relative;
       background: linear-gradient(180deg, #132133 0%, #0b131e 100%);
       border: 1px solid rgba(76, 114, 153, 0.32); border-radius: 12px;
       padding: 6px 7px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 5px;
       min-height: 104px;
       transition: all 0.36s cubic-bezier(0.22, 1, 0.36, 1);
-      user-select: none;
-      cursor: pointer;
     }
 
     .gauge-info-col {
       flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px; text-align: right;
     }
 
-    .gauge-title-side { font-size: 10.5px; font-weight: 900; color: var(--cyan); line-height: 1.2; }
+    .gauge-title-side { font-size: 10.5px; font-weight: 900; color: var(--cyan); line-height: 1.2; display: flex; align-items: center; justify-content: space-between; width: 100%; }
     .gauge-sub-line { font-size: 9px; font-weight: 800; color: var(--text-sub); line-height: 1.25; }
     .gauge-sub-line b { color: #ffffff; font-weight: 900; }
     .gauge-highlight-line { font-size: 9.2px; font-weight: 900; color: #5cffaa; line-height: 1.25; }
     .expanded-only-line { display: none; }
+
+    /* زر التكبير الصغير في زاوية الكارت */
+    .btn-zoom-card {
+      background: rgba(0, 229, 255, 0.15);
+      border: 1px solid rgba(0, 229, 255, 0.5);
+      color: var(--cyan); border-radius: 6px;
+      width: 22px; height: 22px; font-size: 11px; font-weight: 900;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+    .btn-zoom-card:active { transform: scale(0.9); }
 
     .btn-renew-inline {
       background: linear-gradient(180deg, rgba(255, 171, 0, 0.25), rgba(255, 140, 0, 0.14));
@@ -181,7 +192,7 @@
       opacity: 1; pointer-events: auto;
     }
 
-    /* حالة التكبير لكارت سحب اليوم */
+    /* حالة التكبير لكارت سحب اليوم عند الضغط على زر التكبير */
     #dailyCard.is-expanded {
       position: fixed;
       inset: 6dvh 5vw;
@@ -221,6 +232,7 @@
     }
     #dailyCard.is-expanded .gauge-title-side {
       font-size: 21px;
+      justify-content: center;
       margin-bottom: 2px;
     }
     #dailyCard.is-expanded .gauge-sub-line {
@@ -249,16 +261,10 @@
       background: linear-gradient(180deg, rgba(255, 171, 0, 0.3), rgba(255, 140, 0, 0.16));
       box-shadow: 0 6px 18px rgba(255, 171, 0, 0.25);
     }
-    .zoom-hint-badge {
-      display: none;
-      font-size: 11.5px;
-      font-weight: 700;
-      color: var(--text-sub);
-      margin-top: 2px;
-    }
-    #dailyCard.is-expanded .zoom-hint-badge {
-      display: block;
-      order: 11;
+    #dailyCard.is-expanded .btn-zoom-card {
+      background: rgba(255, 61, 113, 0.2);
+      border-color: rgba(255, 61, 113, 0.6);
+      color: #ff8fa3;
     }
 
     .telemetry-panel { display: flex; flex-direction: column; gap: 4px; background: transparent; border: none; padding: 2px 4px; flex-shrink: 0; }
@@ -304,7 +310,7 @@
 </head>
 <body>
 
-  <div class="zoom-backdrop" id="zoomBackdrop"></div>
+  <div class="zoom-backdrop" id="zoomBackdrop" onclick="toggleDailyCardExpand(false)"></div>
 
   <div class="hub-container">
     <div class="hero-header">
@@ -327,10 +333,13 @@
     </div>
 
     <div class="gauges-row">
-      <!-- مربع سحب اليوم (اليمين - قابل للتكبير والتصغير بالضغط مرتين في أي مكان) -->
+      <!-- مربع سحب اليوم (اليمين - مع زر تكبير واضح وصريح) -->
       <div class="gauge-card" id="dailyCard">
         <div class="gauge-info-col">
-          <div class="gauge-title-side">📊 سحب اليوم (in1)</div>
+          <div class="gauge-title-side">
+            <span>📊 سحب اليوم (in1)</span>
+            <button type="button" class="btn-zoom-card" id="btnZoomToggle" onclick="toggleDailyCardExpand()" title="تكبير/تصغير">🔍</button>
+          </div>
           <button type="button" class="btn-renew-inline" id="btnCycleEdit" onclick="openCycleModal()">
             <span>📅</span>
             <span id="startBadge">البداية</span>
@@ -338,7 +347,6 @@
           <div class="gauge-sub-line">السحب: <b id="dailyGbVal">0.0 GB</b> (<span id="dailyPctVal">0%</span>)</div>
           <div class="gauge-sub-line">المعدل: <b>25.0 GB</b></div>
           <div class="expanded-only-line">المتبقي اليوم: <b id="dailyRemExpandedVal">25.0 GB</b></div>
-          <div class="zoom-hint-badge">اضغط مرتين للرجوع</div>
         </div>
         <div class="neon-disc" id="dailyDisc" style="--pct:0%;">
           <div class="green-invert-layer"></div>
@@ -402,7 +410,7 @@
       <div class="action-card card-active" onclick="go('active.html?from=dash')">
         <div class="card-info">
           <div class="card-title">المشتركين النشطين</div>
-          <div class="card-desc">عرض المتصلين حالياً واستهلاكهم الفوري</div>
+          <div class="card-desc">عرض المتصلين حالياً واستتهلاكهم الفوري</div>
         </div>
         <div class="card-icon-box">📡</div>
       </div>
@@ -436,40 +444,24 @@
     let isPageActive = true;
     let lastStatusObj = null;
 
-    // تفعيل الضغط مرتين في أي مكان على كارت سحب اليوم للتكبير والتصغير
     const dailyCardEl = document.getElementById('dailyCard');
     const zoomBackdropEl = document.getElementById('zoomBackdrop');
-    let lastCardTapTime = 0;
 
     function toggleDailyCardExpand(forceState) {
       const nextState = typeof forceState === 'boolean' ? forceState : !dailyCardEl.classList.contains('is-expanded');
       if (nextState) {
         dailyCardEl.classList.add('is-expanded');
         zoomBackdropEl.classList.add('active');
+        document.getElementById('btnZoomToggle').innerText = "✕";
       } else {
         dailyCardEl.classList.remove('is-expanded');
         zoomBackdropEl.classList.remove('active');
+        document.getElementById('btnZoomToggle').innerText = "🔍";
       }
       if (tg && tg.HapticFeedback) {
         tg.HapticFeedback.impactOccurred('light');
       }
     }
-
-    dailyCardEl.addEventListener('click', (e) => {
-      // السماح بزر البداية بالعمل طبيعياً بدون تعارض
-      if (e.target.closest('#btnCycleEdit')) return;
-      const now = Date.now();
-      if (now - lastCardTapTime < 350) {
-        toggleDailyCardExpand();
-        lastCardTapTime = 0;
-      } else {
-        lastCardTapTime = now;
-      }
-    });
-
-    zoomBackdropEl.addEventListener('click', () => {
-      toggleDailyCardExpand(false);
-    });
 
     function stopLiveSync() {
       isPageActive = false;
