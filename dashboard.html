@@ -34,6 +34,7 @@
     body { padding: 4px 8px; display: flex; justify-content: center; align-items: stretch; }
 
     .hub-container {
+      position: relative;
       width: 100%; max-width: 450px; height: 100%;
       background: linear-gradient(180deg, #111e2f 0%, #0b131e 100%);
       border: 1.5px solid var(--border); border-radius: 20px;
@@ -56,7 +57,6 @@
       filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
 
-    /* حالة السيرفر سطر واحد بدون أي مستطيل مع عداد ثواني المزامنة الفعلي */
     .hero-status-row {
       display: inline-flex; align-items: center; gap: 6px; margin-top: 3px;
       background: transparent; border: none; padding: 0;
@@ -113,6 +113,8 @@
       border: 1px solid rgba(76, 114, 153, 0.32); border-radius: 12px;
       padding: 6px 7px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 5px;
       min-height: 104px;
+      transition: all 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+      user-select: none;
     }
 
     .gauge-info-col {
@@ -123,13 +125,16 @@
     .gauge-sub-line { font-size: 9px; font-weight: 800; color: var(--text-sub); line-height: 1.25; }
     .gauge-sub-line b { color: #ffffff; font-weight: 900; }
     .gauge-highlight-line { font-size: 9.2px; font-weight: 900; color: #5cffaa; line-height: 1.25; }
+    .expanded-only-line { display: none; }
 
     .btn-renew-inline {
       background: linear-gradient(180deg, rgba(255, 171, 0, 0.25), rgba(255, 140, 0, 0.14));
       border: 1px solid rgba(255, 171, 0, 0.65); color: var(--amber); border-radius: 8px;
       padding: 2px 8px; font-size: 9.5px; font-weight: 900; line-height: 1.2;
-      cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      transition: all 0.25s ease;
     }
+    .btn-renew-inline:active { transform: scale(0.95); }
 
     .neon-disc {
       position: relative; width: 64px; height: 64px; border-radius: 50%;
@@ -137,8 +142,17 @@
       box-shadow: 0 0 15px rgba(255, 23, 68, 0.38), 0 0 13px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
       flex-shrink: 0;
       overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      transition: width 0.36s cubic-bezier(0.22, 1, 0.36, 1), height 0.36s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; z-index: 3; }
+
+    .disc-center-pct {
+      display: none; position: relative; z-index: 4;
+      font-size: 28px; font-weight: 900; color: #ffffff;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 0 14px rgba(0, 229, 255, 0.55);
+      direction: ltr;
+    }
 
     .green-invert-layer {
       position: absolute; inset: 0; border-radius: 50%;
@@ -152,6 +166,99 @@
     @keyframes greenSliceInvert {
       0% { opacity: 0; filter: brightness(1); }
       100% { opacity: 1; filter: brightness(1.45); }
+    }
+
+    /* خلفية ضبابية عند تكبير الدائرة اليمين */
+    .zoom-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(4, 9, 16, 0.82);
+      backdrop-filter: blur(8px);
+      opacity: 0; pointer-events: none;
+      z-index: 900;
+      transition: opacity 0.32s ease;
+    }
+    .zoom-backdrop.active {
+      opacity: 1; pointer-events: auto;
+    }
+
+    /* حالة تكبير كارت سحب اليوم (اليمين) لـ ~88% من الشاشة */
+    #dailyCard.is-expanded {
+      position: fixed;
+      inset: 5.5dvh 4.5vw;
+      z-index: 950;
+      border-radius: 24px;
+      border: 2px solid rgba(0, 229, 255, 0.65);
+      background: linear-gradient(180deg, #16283e 0%, #0a121d 100%);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.92), 0 0 32px rgba(0, 229, 255, 0.25);
+      padding: 22px 20px;
+      flex-direction: column-reverse;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      animation: cardZoomIn 0.36s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes cardZoomIn {
+      0% { transform: scale(0.84); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #dailyCard.is-expanded .neon-disc {
+      width: 168px;
+      height: 168px;
+      box-shadow: 0 0 26px rgba(255, 23, 68, 0.45), 0 0 24px rgba(0, 255, 136, 0.42), inset 0 3px 10px rgba(255, 255, 255, 0.35);
+    }
+    #dailyCard.is-expanded .disc-center-pct {
+      display: block;
+    }
+
+    #dailyCard.is-expanded .gauge-info-col {
+      flex: none;
+      width: 100%;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+    }
+    #dailyCard.is-expanded .gauge-title-side {
+      font-size: 21px;
+      margin-bottom: 2px;
+    }
+    #dailyCard.is-expanded .gauge-sub-line {
+      font-size: 16px;
+      line-height: 1.45;
+      color: #c2d6ed;
+    }
+    #dailyCard.is-expanded .gauge-sub-line b {
+      font-size: 17px;
+      color: #ffffff;
+    }
+    #dailyCard.is-expanded .expanded-only-line {
+      display: block;
+      font-size: 16px;
+      font-weight: 800;
+      color: #5cffaa;
+      line-height: 1.45;
+    }
+    #dailyCard.is-expanded .btn-renew-inline {
+      order: 10;
+      margin-top: 8px;
+      padding: 10px 22px;
+      font-size: 15.5px;
+      border-radius: 13px;
+      border-width: 1.5px;
+      background: linear-gradient(180deg, rgba(255, 171, 0, 0.3), rgba(255, 140, 0, 0.16));
+      box-shadow: 0 6px 18px rgba(255, 171, 0, 0.25);
+    }
+    .zoom-hint-badge {
+      display: none;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+    #dailyCard.is-expanded .zoom-hint-badge {
+      display: block;
+      order: 11;
     }
 
     .telemetry-panel { display: flex; flex-direction: column; gap: 4px; background: transparent; border: none; padding: 2px 4px; flex-shrink: 0; }
@@ -197,6 +304,8 @@
 </head>
 <body>
 
+  <div class="zoom-backdrop" id="zoomBackdrop"></div>
+
   <div class="hub-container">
     <div class="hero-header">
       <div class="embossed-title-wrap">
@@ -218,19 +327,22 @@
     </div>
 
     <div class="gauges-row">
-      <!-- مربع سحب اليوم (اليمين) -->
-      <div class="gauge-card">
+      <!-- مربع سحب اليوم (اليمين - قابل للتكبير والتصغير بالضغط مرتين) -->
+      <div class="gauge-card" id="dailyCard">
         <div class="gauge-info-col">
           <div class="gauge-title-side">📊 سحب اليوم (in1)</div>
-          <button type="button" class="btn-renew-inline" onclick="openCycleModal()">
+          <button type="button" class="btn-renew-inline" id="btnCycleEdit" onclick="event.stopPropagation(); openCycleModal()">
             <span>📅</span>
             <span id="startBadge">البداية</span>
           </button>
           <div class="gauge-sub-line">السحب: <b id="dailyGbVal">0.0 GB</b> (<span id="dailyPctVal">0%</span>)</div>
           <div class="gauge-sub-line">المعدل: <b>25.0 GB</b></div>
+          <div class="expanded-only-line">المتبقي اليوم: <b id="dailyRemExpandedVal">25.0 GB</b></div>
+          <div class="zoom-hint-badge">اضغط مرتين للرجوع</div>
         </div>
         <div class="neon-disc" id="dailyDisc" style="--pct:0%;">
           <div class="green-invert-layer"></div>
+          <span class="disc-center-pct" id="dailyCenterPct">0%</span>
         </div>
       </div>
 
@@ -324,6 +436,46 @@
     let isPageActive = true;
     let lastStatusObj = null;
 
+    // التحكم في تكبير وتصغير كارت الدائرة اليمين بالضغط مرتين
+    const dailyCardEl = document.getElementById('dailyCard');
+    const zoomBackdropEl = document.getElementById('zoomBackdrop');
+    let lastCardTapTime = 0;
+
+    function toggleDailyCardExpand(forceState) {
+      const nextState = typeof forceState === 'boolean' ? forceState : !dailyCardEl.classList.contains('is-expanded');
+      if (nextState) {
+        dailyCardEl.classList.add('is-expanded');
+        zoomBackdropEl.classList.add('active');
+      } else {
+        dailyCardEl.classList.remove('is-expanded');
+        zoomBackdropEl.classList.remove('active');
+      }
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+      }
+    }
+
+    dailyCardEl.addEventListener('click', (e) => {
+      if (e.target.closest('#btnCycleEdit')) return;
+      const now = Date.now();
+      if (now - lastCardTapTime < 340) {
+        toggleDailyCardExpand();
+        lastCardTapTime = 0;
+      } else {
+        lastCardTapTime = now;
+      }
+    });
+
+    zoomBackdropEl.addEventListener('click', (e) => {
+      const now = Date.now();
+      if (now - lastCardTapTime < 340) {
+        toggleDailyCardExpand(false);
+        lastCardTapTime = 0;
+      } else {
+        lastCardTapTime = now;
+      }
+    });
+
     function stopLiveSync() {
       isPageActive = false;
       if (syncLoopId) { clearTimeout(syncLoopId); syncLoopId = null; }
@@ -361,6 +513,12 @@
     function formatShortBadge(isoStr) {
       const parts = String(isoStr).replace(/\//g, '-').split('-');
       return parts.length === 3 ? `${parseInt(parts[2], 10)}/${parseInt(parts[1], 10)}` : 'البداية';
+    }
+
+    function updateStartButtonLabels(isoStr) {
+      const shortDate = formatShortBadge(isoStr);
+      const isExpanded = dailyCardEl.classList.contains('is-expanded');
+      document.getElementById('startBadge').innerText = isExpanded ? `تعديل بداية الباقة (${shortDate})` : shortDate;
     }
 
     function openCycleModal() {
@@ -416,7 +574,7 @@
     }
 
     function updateCycle30DaysUI(isoStart) {
-      document.getElementById('startBadge').innerText = formatShortBadge(isoStart);
+      updateStartButtonLabels(isoStart);
       const parts = String(isoStart).replace(/\//g, '-').split('-');
       if (parts.length !== 3) return;
       const start = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
@@ -429,6 +587,10 @@
       document.getElementById('cycleDisc').style.setProperty('--pct', `${pctElapsed}%`);
     }
     updateCycle30DaysUI(cycleStartDate);
+
+    // تحديث نص زر البداية تلقائياً عند التكبير أو التصغير
+    const observer = new MutationObserver(() => updateStartButtonLabels(cycleStartDate));
+    observer.observe(dailyCardEl, { attributes: true, attributeFilter: ['class'] });
 
     async function fetchGitHubJsonNoCache(fileName) {
       const url = `https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/${fileName}?ref=main&_=${Date.now()}`;
@@ -537,6 +699,8 @@
           const dailyDiscEl = document.getElementById('dailyDisc');
           document.getElementById('dailyGbVal').innerText = `${dayGB.toFixed(1)} GB`;
           document.getElementById('dailyPctVal').innerText = `${dailyPct}%`;
+          document.getElementById('dailyCenterPct').innerText = `${dailyPct}%`;
+          document.getElementById('dailyRemExpandedVal').innerText = `${dailyRemGB.toFixed(1)} GB`;
           dailyDiscEl.style.setProperty('--pct', `${dailyPct}%`);
           if (dailyRemGB <= 3.0) {
             dailyDiscEl.classList.add('low-quota-warn');
@@ -573,7 +737,6 @@
             statusTxt.innerText = "السيرفر نشط الآن";
             renderCairoClock();
 
-            // إذا وصل طابع زمني جديد فعلياً من الراوتر، صفّر العداد فوراً لـ 00 مع فلاش أخضر!
             if (currentStamp !== lastRouterStamp) {
               const isFirstLoad = (lastRouterStamp === "");
               lastRouterStamp = currentStamp;
