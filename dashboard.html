@@ -42,22 +42,55 @@
     }
 
     .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; }
-    .embossed-title-wrap { flex: 1; text-align: right; padding-right: 14px; padding-top: 8px; }
+    .embossed-title-wrap { flex: 1; text-align: right; padding-right: 10px; padding-top: 4px; display: flex; flex-direction: column; align-items: flex-start; }
     .title-line-1 {
-      font-size: 21px; font-weight: 900; line-height: 1.15;
+      font-size: 20px; font-weight: 900; line-height: 1.1;
       background: linear-gradient(180deg, #ffffff 15%, #b8e8f8 55%, #4fa3c7 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 2px 1px rgba(10, 22, 36, 0.98)) drop-shadow(0 0 14px rgba(0, 229, 255, 0.42));
     }
     .title-line-2 {
-      font-size: 32px; font-weight: 900; line-height: 1.22; padding-bottom: 4px;
+      font-size: 31px; font-weight: 900; line-height: 1.15; padding-bottom: 4px;
       background: linear-gradient(180deg, #ffffff 10%, #ccf5ff 48%, #54c5d0 78%, #267d8e 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
 
+    /* شارة حالة السيرفر المكبرة تحت الاسم مع مؤشر الثانية 1 */
+    .hero-status-row {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 2px;
+      background: rgba(0, 230, 118, 0.16); border: 1.5px solid rgba(0, 230, 118, 0.55);
+      color: #5cffaa; padding: 3px 10px; border-radius: 18px;
+      font-size: 12px; font-weight: 900; box-shadow: 0 0 14px rgba(0, 230, 118, 0.25);
+    }
+    .hero-status-row.offline {
+      background: rgba(255, 23, 68, 0.2); border-color: rgba(255, 61, 113, 0.65);
+      color: #ff6b8b; box-shadow: 0 0 14px rgba(255, 23, 68, 0.25);
+    }
+    .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #00ff88; animation: pulse 1.2s infinite; flex-shrink: 0; }
+    .hero-status-row.offline .pulse-dot { background: #ff1744; animation: none; }
+
+    .sec-tick-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 19px; height: 19px; padding: 0 4px; border-radius: 50%;
+      background: rgba(0, 229, 255, 0.22); border: 1px solid var(--cyan);
+      color: #ffffff; font-family: system-ui, sans-serif; font-size: 11px; font-weight: 900;
+      direction: ltr; transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .sec-tick-badge.flash {
+      transform: scale(1.22);
+      background: var(--cyan);
+      color: #06101a;
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .hero-status-row.offline .sec-tick-badge {
+      background: rgba(255, 61, 113, 0.2); border-color: #ff6b8b; color: #ff8fa3;
+    }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
     .router-box { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-    .router-visual { width: 152px; height: 114px; display: flex; align-items: center; justify-content: center; }
+    .router-visual { width: 146px; height: 110px; display: flex; align-items: center; justify-content: center; }
     .router-visual img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
 
     .ros-badge {
@@ -103,25 +136,42 @@
       background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
       box-shadow: 0 0 15px rgba(255, 23, 68, 0.38), 0 0 13px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
       flex-shrink: 0;
+      overflow: hidden;
     }
-    .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; }
+    .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; z-index: 2; }
 
-    .telemetry-panel { display: flex; flex-direction: column; gap: 4px; background: rgba(10, 17, 27, 0.78); border: 1px solid rgba(34, 55, 82, 0.9); border-radius: 12px; padding: 4px 7px; flex-shrink: 0; }
-    .status-center-wrap { display: flex; justify-content: center; }
-    .status-pill { display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 230, 118, 0.16); border: 1px solid rgba(0, 230, 118, 0.5); color: #5cffaa; padding: 1px 12px; border-radius: 16px; font-size: 10.5px; font-weight: 900; }
-    .status-pill.offline { background: rgba(255, 23, 68, 0.2); border-color: rgba(255, 61, 113, 0.65); color: #ff6b8b; }
-    .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #00ff88; animation: pulse 1.5s infinite; }
-    .status-pill.offline .pulse-dot { background: #ff1744; animation: none; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    /* طبقة الفلاش المتداخل للجزء الأخضر المتبقي عند الاقتراب من 3 جيجا */
+    .green-flash-layer {
+      position: absolute; inset: 0; border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent 0%, transparent var(--pct, 0%), #b9ffdf var(--pct, 0%), #00ff88 100%);
+      opacity: 0; pointer-events: none; z-index: 1;
+    }
+    .neon-disc.low-quota-warn {
+      animation: discHaloFlash 0.85s ease-in-out infinite alternate;
+    }
+    .neon-disc.low-quota-warn .green-flash-layer {
+      animation: greenSliceFlash 0.55s ease-in-out infinite alternate;
+    }
 
-    .dual-embossed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .embossed-box { background: linear-gradient(180deg, #162436 0%, #0b131e 100%); border: 1px solid rgba(76, 114, 153, 0.35); border-radius: 8px; padding: 2px 5px; text-align: center; direction: ltr; }
-    .embossed-box .e-lbl { display: block; font-size: 8.5px; font-weight: 800; color: #7d9ec0; line-height: 1.1; }
-    .embossed-box .e-val { display: block; font-size: 12px; font-weight: 900; color: #e4f3ff; line-height: 1.15; }
-    .embossed-box.frozen .e-val { color: #ff8fa3; }
+    @keyframes greenSliceFlash {
+      0% { opacity: 0.05; filter: brightness(0.85); }
+      100% { opacity: 0.98; filter: brightness(1.65) drop-shadow(0 0 8px #00ff88); }
+    }
+    @keyframes discHaloFlash {
+      0% { box-shadow: 0 0 12px rgba(255, 23, 68, 0.4), 0 0 8px rgba(0, 255, 136, 0.35); }
+      100% { box-shadow: 0 0 16px rgba(255, 23, 68, 0.45), 0 0 24px rgba(0, 255, 136, 0.95), 0 0 34px rgba(185, 255, 223, 0.75); }
+    }
 
-    .quick-stats { display: flex; justify-content: space-around; font-size: 10.5px; font-weight: 800; color: var(--text-sub); padding-top: 2px; border-top: 1px dashed rgba(255, 255, 255, 0.08); }
-    .quick-stats span b { color: var(--green); font-size: 12px; }
+    /* قسم الوقت بدون إطار وبخط أكبر */
+    .telemetry-panel { display: flex; flex-direction: column; gap: 4px; background: transparent; border: none; padding: 2px 4px; flex-shrink: 0; }
+    .dual-embossed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .embossed-box { background: rgba(16, 28, 44, 0.55); border: none; border-radius: 10px; padding: 4px 6px; text-align: center; direction: ltr; }
+    .embossed-box .e-lbl { display: block; font-size: 10px; font-weight: 800; color: #8fb3d9; line-height: 1.15; }
+    .embossed-box .e-val { display: block; font-size: 16px; font-weight: 900; color: #ffffff; line-height: 1.2; letter-spacing: 0.4px; text-shadow: 0 0 10px rgba(0, 229, 255, 0.3); }
+    .embossed-box.frozen .e-val { color: #ff8fa3; text-shadow: none; }
+
+    .quick-stats { display: flex; justify-content: space-around; font-size: 11.5px; font-weight: 800; color: var(--text-sub); padding-top: 3px; }
+    .quick-stats span b { color: var(--green); font-size: 13.5px; }
 
     .cards-stack { display: flex; flex-direction: column; justify-content: space-between; gap: 4px; flex: 1; }
     .action-card { flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 3px 11px; border-radius: 11px; background: var(--glass-bg); cursor: pointer; }
@@ -161,6 +211,11 @@
       <div class="embossed-title-wrap">
         <div class="title-line-1">شبكة إنترنت</div>
         <div class="title-line-2">أبو يمنى</div>
+        <div class="hero-status-row" id="serverStatusPill">
+          <span class="pulse-dot"></span>
+          <span id="serverStatusText">جاري فحص السيرفر...</span>
+          <span class="sec-tick-badge" id="secTickBadge">1</span>
+        </div>
       </div>
 
       <div class="router-box">
@@ -183,7 +238,9 @@
           <div class="gauge-sub-line">السحب: <b id="dailyGbVal">0.0 GB</b> (<span id="dailyPctVal">0%</span>)</div>
           <div class="gauge-sub-line">المعدل: <b>25.0 GB</b></div>
         </div>
-        <div class="neon-disc" id="dailyDisc" style="--pct:0%;"></div>
+        <div class="neon-disc" id="dailyDisc" style="--pct:0%;">
+          <div class="green-flash-layer"></div>
+        </div>
       </div>
 
       <!-- مربع الباقة (الشمال) -->
@@ -194,17 +251,13 @@
           <div class="gauge-sub-line">متبقي: <b id="cycleRemGbVal">750 GB</b></div>
           <div class="gauge-sub-line">مسحوب: <b id="cycleUsedGbVal">0 GB</b> (<span id="cyclePctVal">0%</span>)</div>
         </div>
-        <div class="neon-disc" id="cycleDisc" style="--pct:0%;"></div>
+        <div class="neon-disc" id="cycleDisc" style="--pct:0%;">
+          <div class="green-flash-layer"></div>
+        </div>
       </div>
     </div>
 
     <div class="telemetry-panel">
-      <div class="status-center-wrap">
-        <div class="status-pill" id="serverStatusPill">
-          <span class="pulse-dot"></span>
-          <span id="serverStatusText">جاري فحص السيرفر...</span>
-        </div>
-      </div>
       <div class="dual-embossed-row">
         <div class="embossed-box" id="clockBox">
           <span class="e-lbl">🕒 ساعة السيرفر</span>
@@ -436,9 +489,18 @@
       });
     }
 
+    function pulseSecondTick() {
+      const tickEl = document.getElementById('secTickBadge');
+      if (!tickEl) return;
+      tickEl.innerText = "1";
+      tickEl.classList.add('flash');
+      setTimeout(() => tickEl.classList.remove('flash'), 250);
+    }
+
     setInterval(() => {
       if (!document.hidden && isServerOnline) {
         renderCairoClock();
+        pulseSecondTick();
         if (uptimeTotalSeconds !== null) { uptimeTotalSeconds += 1; renderUptime(); }
       }
     }, 1000);
@@ -471,19 +533,34 @@
             updateCycle30DaysUI(cycleStartDate);
           }
 
+          // سحب اليوم + تحذير فلاش متداخل للجزء الأخضر عند الاقتراب من 3 جيجا متبقية
           const dayGB = ((st.day_mb || 0) / 1024);
           const dailyQuota = 750 / 30;
+          const dailyRemGB = Math.max(0, dailyQuota - dayGB);
           const dailyPct = Math.min(100, Math.round((dayGB / dailyQuota) * 100));
+          const dailyDiscEl = document.getElementById('dailyDisc');
           document.getElementById('dailyGbVal').innerText = `${dayGB.toFixed(1)} GB`;
           document.getElementById('dailyPctVal').innerText = `${dailyPct}%`;
-          document.getElementById('dailyDisc').style.setProperty('--pct', `${dailyPct}%`);
+          dailyDiscEl.style.setProperty('--pct', `${dailyPct}%`);
+          if (dailyRemGB <= 3.0) {
+            dailyDiscEl.classList.add('low-quota-warn');
+          } else {
+            dailyDiscEl.classList.remove('low-quota-warn');
+          }
 
+          // الباقة 30 يوم + تحذير فلاش متداخل للجزء الأخضر عند الاقتراب من 3 جيجا متبقية
           const cycleGB = ((st.cycle_mb || st.day_mb || 0) / 1024);
           const remCycleGB = Math.max(0, 750 - cycleGB);
           const cyclePct = Math.min(100, Math.round((cycleGB / 750) * 100));
+          const cycleDiscEl = document.getElementById('cycleDisc');
           document.getElementById('cycleRemGbVal').innerText = `${remCycleGB.toFixed(0)} GB`;
           document.getElementById('cycleUsedGbVal').innerText = `${cycleGB.toFixed(0)} GB`;
           document.getElementById('cyclePctVal').innerText = `${cyclePct}%`;
+          if (remCycleGB <= 3.0) {
+            cycleDiscEl.classList.add('low-quota-warn');
+          } else {
+            cycleDiscEl.classList.remove('low-quota-warn');
+          }
 
           let diffSec = 999999;
           if (st.date && st.time) {
@@ -511,6 +588,7 @@
             clockBox.classList.add('frozen');
             uptimeBox.classList.add('frozen');
             statusTxt.innerText = "السيرفر مفصول حالياً";
+            document.getElementById('secTickBadge').innerText = "0";
             document.getElementById('srvClock').innerText = st.time || "--:--:--";
             if (st.uptime) { uptimeTotalSeconds = parseUptimeToSeconds(st.uptime); renderUptime(); }
             document.getElementById('activeUsers').innerText = "0";
