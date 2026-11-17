@@ -79,37 +79,32 @@
       background: linear-gradient(180deg, #132133 0%, #0b131e 100%);
       border: 1px solid rgba(76, 114, 153, 0.32); border-radius: 12px;
       padding: 6px 7px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 5px;
-      min-height: 98px;
+      min-height: 104px;
     }
 
     .gauge-info-col {
-      flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; text-align: right;
+      flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px; text-align: right;
     }
 
     .gauge-title-side { font-size: 10.5px; font-weight: 900; color: var(--cyan); line-height: 1.2; }
-    .gauge-sub-line { font-size: 9.5px; font-weight: 800; color: var(--text-sub); line-height: 1.25; }
+    .gauge-sub-line { font-size: 9px; font-weight: 800; color: var(--text-sub); line-height: 1.25; }
     .gauge-sub-line b { color: #ffffff; font-weight: 900; }
+    .gauge-highlight-line { font-size: 9.2px; font-weight: 900; color: #5cffaa; line-height: 1.25; }
 
     .btn-renew-inline {
       background: linear-gradient(180deg, rgba(255, 171, 0, 0.25), rgba(255, 140, 0, 0.14));
       border: 1px solid rgba(255, 171, 0, 0.65); color: var(--amber); border-radius: 8px;
-      padding: 2px 8px; font-size: 10px; font-weight: 900; line-height: 1.2;
+      padding: 2px 8px; font-size: 9.5px; font-weight: 900; line-height: 1.2;
       cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
     }
 
     .neon-disc {
-      position: relative; width: 74px; height: 74px; border-radius: 50%;
+      position: relative; width: 64px; height: 64px; border-radius: 50%;
       background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
       box-shadow: 0 0 15px rgba(255, 23, 68, 0.38), 0 0 13px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; padding: 3px; text-align: center;
+      flex-shrink: 0;
     }
-    .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.26), transparent 60%); pointer-events: none; }
-
-    .disc-main-val { position: relative; z-index: 2; font-size: 14px; font-weight: 900; color: #fff; line-height: 1.05; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95); direction: ltr; }
-    .disc-sub-val { position: relative; z-index: 2; font-size: 9px; font-weight: 900; color: #e8f8ff; background: rgba(7, 13, 20, 0.68); padding: 0 5px; border-radius: 7px; margin-top: 2px; direction: ltr; }
-
-    .disc-cycle-main { position: relative; z-index: 2; font-size: 10.5px; font-weight: 900; color: #fff; line-height: 1.15; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.98); }
-    .disc-cycle-sub { position: relative; z-index: 2; font-size: 7.4px; font-weight: 800; color: #e8f8ff; line-height: 1.15; margin-top: 2px; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.98); }
+    .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; }
 
     .telemetry-panel { display: flex; flex-direction: column; gap: 4px; background: rgba(10, 17, 27, 0.78); border: 1px solid rgba(34, 55, 82, 0.9); border-radius: 12px; padding: 4px 7px; flex-shrink: 0; }
     .status-center-wrap { display: flex; justify-content: center; }
@@ -185,25 +180,21 @@
             <span>📅</span>
             <span id="startBadge">البداية</span>
           </button>
+          <div class="gauge-sub-line">السحب: <b id="dailyGbVal">0.0 GB</b> (<span id="dailyPctVal">0%</span>)</div>
           <div class="gauge-sub-line">المعدل: <b>25.0 GB</b></div>
         </div>
-        <div class="neon-disc" id="dailyDisc" style="--pct:0%;">
-          <span class="disc-main-val" id="dailyGbVal">0.0 GB</span>
-          <span class="disc-sub-val" id="dailyPctVal">0%</span>
-        </div>
+        <div class="neon-disc" id="dailyDisc" style="--pct:0%;"></div>
       </div>
 
       <!-- مربع الباقة (الشمال) -->
       <div class="gauge-card">
         <div class="gauge-info-col">
           <div class="gauge-title-side">📦 الباقة 30 يوم</div>
+          <div class="gauge-highlight-line" id="daysRemVal">متبقي 30 يوم علي انتهاء الباقة</div>
           <div class="gauge-sub-line">متبقي: <b id="cycleRemGbVal">750 GB</b></div>
           <div class="gauge-sub-line">مسحوب: <b id="cycleUsedGbVal">0 GB</b> (<span id="cyclePctVal">0%</span>)</div>
         </div>
-        <div class="neon-disc" id="cycleDisc" style="--pct:0%;">
-          <span class="disc-cycle-main" id="daysRemVal">متبقي 30 يوم</span>
-          <span class="disc-cycle-sub">علي انتهاء وقت الباقة</span>
-        </div>
+        <div class="neon-disc" id="cycleDisc" style="--pct:0%;"></div>
       </div>
     </div>
 
@@ -390,7 +381,7 @@
       const elapsed = Math.max(0, Math.min(30, Math.floor((todayMid - start) / 86400000)));
       const remaining = Math.max(0, 30 - elapsed);
       const pctElapsed = Math.min(100, Math.round((elapsed / 30) * 100));
-      document.getElementById('daysRemVal').innerText = `متبقي ${remaining} يوم`;
+      document.getElementById('daysRemVal').innerText = `متبقي ${remaining} يوم علي انتهاء الباقة`;
       document.getElementById('cycleDisc').style.setProperty('--pct', `${pctElapsed}%`);
     }
     updateCycle30DaysUI(cycleStartDate);
