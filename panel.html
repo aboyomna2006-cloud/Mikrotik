@@ -56,7 +56,7 @@
     }
 
     /* الهيدر ثابت ومكان شبكة إنترنت أبو يمنى ثابت بالمللي */
-    .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; margin-bottom: 4px; }
+    .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; margin-bottom: 8px; }
     .embossed-title-wrap {
       flex: 1; text-align: right; padding-right: 14px; padding-top: 8px;
       position: relative;
@@ -74,11 +74,11 @@
       filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
 
-    /* تم إنزال جملة السيرفر يعمل الآن ونشط سيكة لتحت بدون تحريك العنوان */
+    /* تم إنزال جملة حالة السيرفر سيكة كمان لتحت بدون تحريك العنوان */
     .inline-status-line {
       position: absolute;
       right: 14px;
-      bottom: -20px;
+      bottom: -27px;
       display: inline-flex; align-items: center; gap: 6px;
       color: #5cffaa; font-size: 12px; font-weight: 900; line-height: 1;
       white-space: nowrap;
@@ -102,7 +102,6 @@
     }
     .ros-badge span { color: var(--cyan); font-weight: 900; }
 
-    /* صف الدائرتين بتصميم عمودي: العنوان سطر واحد فوق -> الدائرة -> البيانات المئوية تحت */
     .gauges-row {
       display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
       background: rgba(10, 17, 27, 0.84); border: 1px solid rgba(34, 55, 82, 0.95);
@@ -114,12 +113,13 @@
       border: 1px solid rgba(76, 114, 153, 0.32); border-radius: 12px;
       padding: 6px 5px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 4px;
       transition: transform 0.15s ease, border-color 0.15s ease;
+      overflow: hidden;
     }
     .gauge-card.holding { transform: scale(0.97); border-color: var(--cyan); }
 
     .gauge-header-row {
       width: 100%; display: flex; align-items: center; justify-content: center; gap: 4px;
-      white-space: nowrap; overflow: hidden;
+      white-space: nowrap; overflow: hidden; min-height: 21px; padding: 0 2px;
     }
 
     .gauge-title-side {
@@ -128,19 +128,28 @@
     }
 
     .gauge-highlight-line {
-      font-size: 12.2px; font-weight: 900; color: #5cffaa; line-height: 1.2;
+      font-size: 13px; font-weight: 900; color: #5cffaa; line-height: 1.2;
       white-space: nowrap; text-align: center; width: 100%;
-      letter-spacing: -0.2px;
     }
 
-    /* وميض أحمر قبل الانتهاء بيوم */
+    /* وميض أحمر لامع ومتوهج قبل الانتهاء بيوم */
     .gauge-highlight-line.urgent-blink {
-      color: #ff3d71;
-      animation: redUrgentBlink 0.9s infinite ease-in-out;
+      color: #ff1744;
+      animation: redUrgentBlink 0.75s infinite ease-in-out;
     }
     @keyframes redUrgentBlink {
-      0%, 100% { color: #ff2a5f; text-shadow: 0 0 10px rgba(255, 42, 95, 0.95); opacity: 1; }
-      50% { color: #ffb3c6; text-shadow: 0 0 2px rgba(255, 42, 95, 0.2); opacity: 0.45; }
+      0%, 100% {
+        color: #ff1744;
+        text-shadow: 0 0 8px #ff1744, 0 0 18px rgba(255, 23, 68, 0.98), 0 0 28px rgba(255, 61, 113, 0.85);
+        opacity: 1;
+        transform: scale(1.03);
+      }
+      50% {
+        color: #ff9eb5;
+        text-shadow: 0 0 2px rgba(255, 23, 68, 0.25);
+        opacity: 0.38;
+        transform: scale(0.98);
+      }
     }
 
     .gauge-bottom-stats {
@@ -223,14 +232,14 @@
       to { transform: scale(1); opacity: 1; }
     }
 
-    /* تكبير زر الإغلاق ومنطقة اللمس حوله */
+    /* زر الإغلاق مكبر ومنطقة لمس كبيرة */
     .zoom-close-btn {
       position: fixed; top: 18px; left: 18px;
-      width: 48px; height: 48px; border-radius: 50%;
-      background: rgba(255, 61, 113, 0.24); border: 2px solid rgba(255, 61, 113, 0.75);
-      color: #ff4d79; font-size: 22px; font-weight: 900;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(255, 61, 113, 0.26); border: 2px solid rgba(255, 61, 113, 0.8);
+      color: #ff4d79; font-size: 24px; font-weight: 900;
       display: flex; align-items: center; justify-content: center; cursor: pointer;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.75);
       z-index: 10020;
     }
     .zoom-close-btn:active { transform: scale(0.92); }
@@ -319,9 +328,9 @@
       </div>
 
       <!-- كارت الباقة الـ 30 يوم -->
-      <div class="gauge-card">
+      <div class="gauge-card" onclick="stopCalmSiren()">
         <div class="gauge-header-row">
-          <div class="gauge-highlight-line" id="daysRemVal">متبقي 30 يوم علي انتهاء الباقة</div>
+          <div class="gauge-highlight-line" id="daysRemVal">متبقي 30 يوم للباقة</div>
         </div>
         <div class="neon-disc" id="cycleDisc" style="--pct:0%;"></div>
         <div class="gauge-bottom-stats">
@@ -434,6 +443,59 @@
       if (e.target && e.target.tagName !== 'INPUT') e.preventDefault();
     });
 
+    /* صوت سارينة هادئة وناعمة عند التحذير (قبل الانتهاء بيوم) */
+    let sirenInterval = null;
+    let audioCtx = null;
+    let sirenMutedByUser = false;
+
+    function playGentleSirenPulse() {
+      if (document.hidden || sirenMutedByUser) return;
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        if (!audioCtx) audioCtx = new AudioContextClass();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(520, now);
+        osc.frequency.exponentialRampToValueAtTime(760, now + 0.35);
+        osc.frequency.exponentialRampToValueAtTime(520, now + 0.72);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(0.045, now + 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.74);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.75);
+      } catch (e) {}
+    }
+
+    function startCalmSiren() {
+      if (sirenInterval || sirenMutedByUser) return;
+      playGentleSirenPulse();
+      sirenInterval = setInterval(playGentleSirenPulse, 1500);
+    }
+
+    function stopCalmSiren(manualMute = false) {
+      if (manualMute) sirenMutedByUser = true;
+      if (sirenInterval) {
+        clearInterval(sirenInterval);
+        sirenInterval = null;
+      }
+    }
+
+    ['touchstart', 'click'].forEach(evt => {
+      document.addEventListener(evt, () => {
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+      }, { passive: true });
+    });
+
     const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
     let syncLoopId = null;
     let isPageActive = true;
@@ -441,6 +503,7 @@
 
     function stopLiveSync() {
       isPageActive = false;
+      stopCalmSiren(false);
       if (syncLoopId) { clearTimeout(syncLoopId); syncLoopId = null; }
     }
 
@@ -572,6 +635,7 @@
       btn.innerText = "⏳ جاري الحفظ...";
       btn.disabled = true;
 
+      sirenMutedByUser = false;
       cycleStartDate = chosen;
       localStorage.setItem('abo_yomna_cycle_start', chosen);
       updateCycle30DaysUI(chosen);
@@ -607,12 +671,14 @@
       const pctElapsed = Math.min(100, Math.round((elapsed / 30) * 100));
 
       const daysEl = document.getElementById('daysRemVal');
-      daysEl.innerText = `متبقي ${remaining} يوم علي انتهاء الباقة`;
+      daysEl.innerText = `متبقي ${remaining} يوم للباقة`;
 
       if (remaining <= 1) {
         daysEl.classList.add('urgent-blink');
+        startCalmSiren();
       } else {
         daysEl.classList.remove('urgent-blink');
+        stopCalmSiren(false);
       }
 
       document.getElementById('cycleDisc').style.setProperty('--pct', `${pctElapsed}%`);
