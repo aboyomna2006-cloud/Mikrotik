@@ -182,7 +182,7 @@
       opacity: 1; pointer-events: auto;
     }
 
-    /* حالة التكبير: مربع أنيق في المنتصف (بدون زر رجوع، الهولد يرجعه) */
+    /* حالة التكبير: مربع أنيق في المنتصف (الهولد يكبّره ويصغره) */
     #dailyCard.is-expanded {
       position: fixed;
       top: 50%; left: 50%;
@@ -321,7 +321,7 @@
     </div>
 
     <div class="gauges-row">
-      <!-- مربع سحب اليوم (اليمين - هولد للتكبير والتصغير) -->
+      <!-- مربع سحب اليوم (اليمين - هولد مضمون للتكبير والتصغير) -->
       <div class="gauge-card" id="dailyCard">
         <div class="gauge-info-col">
           <div class="gauge-title-side">📊 سحب اليوم (in1)</div>
@@ -339,7 +339,7 @@
         </div>
       </div>
 
-      <!-- مربع الباقة (الشمال - بدون عنوان الباقة 30 يوم وبخطوط كبيرة واضحة) -->
+      <!-- مربع الباقة (الشمال - بدون عنوان 30 يوم تماماً) -->
       <div class="gauge-card">
         <div class="gauge-info-col">
           <div class="gauge-highlight-line" id="daysRemVal">متبقي 30 يوم</div>
@@ -430,7 +430,7 @@
 
     const dailyCardEl = document.getElementById('dailyCard');
     const zoomBackdropEl = document.getElementById('zoomBackdrop');
-    let holdTimer = null;
+    let pressTimer = null;
 
     function toggleDailyCardExpand(forceState) {
       const nextState = typeof forceState === 'boolean' ? forceState : !dailyCardEl.classList.contains('is-expanded');
@@ -446,29 +446,22 @@
       }
     }
 
-    // تفعيل الضغط المطول (Hold) للتكبير والتصغير بلمسة واحدة
-    dailyCardEl.addEventListener('touchstart', (e) => {
-      if (e.target.closest('#btnCycleEdit')) return;
-      holdTimer = setTimeout(() => {
+    // تفعيل ضغط مطول دقيق ومضمون للموبايل
+    function startPress(e) {
+      if (e.target.closest('#btnCycleEdit') || e.target.closest('button')) return;
+      pressTimer = setTimeout(() => {
         toggleDailyCardExpand();
-      }, 550);
-    }, {passive: true});
+      }, 500); // نصف ثانية ضغط مستمر يكبر فوراً
+    }
 
-    dailyCardEl.addEventListener('touchend', () => {
-      if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
-    });
+    function cancelPress() {
+      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+    }
 
-    dailyCardEl.addEventListener('touchmove', () => {
-      if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
-    });
-
-    dailyCardEl.addEventListener('mousedown', (e) => {
-      if (e.target.closest('#btnCycleEdit')) return;
-      holdTimer = setTimeout(() => {
-        toggleDailyCardExpand();
-      }, 550);
-    });
-    dailyCardEl.addEventListener('mouseup', () => { if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; } });
+    dailyCardEl.addEventListener('pointerdown', startPress);
+    dailyCardEl.addEventListener('pointerup', cancelPress);
+    dailyCardEl.addEventListener('pointerleave', cancelPress);
+    dailyCardEl.addEventListener('pointermove', cancelPress);
 
     function stopLiveSync() {
       isPageActive = false;
@@ -543,7 +536,7 @@
 
     async function saveCycleSettings() {
       const chosen = document.getElementById('cycleStartInput').value || getTodayCairoISO();
-      const doReset = document.getElementById('resetCycleCheck').checked ? '1' : '0';
+      const doReset = document.getElementById('resetCycleCheck'].checked ? '1' : '0';
       const btn = document.getElementById('btnSaveCycle');
       btn.innerText = "⏳ جاري الحفظ...";
       btn.disabled = true;
@@ -573,8 +566,8 @@
       if (parts.length !== 3) return;
       const start = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
       const cairoNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
-      const todayMid = new Date(cairoNow.getFullYear(), cairoNow.getMonth(), cairoNow.getDate());
-      const elapsed = Math.max(0, Math.min(30, Math.floor((todayMid - start) / 86400000)));
+      const todayMid = new Date(canoNow = cairoNow.getFullYear(), cairoNow.getMonth(), cairoNow.getDate());
+      const elapsed = Math.max(0, Math.min(30, Math.floor((new Date(cairoNow.getFullYear(), cairoNow.getMonth(), cairoNow.getDate()) - start) / 86400000)));
       const remaining = Math.max(0, 30 - elapsed);
       const pctElapsed = Math.min(100, Math.round((elapsed / 30) * 100));
       document.getElementById('daysRemVal').innerText = `متبقي ${remaining} يوم علي الانتهاء`;
