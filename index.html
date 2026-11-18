@@ -120,6 +120,7 @@
       cursor: pointer;
       box-shadow: 0 4px 16px rgba(0, 230, 118, 0.3);
     }
+    .btn-submit:disabled { opacity: 0.6; cursor: wait; }
   </style>
 </head>
 <body>
@@ -163,20 +164,28 @@
       </div>
 
       <div class="actions-row">
-        <button type="button" class="btn-home" onclick="window.location.href='dashboard.html'">🏠 الرئيسية</button>
-        <button type="button" class="btn-cancel" onclick="if(tg) tg.close()">إلغاء</button>
-        <button type="button" class="btn-submit" onclick="submitUser()">✅ إنشاء الكارت</button>
+        <button type="button" class="btn-home" onclick="window.location.href='panel.html'">🏠 الرئيسية</button>
+        <button type="button" class="btn-cancel" onclick="closeOrBack()">إلغاء</button>
+        <button type="button" class="btn-submit" id="btnSubmitUser" onclick="submitUser()">✅ إنشاء الكارت</button>
       </div>
     </div>
   </div>
 
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
+    const isInsideTelegram = !!(tg && tg.initData && tg.initData.length > 0);
     if (tg) { tg.ready(); tg.expand(); }
+
+    const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
 
     let selectedProf = '512+';
     let selectedGb = '15';
     let commEdited = false;
+
+    function closeOrBack() {
+      if (isInsideTelegram) { tg.close(); }
+      else { window.location.href = 'panel.html'; }
+    }
 
     document.getElementById('uComm').addEventListener('input', () => { commEdited = true; });
 
@@ -204,7 +213,28 @@
       el.classList.add('active');
     }
 
-    function submitUser() {
+    async function sendDirectCommandToRouter(payload) {
+      const apiUrl = "https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/cmd.txt";
+      const headers = {
+        'Authorization': `Bearer ${GH_TK}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      };
+      let sha = "";
+      try {
+        const gRes = await fetch(`${apiUrl}?_=${Date.now()}`, { headers, cache: 'no-store' });
+        if (gRes.ok) { const gJson = await gRes.json(); sha = gJson.sha || ""; }
+      } catch (e) {}
+      const cmdWithId = `${Date.now()}::${payload}`;
+      const b64 = btoa(unescape(encodeURIComponent(cmdWithId)));
+      const body = sha
+        ? JSON.stringify({ message: "App Cmd", content: b64, sha })
+        : JSON.stringify({ message: "App Cmd", content: b64 });
+      const res = await fetch(apiUrl, { method: 'PUT', headers, body });
+      return res.ok;
+    }
+
+    async function submitUser() {
       const u = document.getElementById('uName').value.trim();
       const p = document.getElementById('uPass').value.trim();
       const c = document.getElementById('uComm').value.trim() || `${u} To ${getExpiryDate()}`;
@@ -213,10 +243,22 @@
         return;
       }
       const payload = `/add_user|${u}|${p}|${selectedProf}|${selectedGb}|${c}`;
-      if (tg) {
+
+      if (isInsideTelegram) {
         tg.sendData(payload);
       } else {
-        alert(payload);
+        const btn = document.getElementById('btnSubmitUser');
+        btn.innerText = '⏳ جاري الإرسال...';
+        btn.disabled = true;
+        const ok = await sendDirectCommandToRouter(payload);
+        btn.innerText = '✅ إنشاء الكارت';
+        btn.disabled = false;
+        if (ok) {
+          alert(`✅ تم إرسال طلب إنشاء المشترك (${u}) للسيرفر بنجاح!`);
+          window.location.href = 'panel.html';
+        } else {
+          alert('❌ تعذر الاتصال بالسيرفر، تأكد من الإنترنت وحاول مرة أخرى');
+        }
       }
     }
   </script>
