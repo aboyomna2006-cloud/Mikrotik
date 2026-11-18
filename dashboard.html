@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -183,6 +182,7 @@
       opacity: 1; pointer-events: auto;
     }
 
+    /* تكبير كارت سحب اليوم عند الضغط المطول (Hold) */
     #dailyCard.is-expanded {
       position: fixed;
       top: 50%; left: 50%;
@@ -321,7 +321,7 @@
     </div>
 
     <div class="gauges-row">
-      <!-- مربع سحب اليوم (اليمين - هولد مضمون للتكبير والتصغير) -->
+      <!-- مربع سحب اليوم (اليمين - هولد للتكبير والتصغير) -->
       <div class="gauge-card" id="dailyCard">
         <div class="gauge-info-col">
           <div class="gauge-title-side">📊 سحب اليوم (in1)</div>
@@ -339,7 +339,7 @@
         </div>
       </div>
 
-      <!-- مربع الباقة (الشمال - نظيف بدون عناوين زائدة) -->
+      <!-- مربع الباقة (الشمال - نظيف بدون عناوين زائدة وبخطوط كبيرة) -->
       <div class="gauge-card">
         <div class="gauge-info-col">
           <div class="gauge-highlight-line" id="daysRemVal">متبقي 30 يوم</div>
@@ -446,6 +446,7 @@
       }
     }
 
+    // تفعيل الضغط المطول (Hold) المضمون لكارت سحب اليوم
     function startPress(e) {
       if (e.target.closest('#btnCycleEdit') || e.target.closest('button')) return;
       pressTimer = setTimeout(() => {
