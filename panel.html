@@ -50,11 +50,23 @@
       filter: drop-shadow(0 2px 1px rgba(10, 22, 36, 0.98)) drop-shadow(0 0 14px rgba(0, 229, 255, 0.42));
     }
     .title-line-2 {
-      font-size: 32px; font-weight: 900; line-height: 1.22; padding-bottom: 4px;
+      font-size: 32px; font-weight: 900; line-height: 1.22; padding-bottom: 2px;
       background: linear-gradient(180deg, #ffffff 10%, #ccf5ff 48%, #54c5d0 78%, #267d8e 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
+
+    /* جملة حالة السيرفر أسفل اسم الشبكة مباشرة بدون مستطيل */
+    .inline-status-line {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: #5cffaa; font-size: 12px; font-weight: 900; line-height: 1.2;
+      margin-top: 1px;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95);
+    }
+    .inline-status-line.offline { color: #ff6b8b; }
+    .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #00ff88; animation: pulse 1.5s infinite; flex-shrink: 0; }
+    .inline-status-line.offline .pulse-dot { background: #ff1744; animation: none; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
     .router-box { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
     .router-visual { width: 152px; height: 114px; display: flex; align-items: center; justify-content: center; }
@@ -78,23 +90,25 @@
     .gauge-card {
       background: linear-gradient(180deg, #132133 0%, #0b131e 100%);
       border: 1px solid rgba(76, 114, 153, 0.32); border-radius: 12px;
-      padding: 6px 7px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 5px;
-      min-height: 104px;
+      padding: 7px 8px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 5px;
+      min-height: 106px; user-select: none; -webkit-user-select: none;
+      transition: transform 0.15s ease, border-color 0.15s ease;
     }
+    .gauge-card.holding { transform: scale(0.97); border-color: var(--cyan); }
 
     .gauge-info-col {
-      flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px; text-align: right;
+      flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; text-align: right;
     }
 
-    .gauge-title-side { font-size: 10.5px; font-weight: 900; color: var(--cyan); line-height: 1.2; }
-    .gauge-sub-line { font-size: 9px; font-weight: 800; color: var(--text-sub); line-height: 1.25; }
+    .gauge-title-side { font-size: 12px; font-weight: 900; color: var(--cyan); line-height: 1.2; }
+    .gauge-sub-line { font-size: 10.5px; font-weight: 800; color: var(--text-sub); line-height: 1.25; }
     .gauge-sub-line b { color: #ffffff; font-weight: 900; }
-    .gauge-highlight-line { font-size: 9.2px; font-weight: 900; color: #5cffaa; line-height: 1.25; }
+    .gauge-highlight-line { font-size: 10.5px; font-weight: 900; color: #5cffaa; line-height: 1.25; }
 
     .btn-renew-inline {
       background: linear-gradient(180deg, rgba(255, 171, 0, 0.25), rgba(255, 140, 0, 0.14));
       border: 1px solid rgba(255, 171, 0, 0.65); color: var(--amber); border-radius: 8px;
-      padding: 2px 8px; font-size: 9.5px; font-weight: 900; line-height: 1.2;
+      padding: 2px 9px; font-size: 10.5px; font-weight: 900; line-height: 1.2;
       cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
     }
 
@@ -106,22 +120,16 @@
     }
     .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; }
 
-    .telemetry-panel { display: flex; flex-direction: column; gap: 4px; background: rgba(10, 17, 27, 0.78); border: 1px solid rgba(34, 55, 82, 0.9); border-radius: 12px; padding: 4px 7px; flex-shrink: 0; }
-    .status-center-wrap { display: flex; justify-content: center; }
-    .status-pill { display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 230, 118, 0.16); border: 1px solid rgba(0, 230, 118, 0.5); color: #5cffaa; padding: 1px 12px; border-radius: 16px; font-size: 10.5px; font-weight: 900; }
-    .status-pill.offline { background: rgba(255, 23, 68, 0.2); border-color: rgba(255, 61, 113, 0.65); color: #ff6b8b; }
-    .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #00ff88; animation: pulse 1.5s infinite; }
-    .status-pill.offline .pulse-dot { background: #ff1744; animation: none; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .telemetry-panel { display: flex; flex-direction: column; gap: 5px; background: rgba(10, 17, 27, 0.78); border: 1px solid rgba(34, 55, 82, 0.9); border-radius: 12px; padding: 6px 8px; flex-shrink: 0; }
 
-    .dual-embossed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .embossed-box { background: linear-gradient(180deg, #162436 0%, #0b131e 100%); border: 1px solid rgba(76, 114, 153, 0.35); border-radius: 8px; padding: 2px 5px; text-align: center; direction: ltr; }
-    .embossed-box .e-lbl { display: block; font-size: 8.5px; font-weight: 800; color: #7d9ec0; line-height: 1.1; }
-    .embossed-box .e-val { display: block; font-size: 12px; font-weight: 900; color: #e4f3ff; line-height: 1.15; }
+    .dual-embossed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .embossed-box { background: linear-gradient(180deg, #162436 0%, #0b131e 100%); border: 1px solid rgba(76, 114, 153, 0.38); border-radius: 9px; padding: 5px 6px; text-align: center; direction: ltr; }
+    .embossed-box .e-lbl { display: block; font-size: 10.5px; font-weight: 900; color: #8fb4da; line-height: 1.2; margin-bottom: 1px; }
+    .embossed-box .e-val { display: block; font-size: 15.5px; font-weight: 900; color: #ffffff; line-height: 1.2; letter-spacing: 0.3px; }
     .embossed-box.frozen .e-val { color: #ff8fa3; }
 
-    .quick-stats { display: flex; justify-content: space-around; font-size: 10.5px; font-weight: 800; color: var(--text-sub); padding-top: 2px; border-top: 1px dashed rgba(255, 255, 255, 0.08); }
-    .quick-stats span b { color: var(--green); font-size: 12px; }
+    .quick-stats { display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; color: var(--text-sub); padding-top: 3px; border-top: 1px dashed rgba(255, 255, 255, 0.08); }
+    .quick-stats span b { color: var(--green); font-size: 12.5px; }
 
     .cards-stack { display: flex; flex-direction: column; justify-content: space-between; gap: 4px; flex: 1; }
     .action-card { flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 3px 11px; border-radius: 11px; background: var(--glass-bg); cursor: pointer; }
@@ -152,6 +160,58 @@
     .modal-btns { display: flex; gap: 8px; }
     .btn-save-cycle { flex: 1; background: linear-gradient(135deg, #00e676, #00b259); color: #04120a; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
     .btn-cancel-cycle { flex: 1; background: rgba(255, 61, 113, 0.15); border: 1px solid var(--red); color: var(--red); padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
+
+    /* نافذة التكبير المربعة عند الضغط المطول (Hold) */
+    .zoom-square-box {
+      width: min(86vw, 340px);
+      aspect-ratio: 1 / 1;
+      background: linear-gradient(180deg, #15263c 0%, #0a131f 100%);
+      border: 2px solid rgba(0, 229, 255, 0.65);
+      border-radius: 26px;
+      padding: 16px 18px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.92), 0 0 25px rgba(0, 229, 255, 0.25);
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+      position: relative;
+      animation: popSquare 0.2s cubic-bezier(0.2, 0.85, 0.3, 1.15);
+    }
+    @keyframes popSquare {
+      from { transform: scale(0.72); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .zoom-close-btn {
+      position: absolute; top: 12px; left: 12px;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(255, 61, 113, 0.18); border: 1px solid rgba(255, 61, 113, 0.55);
+      color: var(--red); font-size: 14px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .zoom-header-title { font-size: 17px; font-weight: 900; color: var(--cyan); text-align: center; }
+    .zoom-disc-large {
+      position: relative; width: 118px; height: 118px; border-radius: 50%;
+      background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
+      box-shadow: 0 0 24px rgba(255, 23, 68, 0.45), 0 0 22px rgba(0, 255, 136, 0.4), inset 0 3px 10px rgba(255, 255, 255, 0.35);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .zoom-disc-large::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.3), transparent 60%); pointer-events: none; }
+    .zoom-pct-pill {
+      position: relative; z-index: 2;
+      background: rgba(7, 13, 20, 0.82); border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff; font-size: 18px; font-weight: 900;
+      padding: 3px 12px; border-radius: 14px; direction: ltr;
+    }
+    .zoom-details-grid {
+      width: 100%; display: flex; flex-direction: column; gap: 5px;
+      background: rgba(8, 15, 24, 0.78); border: 1px solid rgba(76, 114, 153, 0.35);
+      border-radius: 14px; padding: 9px 12px;
+    }
+    .zoom-detail-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; font-weight: 800; color: var(--text-sub);
+    }
+    .zoom-detail-row b { color: #ffffff; font-size: 14px; font-weight: 900; }
+    .zoom-detail-row b.green { color: #5cffaa; }
+    .zoom-detail-row b.amber { color: var(--amber); }
   </style>
 </head>
 <body>
@@ -161,6 +221,10 @@
       <div class="embossed-title-wrap">
         <div class="title-line-1">شبكة إنترنت</div>
         <div class="title-line-2">أبو يمنى</div>
+        <div class="inline-status-line" id="serverStatusPill">
+          <span class="pulse-dot"></span>
+          <span id="serverStatusText">جاري فحص السيرفر...</span>
+        </div>
       </div>
 
       <div class="router-box">
@@ -172,11 +236,11 @@
     </div>
 
     <div class="gauges-row">
-      <!-- مربع سحب اليوم (اليمين) -->
-      <div class="gauge-card">
+      <!-- مربع سحب اليوم (اليمين) - يدعم الضغط المطول Hold -->
+      <div class="gauge-card" id="dailyGaugeCard">
         <div class="gauge-info-col">
           <div class="gauge-title-side">📊 سحب اليوم (in1)</div>
-          <button type="button" class="btn-renew-inline" onclick="openCycleModal()">
+          <button type="button" class="btn-renew-inline" onclick="event.stopPropagation(); openCycleModal()">
             <span>📅</span>
             <span id="startBadge">البداية</span>
           </button>
@@ -186,10 +250,9 @@
         <div class="neon-disc" id="dailyDisc" style="--pct:0%;"></div>
       </div>
 
-      <!-- مربع الباقة (الشمال) -->
+      <!-- مربع الباقة (الشمال) - بدون جملة الباقة 30 يوم -->
       <div class="gauge-card">
         <div class="gauge-info-col">
-          <div class="gauge-title-side">📦 الباقة 30 يوم</div>
           <div class="gauge-highlight-line" id="daysRemVal">متبقي 30 يوم علي انتهاء الباقة</div>
           <div class="gauge-sub-line">متبقي: <b id="cycleRemGbVal">750 GB</b></div>
           <div class="gauge-sub-line">مسحوب: <b id="cycleUsedGbVal">0 GB</b> (<span id="cyclePctVal">0%</span>)</div>
@@ -199,12 +262,6 @@
     </div>
 
     <div class="telemetry-panel">
-      <div class="status-center-wrap">
-        <div class="status-pill" id="serverStatusPill">
-          <span class="pulse-dot"></span>
-          <span id="serverStatusText">جاري فحص السيرفر...</span>
-        </div>
-      </div>
       <div class="dual-embossed-row">
         <div class="embossed-box" id="clockBox">
           <span class="e-lbl">🕒 ساعة السيرفر</span>
@@ -255,6 +312,7 @@
     <button type="button" class="btn-exit" onclick="exitDash()">🚪 الخروج من اللوحة</button>
   </div>
 
+  <!-- نافذة ضبط تاريخ بداية الباقة -->
   <div class="modal-overlay" id="cycleModal">
     <div class="modal-box">
       <div class="modal-title">📅 تاريخ بداية الباقة (30 يوم)</div>
@@ -267,6 +325,31 @@
       <div class="modal-btns">
         <button type="button" class="btn-save-cycle" id="btnSaveCycle" onclick="saveCycleSettings()">✅ حفظ وبدء الحساب</button>
         <button type="button" class="btn-cancel-cycle" onclick="closeCycleModal()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة التكبير المربعة لسحب اليوم (Hold) -->
+  <div class="modal-overlay" id="dailyZoomModal" onclick="if(event.target===this) closeDailyZoom()">
+    <div class="zoom-square-box">
+      <button type="button" class="zoom-close-btn" onclick="closeDailyZoom()">✕</button>
+      <div class="zoom-header-title">📊 تفاصيل سحب اليوم (in1)</div>
+      <div class="zoom-disc-large" id="zoomDailyDisc" style="--pct:0%;">
+        <span class="zoom-pct-pill" id="zoomDailyPctPill">0%</span>
+      </div>
+      <div class="zoom-details-grid">
+        <div class="zoom-detail-row">
+          <span>السحب الفعلي اليوم:</span>
+          <b class="green" id="zoomDailyGb">0.0 GB</b>
+        </div>
+        <div class="zoom-detail-row">
+          <span>المعدل اليومي المخصص:</span>
+          <b>25.0 GB</b>
+        </div>
+        <div class="zoom-detail-row">
+          <span>تاريخ بداية الباقة:</span>
+          <b class="amber" id="zoomCycleStart">--/--</b>
+        </div>
       </div>
     </div>
   </div>
@@ -325,6 +408,48 @@
       document.getElementById('cycleModal').classList.add('open');
     }
     function closeCycleModal() { document.getElementById('cycleModal').classList.remove('open'); }
+
+    /* منطق الضغط المطول (Hold) على كارت سحب اليوم اليمين */
+    function openDailyZoom() {
+      document.getElementById('zoomCycleStart').innerText = formatShortBadge(cycleStartDate);
+      document.getElementById('dailyZoomModal').classList.add('open');
+      if (tg && tg.HapticFeedback) {
+        try { tg.HapticFeedback.impactOccurred('medium'); } catch (e) {}
+      }
+    }
+    function closeDailyZoom() {
+      document.getElementById('dailyZoomModal').classList.remove('open');
+    }
+
+    (function initDailyHoldGesture() {
+      const card = document.getElementById('dailyGaugeCard');
+      if (!card) return;
+      let holdTimer = null;
+
+      const startHold = (e) => {
+        if (e.target && e.target.closest('.btn-renew-inline')) return;
+        card.classList.add('holding');
+        clearTimeout(holdTimer);
+        holdTimer = setTimeout(() => {
+          card.classList.remove('holding');
+          openDailyZoom();
+        }, 350);
+      };
+
+      const cancelHold = () => {
+        card.classList.remove('holding');
+        clearTimeout(holdTimer);
+      };
+
+      card.addEventListener('touchstart', startHold, { passive: true });
+      card.addEventListener('touchend', cancelHold);
+      card.addEventListener('touchmove', cancelHold);
+      card.addEventListener('touchcancel', cancelHold);
+      card.addEventListener('mousedown', startHold);
+      card.addEventListener('mouseup', cancelHold);
+      card.addEventListener('mouseleave', cancelHold);
+      card.addEventListener('contextmenu', (e) => e.preventDefault());
+    })();
 
     async function updateGitHubFileDirect(fileName, contentStr) {
       const apiUrl = `https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/${fileName}`;
@@ -478,6 +603,12 @@
           document.getElementById('dailyPctVal').innerText = `${dailyPct}%`;
           document.getElementById('dailyDisc').style.setProperty('--pct', `${dailyPct}%`);
 
+          /* تحديث بيانات نافذة الـ Hold المربعة */
+          document.getElementById('zoomDailyGb').innerText = `${dayGB.toFixed(1)} GB`;
+          document.getElementById('zoomDailyPctPill').innerText = `${dailyPct}%`;
+          document.getElementById('zoomDailyDisc').style.setProperty('--pct', `${dailyPct}%`);
+          document.getElementById('zoomCycleStart').innerText = formatShortBadge(cycleStartDate);
+
           const cycleGB = ((st.cycle_mb || st.day_mb || 0) / 1024);
           const remCycleGB = Math.max(0, 750 - cycleGB);
           const cyclePct = Math.min(100, Math.round((cycleGB / 750) * 100));
@@ -523,5 +654,4 @@
     startLiveSync();
   </script>
 </body>
-</html> 
-
+</html>
