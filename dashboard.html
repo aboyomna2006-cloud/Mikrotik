@@ -446,12 +446,11 @@
       }
     }
 
-    // تفعيل ضغط مطول دقيق ومضمون للموبايل
     function startPress(e) {
       if (e.target.closest('#btnCycleEdit') || e.target.closest('button')) return;
       pressTimer = setTimeout(() => {
         toggleDailyCardExpand();
-      }, 500); // نصف ثانية ضغط مستمر يكبر فوراً
+      }, 500);
     }
 
     function cancelPress() {
@@ -536,7 +535,7 @@
 
     async function saveCycleSettings() {
       const chosen = document.getElementById('cycleStartInput').value || getTodayCairoISO();
-      const doReset = document.getElementById('resetCycleCheck'].checked ? '1' : '0';
+      const doReset = document.getElementById('resetCycleCheck').checked ? '1' : '0';
       const btn = document.getElementById('btnSaveCycle');
       btn.innerText = "⏳ جاري الحفظ...";
       btn.disabled = true;
@@ -566,8 +565,8 @@
       if (parts.length !== 3) return;
       const start = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
       const cairoNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
-      const todayMid = new Date(canoNow = cairoNow.getFullYear(), cairoNow.getMonth(), cairoNow.getDate());
-      const elapsed = Math.max(0, Math.min(30, Math.floor((new Date(cairoNow.getFullYear(), cairoNow.getMonth(), cairoNow.getDate()) - start) / 86400000)));
+      const todayMid = new Date(cairoNow.getFullYear(), cairoNow.getMonth(), cairoNow.getDate());
+      const elapsed = Math.max(0, Math.min(30, Math.floor((todayMid - start) / 86400000)));
       const remaining = Math.max(0, 30 - elapsed);
       const pctElapsed = Math.min(100, Math.round((elapsed / 30) * 100));
       document.getElementById('daysRemVal').innerText = `متبقي ${remaining} يوم علي الانتهاء`;
