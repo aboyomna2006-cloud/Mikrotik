@@ -55,10 +55,11 @@
       display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
     }
 
-    .hero-header { display: flex; align-items: stretch; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; }
+    /* رجوع الهيدر لوضعه الأصلي بالمللي (align-items: center) */
+    .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; }
     .embossed-title-wrap {
       flex: 1; text-align: right; padding-right: 14px; padding-top: 8px;
-      display: flex; flex-direction: column; justify-content: space-between;
+      position: relative;
     }
     .title-line-1 {
       font-size: 21px; font-weight: 900; line-height: 1.15;
@@ -67,17 +68,20 @@
       filter: drop-shadow(0 2px 1px rgba(10, 22, 36, 0.98)) drop-shadow(0 0 14px rgba(0, 229, 255, 0.42));
     }
     .title-line-2 {
-      font-size: 32px; font-weight: 900; line-height: 1.22; padding-bottom: 2px;
+      font-size: 32px; font-weight: 900; line-height: 1.22; padding-bottom: 4px;
       background: linear-gradient(180deg, #ffffff 10%, #ccf5ff 48%, #54c5d0 78%, #267d8e 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
 
-    /* مرفوعة مِلي لفوق عشان تبعد هبابة عن شريط الدوائر اللي تحتها */
+    /* تثبيت جملة حالة السيرفر أسفل العنوان بمحاذاة RouterOS دون تحريك العنوان إطلاقاً */
     .inline-status-line {
+      position: absolute;
+      right: 14px;
+      bottom: -15px;
       display: inline-flex; align-items: center; gap: 6px;
       color: #5cffaa; font-size: 12px; font-weight: 900; line-height: 1;
-      margin-top: auto; padding-bottom: 6px;
+      white-space: nowrap;
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95);
     }
     .inline-status-line.offline { color: #ff6b8b; }
@@ -247,10 +251,8 @@
   <div class="hub-container">
     <div class="hero-header">
       <div class="embossed-title-wrap">
-        <div>
-          <div class="title-line-1">شبكة إنترنت</div>
-          <div class="title-line-2">أبو يمنى</div>
-        </div>
+        <div class="title-line-1">شبكة إنترنت</div>
+        <div class="title-line-2">أبو يمنى</div>
         <div class="inline-status-line" id="serverStatusPill">
           <span class="pulse-dot"></span>
           <span id="serverStatusText">جاري فحص السيرفر...</span>
