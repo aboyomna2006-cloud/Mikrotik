@@ -55,8 +55,8 @@
       display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
     }
 
-    /* رجوع الهيدر لوضعه الأصلي بالمللي (align-items: center) */
-    .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; }
+    /* الهيدر ثابت ومكان شبكة إنترنت أبو يمنى ثابت بالمللي */
+    .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; margin-bottom: 4px; }
     .embossed-title-wrap {
       flex: 1; text-align: right; padding-right: 14px; padding-top: 8px;
       position: relative;
@@ -74,11 +74,11 @@
       filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
 
-    /* تثبيت جملة حالة السيرفر أسفل العنوان بمحاذاة RouterOS دون تحريك العنوان إطلاقاً */
+    /* تم إنزال جملة السيرفر يعمل الآن ونشط سيكة لتحت بدون تحريك العنوان */
     .inline-status-line {
       position: absolute;
       right: 14px;
-      bottom: -15px;
+      bottom: -20px;
       display: inline-flex; align-items: center; gap: 6px;
       color: #5cffaa; font-size: 12px; font-weight: 900; line-height: 1;
       white-space: nowrap;
@@ -102,6 +102,7 @@
     }
     .ros-badge span { color: var(--cyan); font-weight: 900; }
 
+    /* صف الدائرتين بتصميم عمودي: العنوان سطر واحد فوق -> الدائرة -> البيانات المئوية تحت */
     .gauges-row {
       display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
       background: rgba(10, 17, 27, 0.84); border: 1px solid rgba(34, 55, 82, 0.95);
@@ -111,49 +112,72 @@
     .gauge-card {
       background: linear-gradient(180deg, #132133 0%, #0b131e 100%);
       border: 1px solid rgba(76, 114, 153, 0.32); border-radius: 12px;
-      padding: 7px 8px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 5px;
-      min-height: 106px;
+      padding: 6px 5px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 4px;
       transition: transform 0.15s ease, border-color 0.15s ease;
     }
     .gauge-card.holding { transform: scale(0.97); border-color: var(--cyan); }
 
-    .gauge-info-col {
-      flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; text-align: right;
+    .gauge-header-row {
+      width: 100%; display: flex; align-items: center; justify-content: center; gap: 4px;
+      white-space: nowrap; overflow: hidden;
     }
 
-    .gauge-title-side { font-size: 12px; font-weight: 900; color: var(--cyan); line-height: 1.2; }
-    .gauge-sub-line { font-size: 10.5px; font-weight: 800; color: var(--text-sub); line-height: 1.25; }
+    .gauge-title-side {
+      font-size: 13px; font-weight: 900; color: var(--cyan); line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .gauge-highlight-line {
+      font-size: 12.2px; font-weight: 900; color: #5cffaa; line-height: 1.2;
+      white-space: nowrap; text-align: center; width: 100%;
+      letter-spacing: -0.2px;
+    }
+
+    /* وميض أحمر قبل الانتهاء بيوم */
+    .gauge-highlight-line.urgent-blink {
+      color: #ff3d71;
+      animation: redUrgentBlink 0.9s infinite ease-in-out;
+    }
+    @keyframes redUrgentBlink {
+      0%, 100% { color: #ff2a5f; text-shadow: 0 0 10px rgba(255, 42, 95, 0.95); opacity: 1; }
+      50% { color: #ffb3c6; text-shadow: 0 0 2px rgba(255, 42, 95, 0.2); opacity: 0.45; }
+    }
+
+    .gauge-bottom-stats {
+      width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 1px; text-align: center;
+    }
+    .gauge-sub-line { font-size: 10.5px; font-weight: 800; color: var(--text-sub); line-height: 1.25; white-space: nowrap; }
     .gauge-sub-line b { color: #ffffff; font-weight: 900; }
-    .gauge-highlight-line { font-size: 10.5px; font-weight: 900; color: #5cffaa; line-height: 1.25; }
 
     .btn-renew-inline {
       background: linear-gradient(180deg, rgba(255, 171, 0, 0.25), rgba(255, 140, 0, 0.14));
-      border: 1px solid rgba(255, 171, 0, 0.65); color: var(--amber); border-radius: 8px;
-      padding: 2px 9px; font-size: 10.5px; font-weight: 900; line-height: 1.2;
-      cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+      border: 1px solid rgba(255, 171, 0, 0.65); color: var(--amber); border-radius: 7px;
+      padding: 1px 6px; font-size: 10px; font-weight: 900; line-height: 1.2;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0;
     }
 
     .neon-disc {
-      position: relative; width: 64px; height: 64px; border-radius: 50%;
+      position: relative; width: 58px; height: 58px; border-radius: 50%;
       background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
-      box-shadow: 0 0 15px rgba(255, 23, 68, 0.38), 0 0 13px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
+      box-shadow: 0 0 14px rgba(255, 23, 68, 0.38), 0 0 12px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
       flex-shrink: 0;
     }
     .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; }
 
-    .telemetry-panel { display: flex; flex-direction: column; gap: 5px; background: rgba(10, 17, 27, 0.78); border: 1px solid rgba(34, 55, 82, 0.9); border-radius: 12px; padding: 6px 8px; flex-shrink: 0; }
+    .telemetry-panel { display: flex; flex-direction: column; gap: 4px; background: rgba(10, 17, 27, 0.78); border: 1px solid rgba(34, 55, 82, 0.9); border-radius: 12px; padding: 5px 8px; flex-shrink: 0; }
 
     .dual-embossed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-    .embossed-box { background: linear-gradient(180deg, #162436 0%, #0b131e 100%); border: 1px solid rgba(76, 114, 153, 0.38); border-radius: 9px; padding: 5px 6px; text-align: center; direction: ltr; }
+    .embossed-box { background: linear-gradient(180deg, #162436 0%, #0b131e 100%); border: 1px solid rgba(76, 114, 153, 0.38); border-radius: 9px; padding: 4px 6px; text-align: center; direction: ltr; }
     .embossed-box .e-lbl { display: block; font-size: 10.5px; font-weight: 900; color: #8fb4da; line-height: 1.2; margin-bottom: 1px; }
-    .embossed-box .e-val { display: block; font-size: 15.5px; font-weight: 900; color: #ffffff; line-height: 1.2; letter-spacing: 0.3px; }
+    .embossed-box .e-val { display: block; font-size: 15px; font-weight: 900; color: #ffffff; line-height: 1.2; letter-spacing: 0.3px; }
     .embossed-box.frozen .e-val { color: #ff8fa3; }
 
-    .quick-stats { display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; color: var(--text-sub); padding-top: 3px; border-top: 1px dashed rgba(255, 255, 255, 0.08); }
+    .quick-stats { display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; color: var(--text-sub); padding-top: 2px; border-top: 1px dashed rgba(255, 255, 255, 0.08); }
     .quick-stats span b { color: var(--green); font-size: 12.5px; }
 
     .cards-stack { display: flex; flex-direction: column; justify-content: space-between; gap: 4px; flex: 1; }
-    .action-card { flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 3px 11px; border-radius: 11px; background: var(--glass-bg); cursor: pointer; }
+    .action-card { flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 2px 11px; border-radius: 11px; background: var(--glass-bg); cursor: pointer; }
     .card-info { display: flex; flex-direction: column; text-align: right; }
     .card-title { font-size: 13.5px; font-weight: 900; color: #fff; line-height: 1.15; }
     .card-desc { font-size: 9.5px; color: var(--text-sub); font-weight: 700; line-height: 1.15; }
@@ -182,16 +206,15 @@
     .btn-save-cycle { flex: 1; background: linear-gradient(135deg, #00e676, #00b259); color: #04120a; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
     .btn-cancel-cycle { flex: 1; background: rgba(255, 61, 113, 0.15); border: 1px solid var(--red); color: var(--red); padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
 
-    /* نافذة التكبير المربعة لسحب اليوم (Hold) */
+    /* نافذة التكبير الشفافة بالكامل بدون خلفية أو مستطيلات */
     .zoom-square-box {
-      width: min(88vw, 355px);
-      aspect-ratio: 1 / 1;
-      background: linear-gradient(180deg, #15263c 0%, #0a131f 100%);
-      border: 2px solid rgba(0, 229, 255, 0.65);
-      border-radius: 26px;
-      padding: 13px 16px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.92), 0 0 25px rgba(0, 229, 255, 0.25);
-      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+      width: min(92vw, 370px);
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 10px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 18px;
       position: relative;
       animation: popSquare 0.2s cubic-bezier(0.2, 0.85, 0.3, 1.15);
     }
@@ -199,19 +222,28 @@
       from { transform: scale(0.72); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
+
+    /* تكبير زر الإغلاق ومنطقة اللمس حوله */
     .zoom-close-btn {
-      position: absolute; top: 10px; left: 10px;
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(255, 61, 113, 0.18); border: 1px solid rgba(255, 61, 113, 0.55);
-      color: var(--red); font-size: 13px; font-weight: 900;
+      position: fixed; top: 18px; left: 18px;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255, 61, 113, 0.24); border: 2px solid rgba(255, 61, 113, 0.75);
+      color: #ff4d79; font-size: 22px; font-weight: 900;
       display: flex; align-items: center; justify-content: center; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+      z-index: 10020;
     }
-    .zoom-header-title { font-size: 16px; font-weight: 900; color: var(--cyan); text-align: center; }
+    .zoom-close-btn:active { transform: scale(0.92); }
+
+    .zoom-header-title {
+      font-size: 18px; font-weight: 900; color: var(--cyan); text-align: center;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
+    }
 
     .zoom-disc-large {
-      position: relative; width: 152px; height: 152px; border-radius: 50%;
+      position: relative; width: 175px; height: 175px; border-radius: 50%;
       background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
-      box-shadow: 0 0 26px rgba(255, 23, 68, 0.45), 0 0 24px rgba(0, 255, 136, 0.4), inset 0 3px 10px rgba(255, 255, 255, 0.35);
+      box-shadow: 0 0 32px rgba(255, 23, 68, 0.5), 0 0 28px rgba(0, 255, 136, 0.45), inset 0 3px 10px rgba(255, 255, 255, 0.35);
       flex-shrink: 0;
     }
     .zoom-disc-large::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.3), transparent 60%); pointer-events: none; }
@@ -223,26 +255,28 @@
       z-index: 2;
       background: transparent;
       border: none;
-      color: rgba(255, 255, 255, 0.52);
+      color: rgba(255, 255, 255, 0.65);
       mix-blend-mode: soft-light;
-      text-shadow: 0 1px 3px rgba(90, 0, 20, 0.45);
-      font-size: 21px; font-weight: 900;
+      text-shadow: 0 1px 4px rgba(90, 0, 20, 0.55);
+      font-size: 24px; font-weight: 900;
       direction: ltr;
       pointer-events: none;
       white-space: nowrap;
       transition: left 0.35s ease, top 0.35s ease;
     }
 
+    /* إزالة خلفية وبرواز المستطيل السفلي تماماً */
     .zoom-details-grid {
-      width: 100%; display: flex; flex-direction: column; gap: 4px;
-      background: rgba(8, 15, 24, 0.78); border: 1px solid rgba(76, 114, 153, 0.35);
-      border-radius: 14px; padding: 7px 11px;
+      width: 100%; max-width: 310px;
+      display: flex; flex-direction: column; gap: 8px;
+      background: transparent; border: none; padding: 4px 8px;
     }
     .zoom-detail-row {
       display: flex; justify-content: space-between; align-items: center;
-      font-size: 12.5px; font-weight: 800; color: var(--text-sub);
+      font-size: 14px; font-weight: 800; color: #c5d6eb;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.98);
     }
-    .zoom-detail-row b { color: #ffffff; font-size: 13.5px; font-weight: 900; }
+    .zoom-detail-row b { color: #ffffff; font-size: 15px; font-weight: 900; }
     .zoom-detail-row b.green { color: #5cffaa; }
   </style>
 </head>
@@ -268,26 +302,32 @@
     </div>
 
     <div class="gauges-row">
+      <!-- كارت سحب اليوم -->
       <div class="gauge-card" id="dailyGaugeCard">
-        <div class="gauge-info-col">
+        <div class="gauge-header-row">
           <div class="gauge-title-side">📊 سحب اليوم (in1)</div>
           <button type="button" class="btn-renew-inline" onclick="event.stopPropagation(); openCycleModal()">
             <span>📅</span>
             <span id="startBadge">البداية</span>
           </button>
+        </div>
+        <div class="neon-disc" id="dailyDisc" style="--pct:0%;"></div>
+        <div class="gauge-bottom-stats">
           <div class="gauge-sub-line">السحب: <b id="dailyGbVal">0.0 GB</b> (<span id="dailyPctVal">0%</span>)</div>
           <div class="gauge-sub-line">المعدل: <b>25.0 GB</b></div>
         </div>
-        <div class="neon-disc" id="dailyDisc" style="--pct:0%;"></div>
       </div>
 
+      <!-- كارت الباقة الـ 30 يوم -->
       <div class="gauge-card">
-        <div class="gauge-info-col">
+        <div class="gauge-header-row">
           <div class="gauge-highlight-line" id="daysRemVal">متبقي 30 يوم علي انتهاء الباقة</div>
+        </div>
+        <div class="neon-disc" id="cycleDisc" style="--pct:0%;"></div>
+        <div class="gauge-bottom-stats">
           <div class="gauge-sub-line">متبقي: <b id="cycleRemGbVal">750 GB</b></div>
           <div class="gauge-sub-line">مسحوب: <b id="cycleUsedGbVal">0 GB</b> (<span id="cyclePctVal">0%</span>)</div>
         </div>
-        <div class="neon-disc" id="cycleDisc" style="--pct:0%;"></div>
       </div>
     </div>
 
@@ -359,8 +399,8 @@
   </div>
 
   <div class="modal-overlay" id="dailyZoomModal" onclick="if(event.target===this) closeDailyZoom()">
-    <div class="zoom-square-box">
-      <button type="button" class="zoom-close-btn" onclick="closeDailyZoom()">✕</button>
+    <button type="button" class="zoom-close-btn" onclick="closeDailyZoom()">✕</button>
+    <div class="zoom-square-box" onclick="if(event.target===this) closeDailyZoom()">
       <div class="zoom-header-title">📊 تفاصيل سحب اليوم (in1)</div>
       <div class="zoom-disc-large" id="zoomDailyDisc" style="--pct:0%;">
         <span class="zoom-pct-floating" id="zoomDailyPctPill">0%</span>
@@ -376,7 +416,7 @@
         </div>
         <div class="zoom-detail-row">
           <span>تاريخ بداية الباقة:</span>
-          <button type="button" class="btn-renew-inline" onclick="event.stopPropagation(); openCycleModal()">
+          <button type="button" class="btn-renew-inline" style="font-size: 12px; padding: 3px 9px;" onclick="event.stopPropagation(); openCycleModal()">
             <span>📅</span>
             <span id="zoomCycleStart">البداية</span>
           </button>
@@ -565,7 +605,16 @@
       const elapsed = Math.max(0, Math.min(30, Math.floor((todayMid - start) / 86400000)));
       const remaining = Math.max(0, 30 - elapsed);
       const pctElapsed = Math.min(100, Math.round((elapsed / 30) * 100));
-      document.getElementById('daysRemVal').innerText = `متبقي ${remaining} يوم علي انتهاء الباقة`;
+
+      const daysEl = document.getElementById('daysRemVal');
+      daysEl.innerText = `متبقي ${remaining} يوم علي انتهاء الباقة`;
+
+      if (remaining <= 1) {
+        daysEl.classList.add('urgent-blink');
+      } else {
+        daysEl.classList.remove('urgent-blink');
+      }
+
       document.getElementById('cycleDisc').style.setProperty('--pct', `${pctElapsed}%`);
     }
     updateCycle30DaysUI(cycleStartDate);
