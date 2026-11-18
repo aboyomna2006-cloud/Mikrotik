@@ -182,7 +182,7 @@
       opacity: 1; pointer-events: auto;
     }
 
-    /* تكبير كارت سحب اليوم عند الضغط المطول (Hold) */
+    /* حالة التكبير: مربع أنيق في المنتصف (الهولد يكبّره ويصغره) */
     #dailyCard.is-expanded {
       position: fixed;
       top: 50%; left: 50%;
@@ -339,10 +339,10 @@
         </div>
       </div>
 
-      <!-- مربع الباقة (الشمال - نظيف بدون عناوين زائدة وبخطوط كبيرة) -->
+      <!-- مربع الباقة (الشمال - نظيف تماماً وخالي من أي كلمة 30 يوم ثابتة) -->
       <div class="gauge-card">
         <div class="gauge-info-col">
-          <div class="gauge-highlight-line" id="daysRemVal">متبقي 30 يوم</div>
+          <div class="gauge-sub-line" style="color: #5cffaa; font-weight: 900;" id="daysRemVal">جاري حساب الأيام...</div>
           <div class="gauge-sub-line">متبقي: <b id="cycleRemGbVal">750 GB</b></div>
           <div class="gauge-sub-line">مسحوب: <b id="cycleUsedGbVal">0 GB</b> (<span id="cyclePctVal">0%</span>)</div>
         </div>
