@@ -73,11 +73,11 @@
       filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
 
-    /* محاذاة جملة حالة السيرفر مع سطر RouterOS أسفل الهيدر */
+    /* مرفوعة مِلي لفوق عشان تبعد هبابة عن شريط الدوائر اللي تحتها */
     .inline-status-line {
       display: inline-flex; align-items: center; gap: 6px;
       color: #5cffaa; font-size: 12px; font-weight: 900; line-height: 1;
-      margin-top: auto; padding-bottom: 1px;
+      margin-top: auto; padding-bottom: 6px;
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95);
     }
     .inline-status-line.offline { color: #ff6b8b; }
@@ -204,7 +204,6 @@
     }
     .zoom-header-title { font-size: 16px; font-weight: 900; color: var(--cyan); text-align: center; }
 
-    /* الدائرة الكبيرة (152px) مع رقم مئوي باهت مدمج يتحرك في منتصف المساحة الحمراء */
     .zoom-disc-large {
       position: relative; width: 152px; height: 152px; border-radius: 50%;
       background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
@@ -267,7 +266,6 @@
     </div>
 
     <div class="gauges-row">
-      <!-- مربع سحب اليوم (اليمين) - يدعم الضغط المطول Hold -->
       <div class="gauge-card" id="dailyGaugeCard">
         <div class="gauge-info-col">
           <div class="gauge-title-side">📊 سحب اليوم (in1)</div>
@@ -281,7 +279,6 @@
         <div class="neon-disc" id="dailyDisc" style="--pct:0%;"></div>
       </div>
 
-      <!-- مربع الباقة (الشمال) - بدون جملة الباقة 30 يوم -->
       <div class="gauge-card">
         <div class="gauge-info-col">
           <div class="gauge-highlight-line" id="daysRemVal">متبقي 30 يوم علي انتهاء الباقة</div>
@@ -343,7 +340,6 @@
     <button type="button" class="btn-exit" onclick="exitDash()">🚪 الخروج من اللوحة</button>
   </div>
 
-  <!-- نافذة ضبط تاريخ بداية الباقة -->
   <div class="modal-overlay" id="cycleModal" style="z-index: 10050;">
     <div class="modal-box">
       <div class="modal-title">📅 تاريخ بداية الباقة (30 يوم)</div>
@@ -360,7 +356,6 @@
     </div>
   </div>
 
-  <!-- نافذة التكبير المربعة لسحب اليوم (Hold) -->
   <div class="modal-overlay" id="dailyZoomModal" onclick="if(event.target===this) closeDailyZoom()">
     <div class="zoom-square-box">
       <button type="button" class="zoom-close-btn" onclick="closeDailyZoom()">✕</button>
@@ -392,7 +387,6 @@
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) { tg.ready(); tg.expand(); }
 
-    /* منع قائمة النسخ والتحديد والمشاركة نهائياً */
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('selectstart', e => {
       if (e.target && e.target.tagName !== 'INPUT') e.preventDefault();
@@ -449,7 +443,6 @@
     }
     function closeCycleModal() { document.getElementById('cycleModal').classList.remove('open'); }
 
-    /* تحريك الرقم المئوي الباهت ليمشي مع زاوية منتصف اللون الأحمر المسحوب */
     function positionZoomPctInRedSector(pct) {
       const el = document.getElementById('zoomDailyPctPill');
       if (!el) return;
@@ -461,7 +454,6 @@
         return;
       }
 
-      /* زاوية منتصف القطاع الأحمر (من 0 إلى pct%) بالدرجات مع عقارب الساعة من الأعلى */
       const midAngleDeg = (pct / 100) * 180;
       const rad = (midAngleDeg * Math.PI) / 180;
       const radiusPct = pct < 20 ? 31 : 27;
@@ -471,7 +463,6 @@
       el.style.top = `${yPct.toFixed(1)}%`;
     }
 
-    /* منطق الضغط المطول (Hold) على كارت سحب اليوم اليمين */
     function openDailyZoom() {
       document.getElementById('zoomCycleStart').innerText = formatShortBadge(cycleStartDate);
       document.getElementById('dailyZoomModal').classList.add('open');
@@ -669,7 +660,6 @@
           document.getElementById('dailyPctVal').innerText = `${dailyPct}%`;
           document.getElementById('dailyDisc').style.setProperty('--pct', `${dailyPct}%`);
 
-          /* تحديث بيانات نافذة الـ Hold المربعة */
           document.getElementById('zoomDailyGb').innerText = `${dayGB.toFixed(1)} GB`;
           document.getElementById('zoomDailyDisc').style.setProperty('--pct', `${dailyPct}%`);
           positionZoomPctInRedSector(dailyPct);
