@@ -55,7 +55,6 @@
       display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
     }
 
-    /* الهيدر ثابت ومكان شبكة إنترنت أبو يمنى ثابت بالمللي */
     .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; margin-bottom: 8px; }
     .embossed-title-wrap {
       flex: 1; text-align: right; padding-right: 14px; padding-top: 8px;
@@ -74,7 +73,6 @@
       filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
 
-    /* تم إنزال جملة حالة السيرفر سيكة كمان لتحت بدون تحريك العنوان */
     .inline-status-line {
       position: absolute;
       right: 14px;
@@ -118,12 +116,13 @@
     .gauge-card.holding { transform: scale(0.97); border-color: var(--cyan); }
 
     .gauge-header-row {
-      width: 100%; display: flex; align-items: center; justify-content: center; gap: 4px;
-      white-space: nowrap; overflow: hidden; min-height: 21px; padding: 0 2px;
+      width: 100%; display: flex; align-items: center; justify-content: center; gap: 5px;
+      white-space: nowrap; min-height: 23px; padding: 0 2px;
     }
 
+    /* تصغير خط سحب اليوم (in1) لإبراز الزر بوضوح */
     .gauge-title-side {
-      font-size: 13px; font-weight: 900; color: var(--cyan); line-height: 1.2;
+      font-size: 10.8px; font-weight: 900; color: var(--cyan); line-height: 1.2;
       white-space: nowrap;
     }
 
@@ -132,7 +131,6 @@
       white-space: nowrap; text-align: center; width: 100%;
     }
 
-    /* وميض أحمر لامع ومتوهج قبل الانتهاء بيوم */
     .gauge-highlight-line.urgent-blink {
       color: #ff1744;
       animation: redUrgentBlink 0.75s infinite ease-in-out;
@@ -159,20 +157,36 @@
     .gauge-sub-line { font-size: 10.5px; font-weight: 800; color: var(--text-sub); line-height: 1.25; white-space: nowrap; }
     .gauge-sub-line b { color: #ffffff; font-weight: 900; }
 
+    /* إظهار زر التاريخ بشكل بارز وواضح */
     .btn-renew-inline {
-      background: linear-gradient(180deg, rgba(255, 171, 0, 0.25), rgba(255, 140, 0, 0.14));
-      border: 1px solid rgba(255, 171, 0, 0.65); color: var(--amber); border-radius: 7px;
-      padding: 1px 6px; font-size: 10px; font-weight: 900; line-height: 1.2;
+      background: linear-gradient(180deg, rgba(255, 171, 0, 0.32), rgba(255, 136, 0, 0.18));
+      border: 1.5px solid #ffab00; color: #ffd54f; border-radius: 8px;
+      padding: 2px 8px; font-size: 11px; font-weight: 900; line-height: 1.2;
       cursor: pointer; display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(255, 171, 0, 0.35);
     }
+    .btn-renew-inline:active { transform: scale(0.94); }
 
+    /* الدائرة الخارجية مع دائرة داخلية جميلة في المنتصف للنسبة المئوية */
     .neon-disc {
-      position: relative; width: 58px; height: 58px; border-radius: 50%;
+      position: relative; width: 64px; height: 64px; border-radius: 50%;
       background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
       box-shadow: 0 0 14px rgba(255, 23, 68, 0.38), 0 0 12px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
     .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; }
+
+    .disc-inner-cap {
+      position: relative; z-index: 2;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #192b42 0%, #09111c 85%);
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85), 0 0 8px rgba(0, 0, 0, 0.75);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900; color: #ffffff;
+      direction: ltr; letter-spacing: -0.3px;
+    }
 
     .telemetry-panel { display: flex; flex-direction: column; gap: 4px; background: rgba(10, 17, 27, 0.78); border: 1px solid rgba(34, 55, 82, 0.9); border-radius: 12px; padding: 5px 8px; flex-shrink: 0; }
 
@@ -232,7 +246,6 @@
       to { transform: scale(1); opacity: 1; }
     }
 
-    /* زر الإغلاق مكبر ومنطقة لمس كبيرة */
     .zoom-close-btn {
       position: fixed; top: 18px; left: 18px;
       width: 52px; height: 52px; border-radius: 50%;
@@ -250,31 +263,25 @@
     }
 
     .zoom-disc-large {
-      position: relative; width: 175px; height: 175px; border-radius: 50%;
+      position: relative; width: 178px; height: 178px; border-radius: 50%;
       background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
       box-shadow: 0 0 32px rgba(255, 23, 68, 0.5), 0 0 28px rgba(0, 255, 136, 0.45), inset 0 3px 10px rgba(255, 255, 255, 0.35);
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
     .zoom-disc-large::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.3), transparent 60%); pointer-events: none; }
 
-    .zoom-pct-floating {
-      position: absolute;
-      left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-      background: transparent;
-      border: none;
-      color: rgba(255, 255, 255, 0.65);
-      mix-blend-mode: soft-light;
-      text-shadow: 0 1px 4px rgba(90, 0, 20, 0.55);
-      font-size: 24px; font-weight: 900;
+    .zoom-inner-cap {
+      position: relative; z-index: 2;
+      width: 94px; height: 94px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #192b42 0%, #09111c 85%);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.9), 0 0 16px rgba(0, 0, 0, 0.85);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 900; color: #ffffff;
       direction: ltr;
-      pointer-events: none;
-      white-space: nowrap;
-      transition: left 0.35s ease, top 0.35s ease;
     }
 
-    /* إزالة خلفية وبرواز المستطيل السفلي تماماً */
     .zoom-details-grid {
       width: 100%; max-width: 310px;
       display: flex; flex-direction: column; gap: 8px;
@@ -320,22 +327,26 @@
             <span id="startBadge">البداية</span>
           </button>
         </div>
-        <div class="neon-disc" id="dailyDisc" style="--pct:0%;"></div>
+        <div class="neon-disc" id="dailyDisc" style="--pct:0%;">
+          <div class="disc-inner-cap" id="dailyPctVal">0%</div>
+        </div>
         <div class="gauge-bottom-stats">
-          <div class="gauge-sub-line">السحب: <b id="dailyGbVal">0.0 GB</b> (<span id="dailyPctVal">0%</span>)</div>
+          <div class="gauge-sub-line">السحب: <b id="dailyGbVal">0.0 GB</b></div>
           <div class="gauge-sub-line">المعدل: <b>25.0 GB</b></div>
         </div>
       </div>
 
       <!-- كارت الباقة الـ 30 يوم -->
-      <div class="gauge-card" onclick="stopCalmSiren()">
+      <div class="gauge-card" onclick="stopCalmSiren(true)">
         <div class="gauge-header-row">
           <div class="gauge-highlight-line" id="daysRemVal">متبقي 30 يوم للباقة</div>
         </div>
-        <div class="neon-disc" id="cycleDisc" style="--pct:0%;"></div>
+        <div class="neon-disc" id="cycleDisc" style="--pct:0%;">
+          <div class="disc-inner-cap" id="cyclePctVal">0%</div>
+        </div>
         <div class="gauge-bottom-stats">
           <div class="gauge-sub-line">متبقي: <b id="cycleRemGbVal">750 GB</b></div>
-          <div class="gauge-sub-line">مسحوب: <b id="cycleUsedGbVal">0 GB</b> (<span id="cyclePctVal">0%</span>)</div>
+          <div class="gauge-sub-line">مسحوب: <b id="cycleUsedGbVal">0 GB</b></div>
         </div>
       </div>
     </div>
@@ -412,7 +423,7 @@
     <div class="zoom-square-box" onclick="if(event.target===this) closeDailyZoom()">
       <div class="zoom-header-title">📊 تفاصيل سحب اليوم (in1)</div>
       <div class="zoom-disc-large" id="zoomDailyDisc" style="--pct:0%;">
-        <span class="zoom-pct-floating" id="zoomDailyPctPill">0%</span>
+        <div class="zoom-inner-cap" id="zoomDailyPctPill">0%</div>
       </div>
       <div class="zoom-details-grid">
         <div class="zoom-detail-row">
@@ -443,7 +454,6 @@
       if (e.target && e.target.tagName !== 'INPUT') e.preventDefault();
     });
 
-    /* صوت سارينة هادئة وناعمة عند التحذير (قبل الانتهاء بيوم) */
     let sirenInterval = null;
     let audioCtx = null;
     let sirenMutedByUser = false;
@@ -547,26 +557,6 @@
       document.getElementById('cycleModal').classList.add('open');
     }
     function closeCycleModal() { document.getElementById('cycleModal').classList.remove('open'); }
-
-    function positionZoomPctInRedSector(pct) {
-      const el = document.getElementById('zoomDailyPctPill');
-      if (!el) return;
-      el.innerText = `${pct}%`;
-
-      if (pct <= 0 || pct >= 88) {
-        el.style.left = '50%';
-        el.style.top = '50%';
-        return;
-      }
-
-      const midAngleDeg = (pct / 100) * 180;
-      const rad = (midAngleDeg * Math.PI) / 180;
-      const radiusPct = pct < 20 ? 31 : 27;
-      const xPct = 50 + radiusPct * Math.sin(rad);
-      const yPct = 50 - radiusPct * Math.cos(rad);
-      el.style.left = `${xPct.toFixed(1)}%`;
-      el.style.top = `${yPct.toFixed(1)}%`;
-    }
 
     function openDailyZoom() {
       document.getElementById('zoomCycleStart').innerText = formatShortBadge(cycleStartDate);
@@ -779,7 +769,7 @@
 
           document.getElementById('zoomDailyGb').innerText = `${dayGB.toFixed(1)} GB`;
           document.getElementById('zoomDailyDisc').style.setProperty('--pct', `${dailyPct}%`);
-          positionZoomPctInRedSector(dailyPct);
+          document.getElementById('zoomDailyPctPill').innerText = `${dailyPct}%`;
           document.getElementById('zoomCycleStart').innerText = formatShortBadge(cycleStartDate);
 
           const cycleGB = ((st.cycle_mb || st.day_mb || 0) / 1024);
