@@ -22,7 +22,21 @@
       --text-sub: #8fa6c2;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+    * {
+      box-sizing: border-box; margin: 0; padding: 0;
+      font-family: 'Cairo', system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+    }
+
+    input {
+      -webkit-user-select: auto !important;
+      user-select: auto !important;
+    }
 
     html, body {
       height: 100dvh;
@@ -41,8 +55,11 @@
       display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
     }
 
-    .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; }
-    .embossed-title-wrap { flex: 1; text-align: right; padding-right: 14px; padding-top: 8px; }
+    .hero-header { display: flex; align-items: stretch; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; }
+    .embossed-title-wrap {
+      flex: 1; text-align: right; padding-right: 14px; padding-top: 8px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
     .title-line-1 {
       font-size: 21px; font-weight: 900; line-height: 1.15;
       background: linear-gradient(180deg, #ffffff 15%, #b8e8f8 55%, #4fa3c7 100%);
@@ -56,11 +73,11 @@
       filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
     }
 
-    /* جملة حالة السيرفر أسفل اسم الشبكة مباشرة بدون مستطيل */
+    /* محاذاة جملة حالة السيرفر مع سطر RouterOS أسفل الهيدر */
     .inline-status-line {
       display: inline-flex; align-items: center; gap: 6px;
-      color: #5cffaa; font-size: 12px; font-weight: 900; line-height: 1.2;
-      margin-top: 1px;
+      color: #5cffaa; font-size: 12px; font-weight: 900; line-height: 1;
+      margin-top: auto; padding-bottom: 1px;
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95);
     }
     .inline-status-line.offline { color: #ff6b8b; }
@@ -70,7 +87,7 @@
 
     .router-box { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
     .router-visual { width: 152px; height: 114px; display: flex; align-items: center; justify-content: center; }
-    .router-visual img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+    .router-visual img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; pointer-events: none; }
 
     .ros-badge {
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -91,7 +108,7 @@
       background: linear-gradient(180deg, #132133 0%, #0b131e 100%);
       border: 1px solid rgba(76, 114, 153, 0.32); border-radius: 12px;
       padding: 7px 8px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 5px;
-      min-height: 106px; user-select: none; -webkit-user-select: none;
+      min-height: 106px;
       transition: transform 0.15s ease, border-color 0.15s ease;
     }
     .gauge-card.holding { transform: scale(0.97); border-color: var(--cyan); }
@@ -161,14 +178,14 @@
     .btn-save-cycle { flex: 1; background: linear-gradient(135deg, #00e676, #00b259); color: #04120a; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
     .btn-cancel-cycle { flex: 1; background: rgba(255, 61, 113, 0.15); border: 1px solid var(--red); color: var(--red); padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
 
-    /* نافذة التكبير المربعة عند الضغط المطول (Hold) */
+    /* نافذة التكبير المربعة لسحب اليوم (Hold) */
     .zoom-square-box {
-      width: min(86vw, 340px);
+      width: min(88vw, 355px);
       aspect-ratio: 1 / 1;
       background: linear-gradient(180deg, #15263c 0%, #0a131f 100%);
       border: 2px solid rgba(0, 229, 255, 0.65);
       border-radius: 26px;
-      padding: 16px 18px;
+      padding: 13px 16px;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.92), 0 0 25px rgba(0, 229, 255, 0.25);
       display: flex; flex-direction: column; align-items: center; justify-content: space-between;
       position: relative;
@@ -179,48 +196,62 @@
       to { transform: scale(1); opacity: 1; }
     }
     .zoom-close-btn {
-      position: absolute; top: 12px; left: 12px;
-      width: 30px; height: 30px; border-radius: 50%;
+      position: absolute; top: 10px; left: 10px;
+      width: 28px; height: 28px; border-radius: 50%;
       background: rgba(255, 61, 113, 0.18); border: 1px solid rgba(255, 61, 113, 0.55);
-      color: var(--red); font-size: 14px; font-weight: 900;
+      color: var(--red); font-size: 13px; font-weight: 900;
       display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
-    .zoom-header-title { font-size: 17px; font-weight: 900; color: var(--cyan); text-align: center; }
+    .zoom-header-title { font-size: 16px; font-weight: 900; color: var(--cyan); text-align: center; }
+
+    /* الدائرة الكبيرة (152px) مع رقم مئوي باهت مدمج يتحرك في منتصف المساحة الحمراء */
     .zoom-disc-large {
-      position: relative; width: 118px; height: 118px; border-radius: 50%;
+      position: relative; width: 152px; height: 152px; border-radius: 50%;
       background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
-      box-shadow: 0 0 24px rgba(255, 23, 68, 0.45), 0 0 22px rgba(0, 255, 136, 0.4), inset 0 3px 10px rgba(255, 255, 255, 0.35);
-      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 26px rgba(255, 23, 68, 0.45), 0 0 24px rgba(0, 255, 136, 0.4), inset 0 3px 10px rgba(255, 255, 255, 0.35);
       flex-shrink: 0;
     }
     .zoom-disc-large::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.3), transparent 60%); pointer-events: none; }
-    .zoom-pct-pill {
-      position: relative; z-index: 2;
-      background: rgba(7, 13, 20, 0.82); border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #ffffff; font-size: 18px; font-weight: 900;
-      padding: 3px 12px; border-radius: 14px; direction: ltr;
+
+    .zoom-pct-floating {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.52);
+      mix-blend-mode: soft-light;
+      text-shadow: 0 1px 3px rgba(90, 0, 20, 0.45);
+      font-size: 21px; font-weight: 900;
+      direction: ltr;
+      pointer-events: none;
+      white-space: nowrap;
+      transition: left 0.35s ease, top 0.35s ease;
     }
+
     .zoom-details-grid {
-      width: 100%; display: flex; flex-direction: column; gap: 5px;
+      width: 100%; display: flex; flex-direction: column; gap: 4px;
       background: rgba(8, 15, 24, 0.78); border: 1px solid rgba(76, 114, 153, 0.35);
-      border-radius: 14px; padding: 9px 12px;
+      border-radius: 14px; padding: 7px 11px;
     }
     .zoom-detail-row {
       display: flex; justify-content: space-between; align-items: center;
-      font-size: 13px; font-weight: 800; color: var(--text-sub);
+      font-size: 12.5px; font-weight: 800; color: var(--text-sub);
     }
-    .zoom-detail-row b { color: #ffffff; font-size: 14px; font-weight: 900; }
+    .zoom-detail-row b { color: #ffffff; font-size: 13.5px; font-weight: 900; }
     .zoom-detail-row b.green { color: #5cffaa; }
-    .zoom-detail-row b.amber { color: var(--amber); }
   </style>
 </head>
-<body>
+<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 
   <div class="hub-container">
     <div class="hero-header">
       <div class="embossed-title-wrap">
-        <div class="title-line-1">شبكة إنترنت</div>
-        <div class="title-line-2">أبو يمنى</div>
+        <div>
+          <div class="title-line-1">شبكة إنترنت</div>
+          <div class="title-line-2">أبو يمنى</div>
+        </div>
         <div class="inline-status-line" id="serverStatusPill">
           <span class="pulse-dot"></span>
           <span id="serverStatusText">جاري فحص السيرفر...</span>
@@ -313,7 +344,7 @@
   </div>
 
   <!-- نافذة ضبط تاريخ بداية الباقة -->
-  <div class="modal-overlay" id="cycleModal">
+  <div class="modal-overlay" id="cycleModal" style="z-index: 10050;">
     <div class="modal-box">
       <div class="modal-title">📅 تاريخ بداية الباقة (30 يوم)</div>
       <div class="modal-desc">اختر أي يوم بدأت فيه الباقة ليحسب منه الـ 30 يوم وإجمالي الـ 750 GB</div>
@@ -335,7 +366,7 @@
       <button type="button" class="zoom-close-btn" onclick="closeDailyZoom()">✕</button>
       <div class="zoom-header-title">📊 تفاصيل سحب اليوم (in1)</div>
       <div class="zoom-disc-large" id="zoomDailyDisc" style="--pct:0%;">
-        <span class="zoom-pct-pill" id="zoomDailyPctPill">0%</span>
+        <span class="zoom-pct-floating" id="zoomDailyPctPill">0%</span>
       </div>
       <div class="zoom-details-grid">
         <div class="zoom-detail-row">
@@ -348,7 +379,10 @@
         </div>
         <div class="zoom-detail-row">
           <span>تاريخ بداية الباقة:</span>
-          <b class="amber" id="zoomCycleStart">--/--</b>
+          <button type="button" class="btn-renew-inline" onclick="event.stopPropagation(); openCycleModal()">
+            <span>📅</span>
+            <span id="zoomCycleStart">البداية</span>
+          </button>
         </div>
       </div>
     </div>
@@ -357,6 +391,12 @@
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) { tg.ready(); tg.expand(); }
+
+    /* منع قائمة النسخ والتحديد والمشاركة نهائياً */
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('selectstart', e => {
+      if (e.target && e.target.tagName !== 'INPUT') e.preventDefault();
+    });
 
     const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
     let syncLoopId = null;
@@ -409,6 +449,28 @@
     }
     function closeCycleModal() { document.getElementById('cycleModal').classList.remove('open'); }
 
+    /* تحريك الرقم المئوي الباهت ليمشي مع زاوية منتصف اللون الأحمر المسحوب */
+    function positionZoomPctInRedSector(pct) {
+      const el = document.getElementById('zoomDailyPctPill');
+      if (!el) return;
+      el.innerText = `${pct}%`;
+
+      if (pct <= 0 || pct >= 88) {
+        el.style.left = '50%';
+        el.style.top = '50%';
+        return;
+      }
+
+      /* زاوية منتصف القطاع الأحمر (من 0 إلى pct%) بالدرجات مع عقارب الساعة من الأعلى */
+      const midAngleDeg = (pct / 100) * 180;
+      const rad = (midAngleDeg * Math.PI) / 180;
+      const radiusPct = pct < 20 ? 31 : 27;
+      const xPct = 50 + radiusPct * Math.sin(rad);
+      const yPct = 50 - radiusPct * Math.cos(rad);
+      el.style.left = `${xPct.toFixed(1)}%`;
+      el.style.top = `${yPct.toFixed(1)}%`;
+    }
+
     /* منطق الضغط المطول (Hold) على كارت سحب اليوم اليمين */
     function openDailyZoom() {
       document.getElementById('zoomCycleStart').innerText = formatShortBadge(cycleStartDate);
@@ -432,6 +494,7 @@
         clearTimeout(holdTimer);
         holdTimer = setTimeout(() => {
           card.classList.remove('holding');
+          if (window.getSelection) { try { window.getSelection().removeAllRanges(); } catch (err) {} }
           openDailyZoom();
         }, 350);
       };
@@ -448,7 +511,6 @@
       card.addEventListener('mousedown', startHold);
       card.addEventListener('mouseup', cancelHold);
       card.addEventListener('mouseleave', cancelHold);
-      card.addEventListener('contextmenu', (e) => e.preventDefault());
     })();
 
     async function updateGitHubFileDirect(fileName, contentStr) {
@@ -497,7 +559,11 @@
     }
 
     function updateCycle30DaysUI(isoStart) {
-      document.getElementById('startBadge').innerText = formatShortBadge(isoStart);
+      const badgeStr = formatShortBadge(isoStart);
+      document.getElementById('startBadge').innerText = badgeStr;
+      const zoomBadge = document.getElementById('zoomCycleStart');
+      if (zoomBadge) zoomBadge.innerText = badgeStr;
+
       const parts = String(isoStart).replace(/\//g, '-').split('-');
       if (parts.length !== 3) return;
       const start = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
@@ -605,8 +671,8 @@
 
           /* تحديث بيانات نافذة الـ Hold المربعة */
           document.getElementById('zoomDailyGb').innerText = `${dayGB.toFixed(1)} GB`;
-          document.getElementById('zoomDailyPctPill').innerText = `${dailyPct}%`;
           document.getElementById('zoomDailyDisc').style.setProperty('--pct', `${dailyPct}%`);
+          positionZoomPctInRedSector(dailyPct);
           document.getElementById('zoomCycleStart').innerText = formatShortBadge(cycleStartDate);
 
           const cycleGB = ((st.cycle_mb || st.day_mb || 0) / 1024);
