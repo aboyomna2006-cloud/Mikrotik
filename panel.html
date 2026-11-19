@@ -11,170 +11,384 @@
   <style>
     :root {
       --bg-dark: #07090e;
-      --glass-card: rgba(18, 22, 31, 0.78);
-      --glass-tile: rgba(22, 26, 36, 0.72);
       --gold: #f5b942;
-      --gold-bright: #ffd97d;
-      --gold-soft: rgba(245, 185, 66, 0.16);
-      --gold-border: rgba(245, 185, 66, 0.44);
+      --gold-bright: #ffe18d;
+      --gold-border: rgba(255, 200, 99, 0.48);
       --green: #10e87a;
       --red: #ff3b6b;
       --text-main: #ffffff;
-      --text-sub: #9aa7b8;
+      --text-sub: #d0d0d3;
     }
 
     * {
-      box-sizing: border-box; margin: 0; padding: 0;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       -webkit-tap-highlight-color: transparent;
       -webkit-user-select: none !important;
       user-select: none !important;
     }
 
-    input { -webkit-user-select: auto !important; user-select: auto !important; }
+    input {
+      -webkit-user-select: auto !important;
+      user-select: auto !important;
+    }
 
     html, body {
       min-height: 100dvh;
       overflow-x: hidden;
       overflow-y: auto;
-      background:
-        radial-gradient(ellipse 95% 32% at 50% 8%, rgba(245, 185, 66, 0.22), transparent 72%),
-        radial-gradient(ellipse 85% 24% at 50% 34%, rgba(245, 185, 66, 0.10), transparent 70%),
-        linear-gradient(180deg, #0b0e14 0%, #07090e 55%, #05070b 100%);
+      background: radial-gradient(ellipse at 50% 9%, #262019 0%, transparent 32%), linear-gradient(180deg, #0a0c10, #030405 75%);
       color: var(--text-main);
     }
 
     body {
-      padding: 4px 8px calc(36px + env(safe-area-inset-bottom, 0px));
+      padding: 10px 10px 25px;
       display: flex;
       justify-content: center;
       align-items: stretch;
     }
 
     .app-shell {
-      width: 100%; max-width: 450px; min-height: calc(100dvh - 40px);
-      display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
+      width: 100%;
+      max-width: 490px;
+      min-height: calc(100dvh - 35px);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 12px;
     }
 
-    /* 1. Header */
+    /* 1. Top Header */
     .top-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1px 4px; flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 62px;
+      padding: 3px 12px;
+      flex-shrink: 0;
     }
-    .brand-group { display: flex; align-items: center; gap: 8px; }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .wifi-logo {
-      width: 28px; height: 28px;
+      width: 43px;
+      height: 43px;
+      stroke-width: 2.7;
       filter: drop-shadow(0 0 10px rgba(245, 185, 66, 0.75));
       flex-shrink: 0;
     }
-    .brand-titles { display: flex; flex-direction: column; }
-    .brand-title { font-size: 19px; font-weight: 900; color: #ffffff; line-height: 1.05; }
-    .brand-subtitle { font-size: 10px; font-weight: 600; color: #cbd5e1; line-height: 1.15; }
 
-    .header-actions { display: flex; align-items: center; gap: 7px; }
+    .brand-titles {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 25px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: -0.7px;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      font-weight: 600;
+      color: #cbd5e1;
+      line-height: 1.2;
+      margin-top: 3px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .hdr-btn {
-      width: 34px; height: 34px; border-radius: 50%;
+      width: 41px;
+      height: 41px;
+      border-radius: 50%;
       background: linear-gradient(145deg, rgba(35, 39, 50, 0.78), rgba(14, 17, 24, 0.88));
       backdrop-filter: blur(10px);
       border: 1.2px solid var(--gold-border);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 224, 130, 0.25);
-      color: var(--gold-bright); display: flex; align-items: center; justify-content: center;
-      font-size: 14px; cursor: pointer; position: relative;
+      color: var(--gold-bright);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      cursor: pointer;
+      position: relative;
     }
-    .hdr-btn:active { transform: scale(0.93); }
+
+    .hdr-btn:active {
+      transform: scale(0.93);
+    }
+
     .bell-dot {
-      position: absolute; top: 6px; right: 7px; width: 6px; height: 6px;
-      border-radius: 50%; background: var(--gold);
+      position: absolute;
+      top: 6px;
+      right: 7px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    /* Shared Glassy Gold Surfaces & Bottom Glow */
+    .hero-card,
+    .stat-card,
+    .gauge-card,
+    .act-btn,
+    .logout-btn {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(245, 190, 100, 0.52);
+      background: linear-gradient(151deg, rgba(59, 58, 56, 0.72), rgba(16, 18, 20, 0.98) 46%, #080a0d 85%);
+      box-shadow: inset 0 1px 1px rgba(255, 245, 206, 0.48), inset 0 -2px 10px rgba(0, 0, 0, 0.6), 0 10px 18px rgba(0, 0, 0, 0.6), 0 5px 16px rgba(226, 139, 19, 0.11);
+    }
+
+    .hero-card:after,
+    .stat-card:after,
+    .gauge-card:after,
+    .act-btn:after {
+      content: '';
+      position: absolute;
+      bottom: -21px;
+      left: -25px;
+      width: 105px;
+      height: 44px;
+      background: radial-gradient(ellipse, rgba(255, 176, 44, 0.57), transparent 70%);
+      filter: blur(10px);
+      pointer-events: none;
     }
 
     /* 2. Hero Card */
     .hero-card {
-      background: linear-gradient(135deg, rgba(36, 28, 16, 0.88) 0%, rgba(15, 19, 28, 0.92) 52%, rgba(22, 18, 14, 0.88) 100%);
-      backdrop-filter: blur(12px);
-      border: 1.4px solid var(--gold-border);
-      border-radius: 16px;
-      padding: 6px 9px;
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 217, 125, 0.22);
-      display: flex; align-items: center; justify-content: space-between; gap: 7px;
-      flex-shrink: 0; position: relative; overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.9fr);
+      column-gap: 7px;
+      align-items: center;
+      min-height: 205px;
+      border-radius: 23px;
+      padding: 12px 10px;
+      flex-shrink: 0;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 15% 75%, rgba(193, 117, 17, 0.35), transparent 40%), linear-gradient(125deg, #24221f, #0b0d0f 65%);
     }
-    .hero-card::before {
-      content: ""; position: absolute; inset: 0;
+
+    .hero-card:before {
+      content: "";
+      position: absolute;
+      inset: 0;
       background: radial-gradient(circle at 22% 55%, rgba(245, 185, 66, 0.22), transparent 58%);
       pointer-events: none;
     }
 
     .router-img-wrap {
-      width: 72px; height: 74px; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; z-index: 1;
+      grid-column: 1;
+      grid-row: 1;
+      width: 55%;
+      height: 180px;
+      min-width: 0;
+      overflow: visible;
+      justify-self: start;
+      align-self: center;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
     .router-img-wrap img {
-      width: 100%; height: 100%; object-fit: contain;
-      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.92));
-      border-radius: 8px;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transform: none;
+      border-radius: 0;
+      filter: drop-shadow(0 9px 9px #000) drop-shadow(0 0 9px rgba(245, 185, 66, 0.27));
     }
 
     .hero-center-info {
-      display: flex; flex-direction: column; align-items: flex-start; gap: 1.5px;
-      z-index: 1; flex: 1; min-width: 0;
+      grid-column: 1;
+      grid-row: 1;
+      position: relative;
+      z-index: 2;
+      margin-left: 55%;
+      width: 45%;
+      min-width: 0;
+      transform: none;
+      gap: 5px;
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
-    .mk-brand { font-size: 13px; font-weight: 800; color: #f8fafc; font-style: italic; line-height: 1; }
-    .mk-model { font-size: 18px; font-weight: 900; color: var(--gold-bright); line-height: 1.05; }
-    .mk-code { font-size: 9px; font-weight: 700; color: #cbd5e1; white-space: nowrap; }
-    .ros-pill {
+
+    .mk-brand {
+      font-size: clamp(14px, 3vw, 18px);
+      font-weight: 800;
+      color: #f8fafc;
+      font-style: italic;
+      line-height: 1;
+    }
+
+    .mk-model {
+      font-size: clamp(20px, 4.6vw, 27px);
+      font-weight: 900;
+      color: white;
+      line-height: 1.05;
+      white-space: nowrap;
+    }
+
+    .mk-code {
+      font-size: clamp(7px, 1.6vw, 10px);
+      font-weight: 700;
+      color: #cbd5e1;
+      white-space: nowrap;
+      letter-spacing: -0.2px;
+    }
+
+    .hero-center-info .ros-pill {
       margin-top: 2px;
-      background: rgba(245, 185, 66, 0.14); border: 1px solid rgba(245, 185, 66, 0.5);
-      color: var(--gold-bright); font-size: 9.5px; font-weight: 800;
-      padding: 1.5px 8px; border-radius: 20px; white-space: nowrap;
+      background: rgba(245, 185, 66, 0.14);
+      border: 1px solid rgba(245, 185, 66, 0.5);
+      color: var(--gold-bright);
+      font-size: clamp(8px, 1.8vw, 11px);
+      font-weight: 800;
+      padding: 5px 4px;
+      border-radius: 20px;
+      white-space: nowrap;
+      letter-spacing: -0.4px;
+      max-width: 100%;
+      box-shadow: 0 0 10px rgba(245, 185, 66, 0.3);
     }
 
     .hero-right-telemetry {
-      display: flex; flex-direction: column; gap: 2.5px; z-index: 1; flex-shrink: 0;
-      min-width: 138px;
+      grid-column: 2;
+      grid-row: 1;
+      width: 100%;
+      min-width: 0;
+      gap: 9px;
+      padding-left: 7px;
+      border-left: 1px solid rgba(255, 255, 255, 0.19);
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+      z-index: 1;
     }
+
     .online-pill {
-      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-      background: rgba(16, 232, 122, 0.14); border: 1px solid rgba(16, 232, 122, 0.45);
-      color: #5cffaa; padding: 1.5px 8px; border-radius: 20px;
-      font-size: 9.5px; font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      background: rgba(16, 232, 122, 0.14);
+      border: 1px solid rgba(16, 232, 122, 0.45);
+      color: #5cffaa;
+      padding: 7px 2px;
+      border-radius: 20px;
+      font-size: clamp(9px, 2.25vw, 12px);
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
     }
+
     .online-pill.offline {
-      background: rgba(255, 59, 107, 0.16); border: 1px solid rgba(255, 59, 107, 0.52); color: #ff6b8b;
+      background: rgba(255, 59, 107, 0.16);
+      border: 1px solid rgba(255, 59, 107, 0.52);
+      color: #ff6b8b;
     }
+
     .online-dot {
-      width: 6px; height: 6px; border-radius: 50%; background: var(--green);
-      box-shadow: 0 0 8px var(--green); animation: pulse 1.5s infinite;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 1.5s infinite;
     }
-    .online-pill.offline .online-dot { background: var(--red); box-shadow: none; animation: none; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+    .online-pill.offline .online-dot {
+      background: var(--red);
+      box-shadow: none;
+      animation: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
 
     .tele-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 6px;
-      font-size: 9px; color: var(--text-sub); font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      white-space: nowrap;
+      font-size: clamp(9px, 1.9vw, 12px);
+      color: var(--text-sub);
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 4px;
     }
-    .tele-row b { color: #ffffff; font-weight: 800; font-size: 9.5px; }
-    .tele-row.frozen b { color: #ff6b8b; }
+
+    .tele-row b {
+      color: #ffffff;
+      font-weight: 800;
+      font-size: clamp(9px, 1.9vw, 12px);
+      white-space: nowrap;
+    }
+
+    .tele-row.frozen b {
+      color: #ff6b8b;
+    }
 
     /* 3. 4 Summary Cards */
     .stats-4-row {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; flex-shrink: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      flex-shrink: 0;
     }
+
     .stat-card {
-      background: linear-gradient(160deg, rgba(28, 32, 44, 0.78), rgba(12, 15, 22, 0.88));
-      backdrop-filter: blur(10px);
-      border: 1.2px solid var(--gold-border);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 224, 130, 0.18);
-      border-radius: 13px; padding: 4px 3px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; gap: 1px;
+      min-height: 97px;
+      border-radius: 18px;
+      padding: 10px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 5px;
     }
-    .stat-card.interactive { cursor: pointer; transition: transform 0.12s ease, border-color 0.15s ease; }
-    .stat-card.interactive:active { transform: scale(0.95); border-color: var(--gold-bright); }
+
+    .stat-card.interactive {
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.15s ease;
+    }
+
+    .stat-card.interactive:active {
+      transform: scale(0.95);
+      border-color: var(--gold-bright);
+    }
 
     .stat-card.urgent-blink {
       border: 1.5px solid var(--red) !important;
       animation: urgentCardBlink 0.75s infinite ease-in-out;
     }
+
     @keyframes urgentCardBlink {
       0%, 100% {
         background: rgba(255, 59, 107, 0.28);
@@ -187,140 +401,462 @@
         transform: scale(0.99);
       }
     }
-    .stat-card.urgent-blink .sc-val,
-    .stat-card.urgent-blink .sc-lbl { color: #ff6b8b !important; }
 
-    .sc-ico { font-size: 13px; color: var(--gold); line-height: 1.05; }
-    .sc-val { font-size: 15px; font-weight: 900; color: #ffffff; line-height: 1.1; }
-    .sc-lbl { font-size: 8.5px; font-weight: 700; color: var(--text-sub); line-height: 1.1; white-space: nowrap; }
+    .stat-card.urgent-blink .sc-val,
+    .stat-card.urgent-blink .sc-lbl {
+      color: #ff6b8b !important;
+    }
+
+    .sc-ico {
+      font-size: 26px;
+      color: var(--gold);
+      line-height: 1.2;
+    }
+
+    .sc-val {
+      font-size: clamp(18px, 4.5vw, 27px);
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.15;
+    }
+
+    .sc-lbl {
+      font-size: clamp(8px, 2vw, 11px);
+      font-weight: 700;
+      color: #e5e5e8;
+      line-height: 1.15;
+      white-space: nowrap;
+    }
 
     /* 4. Two Circular Gauge Cards */
     .gauges-2-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      flex-shrink: 0;
     }
+
     .gauge-card {
-      background: linear-gradient(160deg, rgba(24, 28, 38, 0.82), rgba(11, 14, 20, 0.90));
-      backdrop-filter: blur(12px);
-      border: 1.2px solid var(--gold-border);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 224, 130, 0.16);
-      border-radius: 15px; padding: 5px 7px;
-      display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 2px;
+      height: 238px;
+      border-radius: 20px;
+      padding: 12px 9px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
     }
-    .gauge-card.holding { transform: scale(0.97); }
+
+    .gauge-card.holding {
+      transform: scale(0.97);
+    }
+
     .gc-head {
-      width: 100%; display: flex; align-items: center; gap: 5px;
-      font-size: 11px; font-weight: 800; color: #ffffff;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: clamp(11px, 2.6vw, 15px);
+      font-weight: 800;
+      color: #ffffff;
     }
-    .gc-head span.ico { color: var(--gold); font-size: 12px; }
+
+    .gc-head .ico {
+      color: var(--gold);
+      font-size: 23px;
+    }
 
     .ring-wrap {
-      position: relative; width: 70px; height: 70px;
-      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      width: clamp(116px, 32vw, 150px);
+      height: clamp(116px, 32vw, 150px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .ring-wrap svg { width: 70px; height: 70px; transform: rotate(-90deg); }
-    .ring-bg { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 8.5; }
+
+    .ring-wrap svg {
+      width: clamp(116px, 32vw, 150px);
+      height: clamp(116px, 32vw, 150px);
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: rgba(175, 181, 195, 0.29);
+      stroke-width: 10;
+    }
+
     .ring-fg {
-      fill: none; stroke: url(#goldArc); stroke-width: 8.5; stroke-linecap: round;
+      fill: none;
+      stroke: url(#goldArc);
+      stroke-width: 10;
+      stroke-linecap: round;
       filter: drop-shadow(0 0 7px rgba(245, 185, 66, 0.65));
       transition: stroke-dashoffset 0.5s ease;
     }
-    .ring-pct { position: absolute; font-size: 15.5px; font-weight: 900; color: #ffffff; }
+
+    .ring-pct {
+      position: absolute;
+      font-size: clamp(25px, 6vw, 32px);
+      font-weight: 900;
+      color: #ffffff;
+    }
 
     .gc-foot {
-      width: 100%; display: grid; grid-template-columns: 1fr 1fr;
-      border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 3px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 6px;
     }
-    .gc-stat { display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .gc-stat:first-child { border-right: 1px solid rgba(255, 255, 255, 0.08); }
-    .gcs-lbl { font-size: 8.5px; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 3px; }
-    .dot-gold { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); display: inline-block; }
-    .dot-gray { width: 6px; height: 6px; border-radius: 50%; background: #94a3b8; display: inline-block; }
-    .gcs-val { font-size: 11px; font-weight: 900; color: #ffffff; }
 
-    /* 5. Bandwidth Usage Area Chart */
-    .chart-card {
-      background: linear-gradient(160deg, rgba(24, 28, 38, 0.82), rgba(11, 14, 20, 0.90));
-      backdrop-filter: blur(12px);
-      border: 1.2px solid var(--gold-border);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 224, 130, 0.16);
-      border-radius: 15px; padding: 5px 9px;
-      display: flex; flex-direction: column; gap: 1px; flex-shrink: 0;
+    .gc-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
-    .chart-head { display: flex; align-items: center; justify-content: space-between; }
-    .chart-title { font-size: 11px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 5px; }
-    .chart-pill {
-      background: rgba(245, 185, 66, 0.12); border: 1px solid rgba(245, 185, 66, 0.42);
-      color: var(--gold-bright); font-size: 8.5px; font-weight: 700;
-      padding: 1px 7px; border-radius: 10px;
+
+    .gc-stat:first-child {
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .chart-legend {
-      display: flex; align-items: center; gap: 12px; font-size: 8.5px; color: var(--text-sub); font-weight: 700;
-      padding-left: 34px;
+
+    .gcs-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 3px;
     }
-    .chart-svg-wrap { width: 100%; height: 42px; }
-    .chart-svg-wrap svg { width: 100%; height: 100%; overflow: visible; }
+
+    .dot-gold {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: inline-block;
+    }
+
+    .dot-gray {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #94a3b8;
+      display: inline-block;
+    }
+
+    .gcs-val {
+      font-size: clamp(14px, 3.5vw, 19px);
+      font-weight: 900;
+      color: #ffffff;
+      margin-top: 3px;
+    }
 
     /* 6. 8 Glassy Action Tiles (2x4) */
     .actions-8-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;
-      flex: 1; min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 0;
+      flex: none;
+      min-height: 0;
     }
-    .act-btn {
-      background: linear-gradient(155deg, rgba(34, 38, 50, 0.72), rgba(13, 16, 23, 0.86));
-      backdrop-filter: blur(10px);
-      border: 1.2px solid var(--gold-border);
-      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 224, 130, 0.22);
-      border-radius: 13px; padding: 4px 2px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 2px; cursor: pointer; transition: transform 0.12s ease, border-color 0.15s ease;
-    }
-    .act-btn:active { transform: scale(0.95); border-color: var(--gold-bright); }
-    .act-ico { font-size: 16px; color: var(--gold-bright); line-height: 1.05; filter: drop-shadow(0 0 6px rgba(245, 185, 66, 0.35)); }
-    .act-lbl { font-size: 9.5px; font-weight: 800; color: #ffffff; line-height: 1.1; white-space: nowrap; }
 
-    /* 7. Logout Glass Pill Button */
-    .logout-btn {
-      width: 100%; padding: 6px;
-      background: linear-gradient(90deg, rgba(32, 28, 22, 0.82), rgba(48, 41, 28, 0.88), rgba(32, 28, 22, 0.82));
-      backdrop-filter: blur(10px);
-      border: 1.4px solid var(--gold-border);
-      border-radius: 22px; color: #ffffff;
-      font-size: 12px; font-weight: 800;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      cursor: pointer; flex-shrink: 0;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 224, 130, 0.2);
+    .act-btn {
+      height: 61px;
+      border-radius: 15px;
+      padding: 4px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: pointer;
+      isolation: isolate;
+      transition: transform 0.12s ease, border-color 0.15s ease;
     }
-    .logout-btn:active { transform: scale(0.98); }
+
+    .act-btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 8%;
+      right: 8%;
+      height: 42%;
+      background: linear-gradient(180deg, rgba(255, 245, 210, 0.16), transparent);
+      border-radius: 0 0 50% 50%;
+      pointer-events: none;
+    }
+
+    .act-btn:active {
+      transform: scale(0.95);
+      border-color: var(--gold-bright);
+    }
+
+    .act-ico {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      color: #ffce64;
+      filter: drop-shadow(0 0 5px rgba(255, 186, 55, 0.7)) drop-shadow(0 0 11px rgba(255, 155, 20, 0.32));
+      transition: transform 0.18s, filter 0.18s;
+    }
+
+    .act-ico svg {
+      width: 33px;
+      height: 33px;
+      display: block;
+    }
+
+    .act-btn:active .act-ico {
+      transform: scale(1.17);
+      filter: drop-shadow(0 0 13px #ffc34d);
+    }
+
+    .act-lbl {
+      font-size: clamp(9px, 2.25vw, 11px);
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    /* 7. Logout Button */
+    .logout-btn {
+      width: 100%;
+      min-height: 54px;
+      padding: 6px;
+      border-radius: 32px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .logout-btn:active {
+      transform: scale(0.98);
+    }
+
     .power-ring {
-      width: 19px; height: 19px; border-radius: 50%;
-      border: 1.5px solid var(--gold-bright); color: var(--gold-bright);
-      display: inline-flex; align-items: center; justify-content: center; font-size: 10.5px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: none;
+      color: var(--gold-bright);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 23px;
+      filter: drop-shadow(0 0 8px #ffbd43);
+    }
+
+    /* Responsive Breakpoints */
+    @media (min-width: 460px) {
+      .hero-card { min-height: 205px; }
+      .gauge-card { height: 238px; }
+      .stat-card { min-height: 110px; }
+      .act-btn { height: 68px; }
+    }
+
+    @media (max-width: 370px) {
+      .hero-card { column-gap: 5px; padding: 9px 7px; min-height: 190px; }
+      .hero-right-telemetry { padding-left: 5px; }
+      .router-img-wrap { height: 150px; width: 52%; }
+      .hero-center-info { margin-left: 52%; width: 48%; }
+      .mk-model { font-size: 18px; }
+      .mk-code { font-size: 7px; }
+      .gauge-card { height: 212px; }
+    }
+
+    @media (max-width: 350px) {
+      body { padding-left: 5px; padding-right: 5px; }
+      .app-shell { gap: 8px; }
+      .hero-card { padding: 9px 5px; }
+      .hero-right-telemetry { width: 40%; padding-left: 4px; }
+      .router-img-wrap { width: 27%; height: 135px; }
+      .hero-center-info .ros-pill { font-size: 8px; padding: 3px 4px; }
+      .gauge-card { height: 185px; padding: 9px 5px; }
+      .ring-wrap, .ring-wrap svg { width: 91px; height: 91px; }
+      .gcs-val { font-size: 12px; }
+      .act-btn { height: 57px; }
+      .act-ico { height: 32px; width: 32px; }
+      .act-ico svg { width: 29px; height: 29px; }
     }
 
     /* Modals */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(4, 6, 10, 0.88); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
-    .modal-overlay.open { display: flex; }
-    .modal-box { width: 100%; max-width: 340px; background: linear-gradient(180deg, #171c26 0%, #0b0e14 100%); border: 1.5px solid var(--gold-border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 11px; }
-    .modal-title { font-size: 15px; font-weight: 900; color: var(--gold-bright); text-align: center; }
-    .modal-desc { font-size: 12px; color: var(--text-sub); text-align: center; font-weight: 600; line-height: 1.4; }
-    .date-input {
-      width: 100%; background: #0c1018; border: 1.5px solid var(--gold-border);
-      color: #ffffff; padding: 10px 12px; border-radius: 11px;
-      font-size: 15px; font-weight: 800; text-align: center;
-      color-scheme: dark; direction: ltr;
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 6, 10, 0.88);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 16px;
     }
-    .check-row { display: flex; align-items: center; gap: 8px; background: rgba(245, 185, 66, 0.1); border: 1px solid rgba(245, 185, 66, 0.35); padding: 8px 10px; border-radius: 10px; font-size: 11.5px; font-weight: 700; color: var(--gold-bright); cursor: pointer; }
-    .check-row input { width: 16px; height: 16px; accent-color: var(--gold); }
-    .modal-btns { display: flex; gap: 8px; }
-    .btn-save-cycle { flex: 1; background: linear-gradient(135deg, #f5b942, #d99116); color: #0b0e14; border: none; padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 900; cursor: pointer; }
-    .btn-cancel-cycle { flex: 1; background: rgba(255, 59, 107, 0.15); border: 1px solid var(--red); color: var(--red); padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 800; cursor: pointer; }
-    .btn-confirm-exit { flex: 1; background: linear-gradient(135deg, #ff3b6b, #c9184a); color: #ffffff; border: none; padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 900; cursor: pointer; }
 
-    .zoom-square-box { width: min(92vw, 350px); display: flex; flex-direction: column; align-items: center; gap: 15px; }
-    .zoom-details-grid { width: 100%; max-width: 290px; display: flex; flex-direction: column; gap: 8px; }
-    .zoom-detail-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; color: #cbd5e1; }
-    .zoom-detail-row b { color: #ffffff; font-size: 14px; font-weight: 900; }
-    .zoom-detail-row b.gold { color: var(--gold-bright); }
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 340px;
+      background: linear-gradient(180deg, #171c26 0%, #0b0e14 100%);
+      border: 1.5px solid var(--gold-border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--gold-bright);
+      text-align: center;
+    }
+
+    .modal-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      text-align: center;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .date-input {
+      width: 100%;
+      background: #0c1018;
+      border: 1.5px solid var(--gold-border);
+      color: #ffffff;
+      padding: 10px 12px;
+      border-radius: 11px;
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+      color-scheme: dark;
+      direction: ltr;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245, 185, 66, 0.1);
+      border: 1px solid rgba(245, 185, 66, 0.35);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--gold-bright);
+      cursor: pointer;
+    }
+
+    .check-row input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--gold);
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-save-cycle {
+      flex: 1;
+      background: linear-gradient(135deg, #f5b942, #d99116);
+      color: #0b0e14;
+      border: none;
+      padding: 9px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .btn-cancel-cycle {
+      flex: 1;
+      background: rgba(255, 59, 107, 0.15);
+      border: 1px solid var(--red);
+      color: var(--red);
+      padding: 9px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-confirm-exit {
+      flex: 1;
+      background: linear-gradient(135deg, #ff3b6b, #c9184a);
+      color: #ffffff;
+      border: none;
+      padding: 9px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .zoom-square-box {
+      width: min(92vw, 350px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    #dailyZoomModal .ring-wrap {
+      width: 160px !important;
+      height: 160px !important;
+    }
+
+    #dailyZoomModal .ring-wrap svg {
+      width: 160px !important;
+      height: 160px !important;
+    }
+
+    .zoom-details-grid {
+      width: 100%;
+      max-width: 290px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .zoom-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    .zoom-detail-row b {
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .zoom-detail-row b.gold {
+      color: var(--gold-bright);
+    }
   </style>
 </head>
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
@@ -330,10 +866,6 @@
       <linearGradient id="goldArc" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#ffe082" />
         <stop offset="100%" stop-color="#d98a00" />
-      </linearGradient>
-      <linearGradient id="areaGold" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stop-color="rgba(245, 185, 66, 0.48)" />
-        <stop offset="100%" stop-color="rgba(245, 185, 66, 0.02)" />
       </linearGradient>
     </defs>
   </svg>
@@ -394,7 +926,7 @@
           <b id="srvClock">--:--:--</b>
         </div>
         <div class="tele-row">
-          <span>🌡️ Start Date</span>
+          <span>📅 Start Date</span>
           <b id="heroStartDate">06/11</b>
         </div>
       </div>
@@ -418,7 +950,7 @@
         <span class="sc-lbl">Days Remaining</span>
       </div>
       <div class="stat-card">
-        <span class="sc-ico">📚</span>
+        <span class="sc-ico">📦</span>
         <span class="sc-val">750 GB</span>
         <span class="sc-lbl">Total Quota</span>
       </div>
@@ -475,71 +1007,38 @@
       </div>
     </div>
 
-    <!-- 5. Bandwidth Usage Area Chart -->
-    <div class="chart-card" onclick="openDailyZoom()">
-      <div class="chart-head">
-        <span class="chart-title"><span style="color:var(--gold);">📊</span> Bandwidth Usage (in1)</span>
-        <span class="chart-pill">Last 24 Hours ▾</span>
-      </div>
-      <div class="chart-legend">
-        <span><i class="dot-gold"></i> Download</span>
-        <span><i class="dot-gray"></i> Upload</span>
-      </div>
-      <div class="chart-svg-wrap">
-        <svg viewBox="0 0 340 50" preserveAspectRatio="none">
-          <line x1="34" y1="8" x2="336" y2="8" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
-          <line x1="34" y1="22" x2="336" y2="22" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
-          <line x1="34" y1="36" x2="336" y2="36" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
-          <text x="0" y="10" fill="#94a3b8" font-size="6.5" font-weight="700">30 Mbps</text>
-          <text x="0" y="24" fill="#94a3b8" font-size="6.5" font-weight="700">20 Mbps</text>
-          <text x="0" y="38" fill="#94a3b8" font-size="6.5" font-weight="700">10 Mbps</text>
-          <text x="24" y="47" fill="#94a3b8" font-size="6.5" font-weight="700">0</text>
-          <path d="M36,36 C55,34 65,24 85,28 C105,32 115,18 135,21 C155,24 165,33 185,26 C205,19 218,8 238,14 C258,20 272,27 292,16 C310,7 322,15 336,12 L336,42 L36,42 Z" fill="url(#areaGold)"/>
-          <path d="M36,36 C55,34 65,24 85,28 C105,32 115,18 135,21 C155,24 165,33 185,26 C205,19 218,8 238,14 C258,20 272,27 292,16 C310,7 322,15 336,12" fill="none" stroke="#f5b942" stroke-width="1.6"/>
-          <path d="M36,40 C65,38 95,35 125,37 C155,39 185,32 215,34 C245,36 275,28 305,31 C320,32 330,30 336,29" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1"/>
-          <text x="38" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">00:00</text>
-          <text x="82" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">03:00</text>
-          <text x="126" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">06:00</text>
-          <text x="170" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">09:00</text>
-          <text x="214" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">12:00</text>
-          <text x="258" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">15:00</text>
-          <text x="302" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">18:00</text>
-        </svg>
-      </div>
-    </div>
-
     <!-- 6. 8 Glassy Action Tiles (2x4) -->
     <div class="actions-8-grid">
       <div class="act-btn" onclick="go('info.html?from=dash')">
-        <span class="act-ico">👥</span>
+        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M17 11a3 3 0 1 0-1-5M18 15a5 5 0 0 1 3 5v1"/></svg></span>
         <span class="act-lbl">Users</span>
       </div>
       <div class="act-btn" onclick="go('active.html?from=dash')">
-        <span class="act-ico">📶</span>
+        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a21 21 0 0 1 20 0M5 13a15 15 0 0 1 14 0M8.5 17a9 9 0 0 1 7 0"/><circle cx="12" cy="21" r="1" fill="currentColor" stroke="none"/></svg></span>
         <span class="act-lbl">Hotspot</span>
       </div>
       <div class="act-btn" onclick="openDailyZoom()">
-        <span class="act-ico">⏱️</span>
+        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17a8 8 0 1 1 16 0"/><path d="m12 17 5-6"/><circle cx="12" cy="17" r="1.5" fill="currentColor" stroke="none"/><path d="M5 21h14"/></svg></span>
         <span class="act-lbl">Bandwidth</span>
       </div>
       <div class="act-btn" onclick="go('renew.html?from=dash')">
-        <span class="act-ico">📚</span>
+        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Zm-9 10 9 5 9-5M3 17l9 5 9-5"/></svg></span>
         <span class="act-lbl">Packages</span>
       </div>
       <div class="act-btn" onclick="go('index.html?from=dash')">
-        <span class="act-ico">➕</span>
+        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 22v-2a7 7 0 0 1 14 0v2M19 8v8M15 12h8"/></svg></span>
         <span class="act-lbl">Add User</span>
       </div>
       <div class="act-btn" onclick="go('info.html?from=dash')">
-        <span class="act-ico">📋</span>
+        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg></span>
         <span class="act-lbl">User List</span>
       </div>
       <div class="act-btn" onclick="openDailyZoom()">
-        <span class="act-ico">⇅</span>
+        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v18m0 0-4-4m4 4 4-4M17 21V3m0 0-4 4m4-4 4 4"/></svg></span>
         <span class="act-lbl">Traffic</span>
       </div>
       <div class="act-btn" onclick="openCycleModal()">
-        <span class="act-ico">⚙️</span>
+        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4l1 3 3 1 3-1 2 4-2 2v3l2 2-2 4-3-1-3 1-1 3h-4l-1-3-3-1-3 1-2-4 2-2v-3L1 9l2-4 3 1 3-1z"/><circle cx="12" cy="12" r="3"/></svg></span>
         <span class="act-lbl">Settings</span>
       </div>
     </div>
@@ -580,12 +1079,12 @@
     </div>
   </div>
 
-  <!-- Daily Traffic Details Modal (بدون علامة X؛ الإغلاق بالضغط على الخلفية) -->
+  <!-- Daily Traffic Details Modal -->
   <div class="modal-overlay" id="dailyZoomModal" onclick="if(event.target===this) closeDailyZoom()">
     <div class="zoom-square-box" onclick="if(event.target===this) closeDailyZoom()">
       <div style="font-size:17px;font-weight:900;color:var(--gold-bright);">📊 Today Traffic Details (in1)</div>
-      <div class="ring-wrap" style="width:160px;height:160px;">
-        <svg viewBox="0 0 88 88" style="width:160px;height:160px;">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 88 88">
           <circle class="ring-bg" cx="44" cy="44" r="34"/>
           <circle class="ring-fg" id="zoomRingArc" cx="44" cy="44" r="34" stroke-dasharray="213.63" stroke-dashoffset="213.63"/>
         </svg>
