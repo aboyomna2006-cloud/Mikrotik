@@ -10,16 +10,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #06080c;
-      --card-bg: rgba(15, 19, 27, 0.94);
-      --card-inner: #0b0e14;
+      --bg-dark: #07090e;
+      --glass-card: rgba(18, 22, 31, 0.78);
+      --glass-tile: rgba(22, 26, 36, 0.72);
       --gold: #f5b942;
       --gold-bright: #ffd97d;
-      --gold-border: rgba(245, 185, 66, 0.38);
+      --gold-soft: rgba(245, 185, 66, 0.16);
+      --gold-border: rgba(245, 185, 66, 0.44);
       --green: #10e87a;
       --red: #ff3b6b;
       --text-main: #ffffff;
-      --text-sub: #94a3b8;
+      --text-sub: #9aa7b8;
     }
 
     * {
@@ -35,12 +36,15 @@
     html, body {
       height: 100dvh;
       overflow: hidden;
-      background: radial-gradient(circle at 50% 6%, #261d10 0%, #0a0d13 46%, #05070a 100%);
+      background:
+        radial-gradient(ellipse 95% 32% at 50% 8%, rgba(245, 185, 66, 0.22), transparent 72%),
+        radial-gradient(ellipse 85% 24% at 50% 34%, rgba(245, 185, 66, 0.10), transparent 70%),
+        linear-gradient(180deg, #0b0e14 0%, #07090e 55%, #05070b 100%);
       color: var(--text-main);
     }
 
     body {
-      padding: 4px 8px calc(34px + env(safe-area-inset-bottom, 0px));
+      padding: 4px 8px calc(32px + env(safe-area-inset-bottom, 0px));
       display: flex;
       justify-content: center;
       align-items: stretch;
@@ -48,62 +52,64 @@
 
     .app-shell {
       width: 100%; max-width: 450px; height: 100%;
-      display: flex; flex-direction: column; justify-content: space-between; gap: 5px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
     }
 
-    /* 1. Top Header */
+    /* 1. Header */
     .top-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 2px 4px; flex-shrink: 0;
     }
-    .brand-group {
-      display: flex; align-items: center; gap: 8px;
-    }
+    .brand-group { display: flex; align-items: center; gap: 8px; }
     .wifi-logo {
-      width: 28px; height: 28px;
-      filter: drop-shadow(0 0 8px rgba(245, 185, 66, 0.75));
+      width: 30px; height: 30px;
+      filter: drop-shadow(0 0 10px rgba(245, 185, 66, 0.75));
       flex-shrink: 0;
     }
     .brand-titles { display: flex; flex-direction: column; }
-    .brand-title { font-size: 18px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -0.2px; }
-    .brand-subtitle { font-size: 10px; font-weight: 600; color: #cbd5e1; line-height: 1.15; }
+    .brand-title { font-size: 20px; font-weight: 900; color: #ffffff; line-height: 1.1; }
+    .brand-subtitle { font-size: 10.5px; font-weight: 600; color: #cbd5e1; line-height: 1.2; }
 
-    .header-actions { display: flex; align-items: center; gap: 7px; }
+    .header-actions { display: flex; align-items: center; gap: 8px; }
     .hdr-btn {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(245, 185, 66, 0.35);
-      color: #e2e8f0; display: flex; align-items: center; justify-content: center;
-      font-size: 14px; cursor: pointer; position: relative;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(145deg, rgba(35, 39, 50, 0.78), rgba(14, 17, 24, 0.88));
+      backdrop-filter: blur(10px);
+      border: 1.2px solid var(--gold-border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 224, 130, 0.25);
+      color: var(--gold-bright); display: flex; align-items: center; justify-content: center;
+      font-size: 15px; cursor: pointer; position: relative;
     }
-    .hdr-btn:active { transform: scale(0.92); }
+    .hdr-btn:active { transform: scale(0.93); }
     .bell-dot {
-      position: absolute; top: 5px; right: 6px; width: 6px; height: 6px;
+      position: absolute; top: 7px; right: 8px; width: 6px; height: 6px;
       border-radius: 50%; background: var(--gold);
     }
 
-    /* 2. Hero Router Card */
+    /* 2. Hero Card */
     .hero-card {
-      background: linear-gradient(135deg, rgba(34, 26, 15, 0.95) 0%, rgba(13, 17, 25, 0.96) 55%, rgba(16, 24, 22, 0.95) 100%);
-      border: 1.5px solid var(--gold-border);
-      border-radius: 16px;
-      padding: 7px 9px;
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.8), inset 0 0 22px rgba(245, 185, 66, 0.08);
-      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      background: linear-gradient(135deg, rgba(36, 28, 16, 0.88) 0%, rgba(15, 19, 28, 0.92) 52%, rgba(22, 18, 14, 0.88) 100%);
+      backdrop-filter: blur(12px);
+      border: 1.4px solid var(--gold-border);
+      border-radius: 17px;
+      padding: 8px 10px;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 217, 125, 0.22);
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
       flex-shrink: 0; position: relative; overflow: hidden;
     }
     .hero-card::before {
       content: ""; position: absolute; inset: 0;
-      background: radial-gradient(circle at 22% 52%, rgba(245, 185, 66, 0.22), transparent 55%);
+      background: radial-gradient(circle at 22% 55%, rgba(245, 185, 66, 0.22), transparent 58%);
       pointer-events: none;
     }
 
     .router-img-wrap {
-      width: 78px; height: 84px; display: flex; align-items: center; justify-content: center;
+      width: 78px; height: 86px; display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; z-index: 1;
     }
     .router-img-wrap img {
       width: 100%; height: 100%; object-fit: contain;
-      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.95));
+      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.92));
       border-radius: 8px;
     }
 
@@ -111,28 +117,28 @@
       display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
       z-index: 1; flex: 1; min-width: 0;
     }
-    .mk-brand { font-size: 13px; font-weight: 800; color: #f8fafc; font-style: italic; line-height: 1; }
-    .mk-model { font-size: 18px; font-weight: 900; color: var(--gold-bright); line-height: 1.1; }
-    .mk-code { font-size: 9px; font-weight: 700; color: #cbd5e1; white-space: nowrap; }
+    .mk-brand { font-size: 14px; font-weight: 800; color: #f8fafc; font-style: italic; line-height: 1; }
+    .mk-model { font-size: 19px; font-weight: 900; color: var(--gold-bright); line-height: 1.1; }
+    .mk-code { font-size: 9.5px; font-weight: 700; color: #cbd5e1; white-space: nowrap; }
     .ros-pill {
       margin-top: 3px;
       background: rgba(245, 185, 66, 0.14); border: 1px solid rgba(245, 185, 66, 0.5);
-      color: var(--gold-bright); font-size: 9.5px; font-weight: 800;
-      padding: 2px 8px; border-radius: 20px; white-space: nowrap;
+      color: var(--gold-bright); font-size: 10px; font-weight: 800;
+      padding: 2px 9px; border-radius: 20px; white-space: nowrap;
     }
 
     .hero-right-telemetry {
-      display: flex; flex-direction: column; gap: 3px; z-index: 1; flex-shrink: 0;
-      min-width: 138px;
+      display: flex; flex-direction: column; gap: 3.5px; z-index: 1; flex-shrink: 0;
+      min-width: 142px;
     }
     .online-pill {
       display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-      background: rgba(16, 232, 122, 0.15); border: 1px solid rgba(16, 232, 122, 0.45);
-      color: #5cffaa; padding: 2px 8px; border-radius: 20px;
-      font-size: 9.5px; font-weight: 800; margin-bottom: 1px;
+      background: rgba(16, 232, 122, 0.14); border: 1px solid rgba(16, 232, 122, 0.45);
+      color: #5cffaa; padding: 2px 9px; border-radius: 20px;
+      font-size: 10px; font-weight: 800; margin-bottom: 1px;
     }
     .online-pill.offline {
-      background: rgba(255, 59, 107, 0.18); border-color: rgba(255, 59, 107, 0.5); color: #ff6b8b;
+      background: rgba(255, 59, 107, 0.16); border: 1px solid rgba(255, 59, 107, 0.52); color: #ff6b8b;
     }
     .online-dot {
       width: 6px; height: 6px; border-radius: 50%; background: var(--green);
@@ -143,26 +149,27 @@
 
     .tele-row {
       display: flex; align-items: center; justify-content: space-between; gap: 6px;
-      font-size: 9px; color: var(--text-sub); font-weight: 600;
+      font-size: 9.5px; color: var(--text-sub); font-weight: 600;
     }
-    .tele-row b { color: #ffffff; font-weight: 800; font-size: 9.5px; }
+    .tele-row b { color: #ffffff; font-weight: 800; font-size: 10px; }
     .tele-row.frozen b { color: #ff6b8b; }
 
-    /* 3. 4-Card Summary Grid */
+    /* 3. 4 Summary Cards */
     .stats-4-row {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; flex-shrink: 0;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; flex-shrink: 0;
     }
     .stat-card {
-      background: linear-gradient(180deg, rgba(24, 28, 38, 0.94), rgba(12, 15, 22, 0.98));
-      border: 1px solid var(--gold-border);
-      border-radius: 13px; padding: 5px 4px;
+      background: linear-gradient(160deg, rgba(28, 32, 44, 0.78), rgba(12, 15, 22, 0.88));
+      backdrop-filter: blur(10px);
+      border: 1.2px solid var(--gold-border);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 224, 130, 0.18);
+      border-radius: 14px; padding: 6px 4px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; gap: 1px;
+      text-align: center; gap: 2px;
     }
-    .stat-card.interactive { cursor: pointer; transition: transform 0.12s ease; }
-    .stat-card.interactive:active { transform: scale(0.95); }
+    .stat-card.interactive { cursor: pointer; transition: transform 0.12s ease, border-color 0.15s ease; }
+    .stat-card.interactive:active { transform: scale(0.95); border-color: var(--gold-bright); }
 
-    /* تنبيه الوميض الأحمر لـ Days Remaining عند تبقي يوم واحد */
     .stat-card.urgent-blink {
       border: 1.5px solid var(--red) !important;
       animation: urgentCardBlink 0.75s infinite ease-in-out;
@@ -180,114 +187,113 @@
       }
     }
     .stat-card.urgent-blink .sc-val,
-    .stat-card.urgent-blink .sc-lbl {
-      color: #ff6b8b !important;
-    }
+    .stat-card.urgent-blink .sc-lbl { color: #ff6b8b !important; }
 
-    .sc-ico { font-size: 13px; color: var(--gold); line-height: 1.1; }
-    .sc-val { font-size: 15px; font-weight: 900; color: #ffffff; line-height: 1.15; }
-    .sc-lbl { font-size: 8.5px; font-weight: 700; color: var(--text-sub); line-height: 1.1; white-space: nowrap; }
+    .sc-ico { font-size: 14px; color: var(--gold); line-height: 1.1; }
+    .sc-val { font-size: 16px; font-weight: 900; color: #ffffff; line-height: 1.15; }
+    .sc-lbl { font-size: 9px; font-weight: 700; color: var(--text-sub); line-height: 1.15; white-space: nowrap; }
 
-    /* 4. Two Large Circular Gauge Cards */
+    /* 4. Two Circular Gauge Cards */
     .gauges-2-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex-shrink: 0;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 7px; flex-shrink: 0;
     }
     .gauge-card {
-      background: linear-gradient(180deg, rgba(20, 24, 33, 0.96), rgba(10, 13, 19, 0.98));
-      border: 1px solid var(--gold-border);
-      border-radius: 15px; padding: 6px 8px;
-      display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 3px;
+      background: linear-gradient(160deg, rgba(24, 28, 38, 0.82), rgba(11, 14, 20, 0.90));
+      backdrop-filter: blur(12px);
+      border: 1.2px solid var(--gold-border);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 224, 130, 0.16);
+      border-radius: 16px; padding: 7px 8px;
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 4px;
     }
     .gauge-card.holding { transform: scale(0.97); }
     .gc-head {
       width: 100%; display: flex; align-items: center; gap: 5px;
-      font-size: 11px; font-weight: 800; color: #ffffff;
+      font-size: 11.5px; font-weight: 800; color: #ffffff;
     }
-    .gc-head span.ico { color: var(--gold); font-size: 12px; }
+    .gc-head span.ico { color: var(--gold); font-size: 13px; }
 
     .ring-wrap {
-      position: relative; width: 78px; height: 78px;
+      position: relative; width: 82px; height: 82px;
       display: flex; align-items: center; justify-content: center;
     }
-    .ring-wrap svg { width: 78px; height: 78px; transform: rotate(-90deg); }
+    .ring-wrap svg { width: 82px; height: 82px; transform: rotate(-90deg); }
     .ring-bg { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 9; }
     .ring-fg {
       fill: none; stroke: url(#goldArc); stroke-width: 9; stroke-linecap: round;
-      filter: drop-shadow(0 0 6px rgba(245, 185, 66, 0.6));
+      filter: drop-shadow(0 0 7px rgba(245, 185, 66, 0.65));
       transition: stroke-dashoffset 0.5s ease;
     }
-    .ring-pct {
-      position: absolute; font-size: 16px; font-weight: 900; color: #ffffff;
-    }
+    .ring-pct { position: absolute; font-size: 17px; font-weight: 900; color: #ffffff; }
 
     .gc-foot {
       width: 100%; display: grid; grid-template-columns: 1fr 1fr;
-      border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 3px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 4px;
     }
-    .gc-stat {
-      display: flex; flex-direction: column; align-items: center; text-align: center;
-    }
+    .gc-stat { display: flex; flex-direction: column; align-items: center; text-align: center; }
     .gc-stat:first-child { border-right: 1px solid rgba(255, 255, 255, 0.08); }
-    .gcs-lbl { font-size: 8.5px; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 3px; }
+    .gcs-lbl { font-size: 9px; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 3px; }
     .dot-gold { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); display: inline-block; }
     .dot-gray { width: 6px; height: 6px; border-radius: 50%; background: #94a3b8; display: inline-block; }
-    .gcs-val { font-size: 11px; font-weight: 900; color: #ffffff; }
+    .gcs-val { font-size: 11.5px; font-weight: 900; color: #ffffff; }
 
-    /* 5. Bandwidth Usage Area Chart Card */
+    /* 5. Bandwidth Usage Area Chart */
     .chart-card {
-      background: linear-gradient(180deg, rgba(20, 24, 33, 0.95), rgba(10, 13, 19, 0.98));
-      border: 1px solid var(--gold-border);
-      border-radius: 15px; padding: 5px 9px;
+      background: linear-gradient(160deg, rgba(24, 28, 38, 0.82), rgba(11, 14, 20, 0.90));
+      backdrop-filter: blur(12px);
+      border: 1.2px solid var(--gold-border);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 224, 130, 0.16);
+      border-radius: 16px; padding: 6px 10px;
       display: flex; flex-direction: column; gap: 2px; flex-shrink: 0;
     }
-    .chart-head {
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .chart-title { font-size: 11px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 5px; }
+    .chart-head { display: flex; align-items: center; justify-content: space-between; }
+    .chart-title { font-size: 11.5px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 5px; }
     .chart-pill {
-      background: rgba(245, 185, 66, 0.12); border: 1px solid rgba(245, 185, 66, 0.4);
-      color: var(--gold-bright); font-size: 8.5px; font-weight: 700;
-      padding: 1px 7px; border-radius: 10px;
+      background: rgba(245, 185, 66, 0.12); border: 1px solid rgba(245, 185, 66, 0.42);
+      color: var(--gold-bright); font-size: 9px; font-weight: 700;
+      padding: 1.5px 8px; border-radius: 10px;
     }
     .chart-legend {
-      display: flex; align-items: center; gap: 12px; font-size: 8.5px; color: var(--text-sub); font-weight: 700;
+      display: flex; align-items: center; gap: 12px; font-size: 9px; color: var(--text-sub); font-weight: 700;
       padding-left: 34px;
     }
-    .chart-svg-wrap { width: 100%; height: 48px; }
+    .chart-svg-wrap { width: 100%; height: 50px; }
     .chart-svg-wrap svg { width: 100%; height: 100%; overflow: visible; }
 
-    /* 6. 8-Button Action Grid (2 rows x 4 cols) */
+    /* 6. 8 Glassy Action Tiles (2x4) */
     .actions-8-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
       flex: 1; min-height: 0;
     }
     .act-btn {
-      background: linear-gradient(180deg, rgba(23, 27, 37, 0.96), rgba(12, 15, 22, 0.98));
-      border: 1px solid var(--gold-border);
-      border-radius: 13px; padding: 4px 2px;
+      background: linear-gradient(155deg, rgba(34, 38, 50, 0.72), rgba(13, 16, 23, 0.86));
+      backdrop-filter: blur(10px);
+      border: 1.2px solid var(--gold-border);
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 224, 130, 0.22);
+      border-radius: 14px; padding: 5px 3px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 2px; cursor: pointer; transition: transform 0.12s ease;
+      gap: 3px; cursor: pointer; transition: transform 0.12s ease, border-color 0.15s ease;
     }
     .act-btn:active { transform: scale(0.95); border-color: var(--gold-bright); }
-    .act-ico { font-size: 16px; color: var(--gold-bright); line-height: 1.1; }
-    .act-lbl { font-size: 9.5px; font-weight: 800; color: #ffffff; line-height: 1.1; white-space: nowrap; }
+    .act-ico { font-size: 18px; color: var(--gold-bright); line-height: 1.1; filter: drop-shadow(0 0 6px rgba(245, 185, 66, 0.35)); }
+    .act-lbl { font-size: 10px; font-weight: 800; color: #ffffff; line-height: 1.15; white-space: nowrap; }
 
-    /* 7. Logout Button */
+    /* 7. Logout Glass Pill Button */
     .logout-btn {
-      width: 100%; padding: 6px;
-      background: linear-gradient(90deg, rgba(26, 22, 16, 0.96), rgba(42, 32, 18, 0.96), rgba(26, 22, 16, 0.96));
-      border: 1.5px solid var(--gold-border);
-      border-radius: 20px; color: #ffffff;
-      font-size: 12px; font-weight: 800;
-      display: flex; align-items: center; justify-content: center; gap: 7px;
+      width: 100%; padding: 7px;
+      background: linear-gradient(90deg, rgba(32, 28, 22, 0.82), rgba(48, 41, 28, 0.88), rgba(32, 28, 22, 0.82));
+      backdrop-filter: blur(10px);
+      border: 1.4px solid var(--gold-border);
+      border-radius: 22px; color: #ffffff;
+      font-size: 12.5px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
       cursor: pointer; flex-shrink: 0;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 224, 130, 0.2);
     }
     .logout-btn:active { transform: scale(0.98); }
     .power-ring {
-      width: 18px; height: 18px; border-radius: 50%;
+      width: 20px; height: 20px; border-radius: 50%;
       border: 1.5px solid var(--gold-bright); color: var(--gold-bright);
-      display: inline-flex; align-items: center; justify-content: center; font-size: 10px;
+      display: inline-flex; align-items: center; justify-content: center; font-size: 11px;
     }
 
     /* Modals */
@@ -296,7 +302,12 @@
     .modal-box { width: 100%; max-width: 340px; background: linear-gradient(180deg, #171c26 0%, #0b0e14 100%); border: 1.5px solid var(--gold-border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 11px; }
     .modal-title { font-size: 15px; font-weight: 900; color: var(--gold-bright); text-align: center; }
     .modal-desc { font-size: 12px; color: var(--text-sub); text-align: center; font-weight: 600; line-height: 1.4; }
-    .date-input { width: 100%; background: #080b10; border: 1.5px solid var(--gold-border); color: #fff; padding: 9px 12px; border-radius: 10px; font-size: 14px; font-weight: 800; text-align: center; color-scheme: dark; }
+    .date-input {
+      width: 100%; background: #0c1018; border: 1.5px solid var(--gold-border);
+      color: #ffffff; padding: 10px 12px; border-radius: 11px;
+      font-size: 15px; font-weight: 800; text-align: center;
+      color-scheme: dark; direction: ltr;
+    }
     .check-row { display: flex; align-items: center; gap: 8px; background: rgba(245, 185, 66, 0.1); border: 1px solid rgba(245, 185, 66, 0.35); padding: 8px 10px; border-radius: 10px; font-size: 11.5px; font-weight: 700; color: var(--gold-bright); cursor: pointer; }
     .check-row input { width: 16px; height: 16px; accent-color: var(--gold); }
     .modal-btns { display: flex; gap: 8px; }
@@ -304,7 +315,6 @@
     .btn-cancel-cycle { flex: 1; background: rgba(255, 59, 107, 0.15); border: 1px solid var(--red); color: var(--red); padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 800; cursor: pointer; }
     .btn-confirm-exit { flex: 1; background: linear-gradient(135deg, #ff3b6b, #c9184a); color: #ffffff; border: none; padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 900; cursor: pointer; }
 
-    /* Zoom Traffic Modal */
     .zoom-square-box { width: min(92vw, 350px); display: flex; flex-direction: column; align-items: center; gap: 15px; }
     .zoom-close-btn {
       position: fixed; top: 18px; right: 18px; width: 46px; height: 46px; border-radius: 50%;
@@ -420,7 +430,6 @@
 
     <!-- 4. Two Circular Gauge Cards -->
     <div class="gauges-2-row">
-      <!-- Package Usage -->
       <div class="gauge-card" onclick="stopCalmSiren(true)">
         <div class="gc-head">
           <span class="ico">📚</span>
@@ -445,7 +454,6 @@
         </div>
       </div>
 
-      <!-- Today Traffic (in1) -->
       <div class="gauge-card" id="dailyGaugeCard">
         <div class="gc-head">
           <span class="ico">⇅</span>
@@ -504,7 +512,7 @@
       </div>
     </div>
 
-    <!-- 6. 8-Button Grid (2x4) -->
+    <!-- 6. 8 Glassy Action Tiles (2x4) -->
     <div class="actions-8-grid">
       <div class="act-btn" onclick="go('info.html?from=dash')">
         <span class="act-ico">👥</span>
@@ -731,11 +739,35 @@
       return `${cairo.getFullYear()}-${String(cairo.getMonth() + 1).padStart(2, '0')}-${String(cairo.getDate()).padStart(2, '0')}`;
     }
 
-    let cycleStartDate = localStorage.getItem('abo_yomna_cycle_start') || getTodayCairoISO();
+    /* تحويل أي صيغة تاريخ بأمان إلى YYYY-MM-DD لمنع تشوه حقل الإدخال */
+    function normalizeDateToISO(rawStr) {
+      if (!rawStr) return getTodayCairoISO();
+      const s = String(rawStr).trim();
+      const isoMatch = s.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+      if (isoMatch) {
+        return `${isoMatch[1]}-${String(isoMatch[2]).padStart(2, '0')}-${String(isoMatch[3]).padStart(2, '0')}`;
+      }
+      const dmyMatch = s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+      if (dmyMatch) {
+        return `${dmyMatch[3]}-${String(dmyMatch[2]).padStart(2, '0')}-${String(dmyMatch[1]).padStart(2, '0')}`;
+      }
+      const months = {
+        jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
+        jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12'
+      };
+      const rosMatch = s.match(/^([a-z]{3})[-/](\d{1,2})[-/](\d{4})$/i);
+      if (rosMatch && months[rosMatch[1].toLowerCase()]) {
+        return `${rosMatch[3]}-${months[rosMatch[1].toLowerCase()]}-${String(rosMatch[2]).padStart(2, '0')}`;
+      }
+      return getTodayCairoISO();
+    }
+
+    let cycleStartDate = normalizeDateToISO(localStorage.getItem('abo_yomna_cycle_start'));
 
     function formatShortBadge(isoStr) {
-      const parts = String(isoStr).replace(/\//g, '-').split('-');
-      return parts.length === 3 ? `${String(parts[2]).padStart(2, '0')}/${String(parts[1]).padStart(2, '0')}` : '06/11';
+      const norm = normalizeDateToISO(isoStr);
+      const parts = norm.split('-');
+      return parts.length === 3 ? `${parts[2]}/${parts[1]}` : '06/11';
     }
 
     function handleDaysCardClick() {
@@ -744,7 +776,9 @@
     }
 
     function openCycleModal() {
-      document.getElementById('cycleStartInput').value = cycleStartDate;
+      const safeISO = normalizeDateToISO(cycleStartDate);
+      const inp = document.getElementById('cycleStartInput');
+      inp.value = safeISO;
       document.getElementById('resetCycleCheck').checked = false;
       document.getElementById('cycleModal').classList.add('open');
     }
@@ -793,7 +827,7 @@
     }
 
     async function saveCycleSettings() {
-      const chosen = document.getElementById('cycleStartInput').value || getTodayCairoISO();
+      const chosen = normalizeDateToISO(document.getElementById('cycleStartInput').value);
       const doReset = document.getElementById('resetCycleCheck').checked ? '1' : '0';
       const btn = document.getElementById('btnSaveCycle');
       btn.innerText = "⏳ Saving...";
@@ -819,13 +853,14 @@
       if (isInsideTelegram) tg.sendData(`set_cycle|${chosen}|${doReset}`);
     }
 
-    function updateCycle30DaysUI(isoStart) {
+    function updateCycle30DaysUI(rawStart) {
+      const isoStart = normalizeDateToISO(rawStart);
       const badgeStr = formatShortBadge(isoStart);
       document.getElementById('heroStartDate').innerText = badgeStr;
       const zoomBadge = document.getElementById('zoomCycleStart');
       if (zoomBadge) zoomBadge.innerText = badgeStr;
 
-      const parts = String(isoStart).replace(/\//g, '-').split('-');
+      const parts = isoStart.split('-');
       if (parts.length !== 3) return;
       const start = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
       const cairoNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
@@ -926,10 +961,11 @@
 
           if (st.ver) document.getElementById('rosVerVal').innerText = st.ver;
 
-          if (st.cycle_start && st.cycle_start.length >= 8) {
-            cycleStartDate = st.cycle_start.replace(/\//g, '-');
-            localStorage.setItem('abo_yomna_cycle_start', cycleStartDate);
-            updateCycle30DaysUI(cycleStartDate);
+          if (st.cycle_start && String(st.cycle_start).trim().length >= 6) {
+            const fixedStart = normalizeDateToISO(st.cycle_start);
+            cycleStartDate = fixedStart;
+            localStorage.setItem('abo_yomna_cycle_start', fixedStart);
+            updateCycle30DaysUI(fixedStart);
           }
 
           const dayGB = ((st.day_mb || 0) / 1024);
@@ -955,7 +991,7 @@
 
           let diffSec = 999999;
           if (st.date && st.time) {
-            const parsed = Date.parse(`${st.date.replace(/\//g, '-')} ${st.time} GMT+0200`);
+            const parsed = Date.parse(`${normalizeDateToISO(st.date)} ${st.time} GMT+0200`);
             if (!isNaN(parsed)) diffSec = Math.floor((Date.now() - parsed) / 1000);
           }
 
