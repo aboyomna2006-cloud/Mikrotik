@@ -291,7 +291,7 @@
 
     <div class="field-group">
       <div class="label-row">
-        <span>💬 الكومنت (يمكنك تعديل الاسم أو التاريخ +30 يوم)</span>
+        <span>💬 الكومنت (يحافظ على النص بالكامل + تعديل التاريخ)</span>
         <button type="button" class="btn-add-days" onclick="bumpCommentDays(30)">+30 يوم ➕</button>
       </div>
       <input type="text" id="commentInput" class="input-box" placeholder="الكومنت...">
@@ -503,7 +503,7 @@
       document.getElementById('currProfBadge').innerText = `الحالي: ${u.p}`;
 
       const origComm = u.c || '';
-      document.getElementById('commentInput').value = addDaysToComment(origComm, 30, selectedGb === 0);
+      document.getElementById('commentInput').value = origComm;
 
       updateQuotaRing(u);
 
@@ -532,11 +532,6 @@
       selectedGb = gb;
       document.querySelectorAll('.gb-grid .chip-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
-
-      if (selectedUser) {
-        const origComm = selectedUser.c || '';
-        document.getElementById('commentInput').value = addDaysToComment(origComm, 30, gb === 0);
-      }
     }
 
     async function sendDirectCommandToRouter(payload) {
@@ -566,7 +561,7 @@
         return;
       }
       const target = selectedUser.n.startsWith('Arabic_User_') ? selectedUser.id : selectedUser.n;
-      const comm = document.getElementById('commentInput').value.trim();
+      const comm = document.getElementById('commentInput').value.trim().replace(/\|/g, ' - ');
       const payload = `/renew_user|${target}|${selectedProfile}|${selectedGb}|${comm}`;
 
       if (isInsideTelegram) {
