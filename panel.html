@@ -1,23 +1,22 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>My-Network - شبكة إنترنت أبو يمنى</title>
+  <title>My-Network - MikroTik Network Management</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #07090e;
-      --card-bg: rgba(16, 20, 29, 0.92);
-      --card-inner: #0d1119;
+      --bg-dark: #06080c;
+      --card-bg: rgba(15, 19, 27, 0.94);
+      --card-inner: #0b0e14;
       --gold: #f5b942;
       --gold-bright: #ffd97d;
-      --gold-border: rgba(245, 185, 66, 0.42);
+      --gold-border: rgba(245, 185, 66, 0.38);
       --green: #10e87a;
-      --green-border: rgba(16, 232, 122, 0.42);
       --red: #ff3b6b;
       --text-main: #ffffff;
       --text-sub: #94a3b8;
@@ -25,7 +24,7 @@
 
     * {
       box-sizing: border-box; margin: 0; padding: 0;
-      font-family: 'Cairo', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       -webkit-tap-highlight-color: transparent;
       -webkit-user-select: none !important;
       user-select: none !important;
@@ -36,7 +35,7 @@
     html, body {
       height: 100dvh;
       overflow: hidden;
-      background: radial-gradient(circle at 50% 8%, #261e12 0%, #0b0e14 48%, #06080c 100%);
+      background: radial-gradient(circle at 50% 6%, #261d10 0%, #0a0d13 46%, #05070a 100%);
       color: var(--text-main);
     }
 
@@ -52,635 +51,556 @@
       display: flex; flex-direction: column; justify-content: space-between; gap: 5px;
     }
 
-    /* الهيدر العلوي: My-Network */
-    .top-navbar {
+    /* 1. Top Header */
+    .top-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 2px 4px; flex-shrink: 0;
     }
-    .nav-icon-btn {
-      width: 34px; height: 34px; border-radius: 10px;
-      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
+    .brand-group {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .wifi-logo {
+      width: 28px; height: 28px;
+      filter: drop-shadow(0 0 8px rgba(245, 185, 66, 0.75));
+      flex-shrink: 0;
+    }
+    .brand-titles { display: flex; flex-direction: column; }
+    .brand-title { font-size: 18px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -0.2px; }
+    .brand-subtitle { font-size: 10px; font-weight: 600; color: #cbd5e1; line-height: 1.15; }
+
+    .header-actions { display: flex; align-items: center; gap: 7px; }
+    .hdr-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(245, 185, 66, 0.35);
       color: #e2e8f0; display: flex; align-items: center; justify-content: center;
-      font-size: 16px; cursor: pointer;
+      font-size: 14px; cursor: pointer; position: relative;
     }
-    .nav-icon-btn:active { transform: scale(0.93); }
-    .nav-icons-pair { display: flex; align-items: center; gap: 6px; }
-
-    .brand-center {
-      display: flex; flex-direction: column; align-items: center; text-align: center;
-    }
-    .brand-title-row {
-      display: flex; align-items: center; gap: 6px; direction: ltr;
-    }
-    .wifi-emblem {
-      width: 24px; height: 24px;
-      filter: drop-shadow(0 0 8px rgba(245, 185, 66, 0.8));
-    }
-    .brand-name {
-      font-size: 19px; font-weight: 900; color: #ffffff; letter-spacing: 0.3px;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
-    }
-    .brand-sub {
-      font-size: 10.5px; font-weight: 800; color: var(--gold-bright);
-      margin-top: -4px; opacity: 0.92;
+    .hdr-btn:active { transform: scale(0.92); }
+    .bell-dot {
+      position: absolute; top: 5px; right: 6px; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--gold);
     }
 
-    /* الكارت الرئيسي للراوتر واسم الشبكة */
+    /* 2. Hero Router Card */
     .hero-card {
-      background: linear-gradient(135deg, rgba(35, 27, 17, 0.94) 0%, rgba(14, 18, 26, 0.96) 55%, rgba(18, 28, 24, 0.94) 100%);
+      background: linear-gradient(135deg, rgba(34, 26, 15, 0.95) 0%, rgba(13, 17, 25, 0.96) 55%, rgba(16, 24, 22, 0.95) 100%);
       border: 1.5px solid var(--gold-border);
-      border-radius: 18px;
-      padding: 8px 10px;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75), inset 0 0 22px rgba(245, 185, 66, 0.08);
-      display: flex; align-items: center; justify-content: space-between; gap: 4px;
+      border-radius: 16px;
+      padding: 7px 9px;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.8), inset 0 0 22px rgba(245, 185, 66, 0.08);
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
       flex-shrink: 0; position: relative; overflow: hidden;
     }
     .hero-card::before {
       content: ""; position: absolute; inset: 0;
-      background: radial-gradient(circle at 48% 55%, rgba(245, 185, 66, 0.16), transparent 62%);
+      background: radial-gradient(circle at 22% 52%, rgba(245, 185, 66, 0.22), transparent 55%);
       pointer-events: none;
     }
 
-    .hero-right-col {
-      display: flex; flex-direction: column; align-items: flex-start; gap: 5px; z-index: 1;
+    .router-img-wrap {
+      width: 78px; height: 84px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; z-index: 1;
     }
-    .status-chip {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(16, 232, 122, 0.14); border: 1px solid rgba(16, 232, 122, 0.45);
-      color: #5cffaa; padding: 2px 10px; border-radius: 20px;
-      font-size: 11px; font-weight: 900; white-space: nowrap;
+    .router-img-wrap img {
+      width: 100%; height: 100%; object-fit: contain;
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.95));
+      border-radius: 8px;
     }
-    .status-chip.offline {
-      background: rgba(255, 59, 107, 0.16); border-color: rgba(255, 59, 107, 0.5); color: #ff6b8b;
+
+    .hero-center-info {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+      z-index: 1; flex: 1; min-width: 0;
     }
-    .status-dot {
-      width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+    .mk-brand { font-size: 13px; font-weight: 800; color: #f8fafc; font-style: italic; line-height: 1; }
+    .mk-model { font-size: 18px; font-weight: 900; color: var(--gold-bright); line-height: 1.1; }
+    .mk-code { font-size: 9px; font-weight: 700; color: #cbd5e1; white-space: nowrap; }
+    .ros-pill {
+      margin-top: 3px;
+      background: rgba(245, 185, 66, 0.14); border: 1px solid rgba(245, 185, 66, 0.5);
+      color: var(--gold-bright); font-size: 9.5px; font-weight: 800;
+      padding: 2px 8px; border-radius: 20px; white-space: nowrap;
+    }
+
+    .hero-right-telemetry {
+      display: flex; flex-direction: column; gap: 3px; z-index: 1; flex-shrink: 0;
+      min-width: 138px;
+    }
+    .online-pill {
+      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      background: rgba(16, 232, 122, 0.15); border: 1px solid rgba(16, 232, 122, 0.45);
+      color: #5cffaa; padding: 2px 8px; border-radius: 20px;
+      font-size: 9.5px; font-weight: 800; margin-bottom: 1px;
+    }
+    .online-pill.offline {
+      background: rgba(255, 59, 107, 0.18); border-color: rgba(255, 59, 107, 0.5); color: #ff6b8b;
+    }
+    .online-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--green);
       box-shadow: 0 0 8px var(--green); animation: pulse 1.5s infinite;
     }
-    .status-chip.offline .status-dot { background: var(--red); box-shadow: none; animation: none; }
+    .online-pill.offline .online-dot { background: var(--red); box-shadow: none; animation: none; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-    .network-title-wrap {
-      display: flex; align-items: center; gap: 7px;
+    .tele-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      font-size: 9px; color: var(--text-sub); font-weight: 600;
     }
-    .globe-icon {
-      width: 26px; height: 26px; color: var(--gold-bright);
-      filter: drop-shadow(0 0 8px rgba(245, 185, 66, 0.6)); flex-shrink: 0;
-    }
-    .net-label-1 { font-size: 13px; font-weight: 800; color: #e2e8f0; line-height: 1.1; }
-    .net-label-2 {
-      font-size: 25px; font-weight: 900; line-height: 1.15;
-      background: linear-gradient(180deg, #fff5d6 15%, #f5b942 85%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.9));
-    }
+    .tele-row b { color: #ffffff; font-weight: 800; font-size: 9.5px; }
+    .tele-row.frozen b { color: #ff6b8b; }
 
-    .hero-router-img {
-      width: 96px; height: 88px; object-fit: contain; z-index: 1;
-      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.95));
-      flex-shrink: 0;
+    /* 3. 4-Card Summary Grid */
+    .stats-4-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; flex-shrink: 0;
     }
-
-    .hero-left-specs {
-      display: flex; flex-direction: column; align-items: flex-end; text-align: left;
-      direction: ltr; z-index: 1; gap: 2px;
-    }
-    .mk-brand { font-size: 13px; font-weight: 900; color: #ffffff; font-style: italic; line-height: 1; }
-    .mk-model { font-size: 15px; font-weight: 900; color: var(--gold-bright); line-height: 1.15; margin-bottom: 2px; }
-    .spec-item { font-size: 9.5px; font-weight: 800; color: #cbd5e1; line-height: 1.25; white-space: nowrap; }
-    .spec-item span { color: var(--gold); }
-
-    /* صف الإحصائيات الأربعة */
-    .stats-4-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;
-      flex-shrink: 0;
-    }
-    .stat-mini-card {
-      background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.08);
+    .stat-card {
+      background: linear-gradient(180deg, rgba(24, 28, 38, 0.94), rgba(12, 15, 22, 0.98));
+      border: 1px solid var(--gold-border);
       border-radius: 13px; padding: 5px 4px;
-      display: flex; align-items: center; justify-content: space-between; gap: 4px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; gap: 1px;
     }
-    .stat-mini-card.gold-glow { border-color: rgba(245, 185, 66, 0.35); }
-    .stat-mini-card.green-glow { border-color: rgba(16, 232, 122, 0.35); }
-    .stat-circle-icon {
-      width: 24px; height: 24px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 900; flex-shrink: 0;
-    }
-    .icon-gold { background: rgba(245, 185, 66, 0.14); border: 1px solid rgba(245, 185, 66, 0.45); color: var(--gold-bright); }
-    .icon-green { background: rgba(16, 232, 122, 0.14); border: 1px solid rgba(16, 232, 122, 0.45); color: var(--green); }
-    .icon-gray { background: rgba(148, 163, 184, 0.14); border: 1px solid rgba(148, 163, 184, 0.4); color: #e2e8f0; }
+    .stat-card.interactive { cursor: pointer; transition: transform 0.12s ease; }
+    .stat-card.interactive:active { transform: scale(0.95); }
 
-    .stat-text-col { display: flex; flex-direction: column; text-align: right; overflow: hidden; }
-    .stat-lbl { font-size: 8.8px; font-weight: 800; color: var(--text-sub); line-height: 1.15; white-space: nowrap; }
-    .stat-val { font-size: 12.5px; font-weight: 900; color: #ffffff; line-height: 1.2; direction: ltr; text-align: right; white-space: nowrap; }
-    .stat-val.green { color: var(--green); }
-
-    /* كارتين الدوائر الكبيرة (متبقي للباقة + سحب اليوم) */
-    .gauges-2-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 7px; flex-shrink: 0;
+    /* تنبيه الوميض الأحمر لـ Days Remaining عند تبقي يوم واحد */
+    .stat-card.urgent-blink {
+      border: 1.5px solid var(--red) !important;
+      animation: urgentCardBlink 0.75s infinite ease-in-out;
     }
-    .gauge-panel {
-      background: linear-gradient(180deg, rgba(22, 26, 36, 0.95) 0%, rgba(11, 14, 21, 0.98) 100%);
-      border-radius: 16px; padding: 7px 8px;
-      display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
-      position: relative;
+    @keyframes urgentCardBlink {
+      0%, 100% {
+        background: rgba(255, 59, 107, 0.28);
+        box-shadow: 0 0 14px rgba(255, 59, 107, 0.85);
+        transform: scale(1.02);
+      }
+      50% {
+        background: rgba(255, 59, 107, 0.06);
+        box-shadow: none;
+        transform: scale(0.99);
+      }
     }
-    .gauge-panel.gold-panel {
-      border: 1.5px solid var(--gold-border);
-      box-shadow: inset 0 0 18px rgba(245, 185, 66, 0.06);
-    }
-    .gauge-panel.green-panel {
-      border: 1.5px solid var(--green-border);
-      box-shadow: inset 0 0 18px rgba(16, 232, 122, 0.06);
-    }
-    .gauge-panel.holding { transform: scale(0.97); }
-
-    .gp-header {
-      display: flex; align-items: center; justify-content: space-between; gap: 4px;
-    }
-    .gp-title {
-      font-size: 12px; font-weight: 900; display: flex; align-items: center; gap: 4px; white-space: nowrap;
-    }
-    .gp-title.gold { color: var(--gold-bright); }
-    .gp-title.green { color: #5cffaa; }
-
-    .gp-pill-btn {
-      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(245, 185, 66, 0.45);
-      color: var(--gold-bright); border-radius: 7px; padding: 1px 6px;
-      font-size: 10px; font-weight: 900; display: inline-flex; align-items: center; gap: 3px;
-      cursor: pointer; white-space: nowrap;
-    }
-    .gp-pill-btn.urgent-blink {
-      border-color: var(--red); color: #ff4d79;
-      animation: redBlink 0.75s infinite ease-in-out;
-    }
-    @keyframes redBlink {
-      0%, 100% { background: rgba(255, 59, 107, 0.28); box-shadow: 0 0 10px rgba(255, 59, 107, 0.8); }
-      50% { background: rgba(255, 59, 107, 0.05); box-shadow: none; }
+    .stat-card.urgent-blink .sc-val,
+    .stat-card.urgent-blink .sc-lbl {
+      color: #ff6b8b !important;
     }
 
-    .gp-body {
-      display: flex; align-items: center; justify-content: space-between; gap: 6px;
-    }
+    .sc-ico { font-size: 13px; color: var(--gold); line-height: 1.1; }
+    .sc-val { font-size: 15px; font-weight: 900; color: #ffffff; line-height: 1.15; }
+    .sc-lbl { font-size: 8.5px; font-weight: 700; color: var(--text-sub); line-height: 1.1; white-space: nowrap; }
 
-    .gp-metrics {
-      display: flex; flex-direction: column; gap: 4px; flex: 1;
+    /* 4. Two Large Circular Gauge Cards */
+    .gauges-2-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex-shrink: 0;
     }
-    .metric-item {
-      border-right: 2px solid rgba(245, 185, 66, 0.55);
-      padding-right: 6px; display: flex; flex-direction: column;
+    .gauge-card {
+      background: linear-gradient(180deg, rgba(20, 24, 33, 0.96), rgba(10, 13, 19, 0.98));
+      border: 1px solid var(--gold-border);
+      border-radius: 15px; padding: 6px 8px;
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 3px;
     }
-    .metric-item.green-line { border-right-color: rgba(16, 232, 122, 0.55); }
-    .m-lbl { font-size: 9px; font-weight: 800; color: var(--text-sub); line-height: 1.1; }
-    .m-val { font-size: 11px; font-weight: 900; color: #ffffff; line-height: 1.2; direction: ltr; text-align: right; }
-    .m-val.gold { color: var(--gold-bright); }
-    .m-val.green { color: var(--green); }
+    .gauge-card.holding { transform: scale(0.97); }
+    .gc-head {
+      width: 100%; display: flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 800; color: #ffffff;
+    }
+    .gc-head span.ico { color: var(--gold); font-size: 12px; }
 
-    /* حلقات النسب المئوية المضيئة */
-    .ring-box {
-      position: relative; width: 76px; height: 76px; flex-shrink: 0;
+    .ring-wrap {
+      position: relative; width: 78px; height: 78px;
       display: flex; align-items: center; justify-content: center;
     }
-    .ring-box svg { width: 76px; height: 76px; transform: rotate(-90deg); }
-    .ring-track { fill: none; stroke: rgba(255, 255, 255, 0.09); stroke-width: 8.5; }
-    .ring-fill-gold {
-      fill: none; stroke: url(#goldGrad); stroke-width: 8.5; stroke-linecap: round;
-      filter: drop-shadow(0 0 6px rgba(245, 185, 66, 0.65));
+    .ring-wrap svg { width: 78px; height: 78px; transform: rotate(-90deg); }
+    .ring-bg { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 9; }
+    .ring-fg {
+      fill: none; stroke: url(#goldArc); stroke-width: 9; stroke-linecap: round;
+      filter: drop-shadow(0 0 6px rgba(245, 185, 66, 0.6));
       transition: stroke-dashoffset 0.5s ease;
     }
-    .ring-fill-green {
-      fill: none; stroke: url(#greenGrad); stroke-width: 8.5; stroke-linecap: round;
-      filter: drop-shadow(0 0 6px rgba(16, 232, 122, 0.65));
-      transition: stroke-dashoffset 0.5s ease;
-    }
-    .ring-center-text {
-      position: absolute; font-size: 15px; font-weight: 900; color: #ffffff; direction: ltr;
+    .ring-pct {
+      position: absolute; font-size: 16px; font-weight: 900; color: #ffffff;
     }
 
-    /* كارتين الساعة ومدة التشغيل */
-    .time-2-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 7px; flex-shrink: 0;
+    .gc-foot {
+      width: 100%; display: grid; grid-template-columns: 1fr 1fr;
+      border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 3px;
     }
-    .time-card {
-      background: var(--card-bg); border: 1px solid rgba(245, 185, 66, 0.28);
-      border-radius: 13px; padding: 5px 10px;
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    .gc-stat {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
     }
-    .time-info { display: flex; flex-direction: column; text-align: right; }
-    .t-lbl { font-size: 9.5px; font-weight: 800; color: var(--text-sub); line-height: 1.15; }
-    .t-val { font-size: 13.5px; font-weight: 900; color: #ffffff; direction: ltr; text-align: right; line-height: 1.2; }
-    .time-card.frozen .t-val { color: #ff6b8b; }
-    .time-icon-ring {
-      width: 30px; height: 30px; border-radius: 50%;
-      background: rgba(245, 185, 66, 0.12); border: 1.5px solid rgba(245, 185, 66, 0.45);
-      color: var(--gold-bright); display: flex; align-items: center; justify-content: center;
-      font-size: 14px; flex-shrink: 0;
-    }
+    .gc-stat:first-child { border-right: 1px solid rgba(255, 255, 255, 0.08); }
+    .gcs-lbl { font-size: 8.5px; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 3px; }
+    .dot-gold { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); display: inline-block; }
+    .dot-gray { width: 6px; height: 6px; border-radius: 50%; background: #94a3b8; display: inline-block; }
+    .gcs-val { font-size: 11px; font-weight: 900; color: #ffffff; }
 
-    /* شبكة الأزرار الأربعة (2x2) */
-    .actions-2x2-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; min-height: 0;
+    /* 5. Bandwidth Usage Area Chart Card */
+    .chart-card {
+      background: linear-gradient(180deg, rgba(20, 24, 33, 0.95), rgba(10, 13, 19, 0.98));
+      border: 1px solid var(--gold-border);
+      border-radius: 15px; padding: 5px 9px;
+      display: flex; flex-direction: column; gap: 2px; flex-shrink: 0;
     }
-    .act-tile {
-      background: linear-gradient(135deg, rgba(22, 27, 38, 0.95), rgba(12, 16, 24, 0.98));
-      border-radius: 14px; padding: 5px 9px;
-      display: flex; align-items: center; justify-content: space-between; gap: 6px;
-      cursor: pointer; transition: transform 0.12s ease;
+    .chart-head {
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .act-tile:active { transform: scale(0.97); }
-    .act-tile.gold-tile { border: 1.5px solid var(--gold-border); }
-    .act-tile.green-tile { border: 1.5px solid var(--green-border); }
+    .chart-title { font-size: 11px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 5px; }
+    .chart-pill {
+      background: rgba(245, 185, 66, 0.12); border: 1px solid rgba(245, 185, 66, 0.4);
+      color: var(--gold-bright); font-size: 8.5px; font-weight: 700;
+      padding: 1px 7px; border-radius: 10px;
+    }
+    .chart-legend {
+      display: flex; align-items: center; gap: 12px; font-size: 8.5px; color: var(--text-sub); font-weight: 700;
+      padding-left: 34px;
+    }
+    .chart-svg-wrap { width: 100%; height: 48px; }
+    .chart-svg-wrap svg { width: 100%; height: 100%; overflow: visible; }
 
-    .act-text { display: flex; flex-direction: column; text-align: right; overflow: hidden; }
-    .act-title { font-size: 12.5px; font-weight: 900; color: #ffffff; line-height: 1.15; white-space: nowrap; }
-    .act-sub { font-size: 9px; font-weight: 700; color: var(--text-sub); line-height: 1.15; white-space: nowrap; }
+    /* 6. 8-Button Action Grid (2 rows x 4 cols) */
+    .actions-8-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;
+      flex: 1; min-height: 0;
+    }
+    .act-btn {
+      background: linear-gradient(180deg, rgba(23, 27, 37, 0.96), rgba(12, 15, 22, 0.98));
+      border: 1px solid var(--gold-border);
+      border-radius: 13px; padding: 4px 2px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; cursor: pointer; transition: transform 0.12s ease;
+    }
+    .act-btn:active { transform: scale(0.95); border-color: var(--gold-bright); }
+    .act-ico { font-size: 16px; color: var(--gold-bright); line-height: 1.1; }
+    .act-lbl { font-size: 9.5px; font-weight: 800; color: #ffffff; line-height: 1.1; white-space: nowrap; }
 
-    .act-circle-badge {
-      width: 32px; height: 32px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 900; flex-shrink: 0;
-    }
-    .gold-tile .act-circle-badge {
-      background: rgba(245, 185, 66, 0.14); border: 1.5px solid rgba(245, 185, 66, 0.55); color: var(--gold-bright);
-    }
-    .green-tile .act-circle-badge {
-      background: rgba(16, 232, 122, 0.14); border: 1.5px solid rgba(16, 232, 122, 0.55); color: var(--green);
-    }
-
-    /* زر الخروج من اللوحة */
-    .exit-bar-btn {
+    /* 7. Logout Button */
+    .logout-btn {
       width: 100%; padding: 6px;
-      background: linear-gradient(90deg, rgba(60, 16, 26, 0.9), rgba(95, 22, 38, 0.92), rgba(60, 16, 26, 0.9));
-      border: 1.5px solid rgba(255, 59, 107, 0.55);
-      border-radius: 13px; color: #ff6b8b;
-      font-size: 13px; font-weight: 900;
+      background: linear-gradient(90deg, rgba(26, 22, 16, 0.96), rgba(42, 32, 18, 0.96), rgba(26, 22, 16, 0.96));
+      border: 1.5px solid var(--gold-border);
+      border-radius: 20px; color: #ffffff;
+      font-size: 12px; font-weight: 800;
       display: flex; align-items: center; justify-content: center; gap: 7px;
       cursor: pointer; flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
     }
-    .exit-bar-btn:active { transform: scale(0.98); }
-
-    /* الشريط السفلي ذو الـ 5 أيقونات */
-    .bottom-dock {
-      background: rgba(14, 18, 26, 0.96);
-      border-top: 1px solid rgba(245, 185, 66, 0.25);
-      border-radius: 16px; padding: 4px 6px;
-      display: grid; grid-template-columns: repeat(5, 1fr); align-items: center;
-      flex-shrink: 0;
-    }
-    .dock-item {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
-      color: var(--text-sub); font-size: 9.5px; font-weight: 800; cursor: pointer;
-      padding: 2px 0;
-    }
-    .dock-item span.d-ico { font-size: 15px; line-height: 1.1; }
-    .dock-item.active-home {
-      background: radial-gradient(circle at top, rgba(245, 185, 66, 0.25), rgba(245, 185, 66, 0.05));
-      border: 1px solid rgba(245, 185, 66, 0.55);
-      border-radius: 12px; color: var(--gold-bright);
-      padding: 3px 0; margin-top: -6px;
-      box-shadow: 0 0 14px rgba(245, 185, 66, 0.3);
+    .logout-btn:active { transform: scale(0.98); }
+    .power-ring {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 1.5px solid var(--gold-bright); color: var(--gold-bright);
+      display: inline-flex; align-items: center; justify-content: center; font-size: 10px;
     }
 
-    /* النوافذ المنبثقة */
+    /* Modals */
     .modal-overlay { position: fixed; inset: 0; background: rgba(4, 6, 10, 0.88); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
     .modal-overlay.open { display: flex; }
-    .modal-box { width: 100%; max-width: 350px; background: linear-gradient(180deg, #171c26 0%, #0c0f15 100%); border: 1.5px solid var(--gold-border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 11px; }
-    .modal-title { font-size: 16px; font-weight: 900; color: var(--gold-bright); text-align: center; }
-    .modal-desc { font-size: 12px; color: var(--text-sub); text-align: center; font-weight: 700; line-height: 1.4; }
-    .date-input { width: 100%; background: #090c12; border: 1.5px solid var(--gold-border); color: #fff; padding: 9px 12px; border-radius: 10px; font-size: 15px; font-weight: 800; text-align: center; color-scheme: dark; }
-    .check-row { display: flex; align-items: center; gap: 8px; background: rgba(245, 185, 66, 0.1); border: 1px solid rgba(245, 185, 66, 0.35); padding: 8px 10px; border-radius: 10px; font-size: 12px; font-weight: 800; color: var(--gold-bright); cursor: pointer; }
+    .modal-box { width: 100%; max-width: 340px; background: linear-gradient(180deg, #171c26 0%, #0b0e14 100%); border: 1.5px solid var(--gold-border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 11px; }
+    .modal-title { font-size: 15px; font-weight: 900; color: var(--gold-bright); text-align: center; }
+    .modal-desc { font-size: 12px; color: var(--text-sub); text-align: center; font-weight: 600; line-height: 1.4; }
+    .date-input { width: 100%; background: #080b10; border: 1.5px solid var(--gold-border); color: #fff; padding: 9px 12px; border-radius: 10px; font-size: 14px; font-weight: 800; text-align: center; color-scheme: dark; }
+    .check-row { display: flex; align-items: center; gap: 8px; background: rgba(245, 185, 66, 0.1); border: 1px solid rgba(245, 185, 66, 0.35); padding: 8px 10px; border-radius: 10px; font-size: 11.5px; font-weight: 700; color: var(--gold-bright); cursor: pointer; }
     .check-row input { width: 16px; height: 16px; accent-color: var(--gold); }
     .modal-btns { display: flex; gap: 8px; }
-    .btn-save-cycle { flex: 1; background: linear-gradient(135deg, #10e87a, #08b85e); color: #04120a; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
-    .btn-cancel-cycle { flex: 1; background: rgba(255, 59, 107, 0.15); border: 1px solid var(--red); color: var(--red); padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
-    .btn-confirm-exit { flex: 1; background: linear-gradient(135deg, #ff3b6b, #c9184a); color: #ffffff; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
+    .btn-save-cycle { flex: 1; background: linear-gradient(135deg, #f5b942, #d99116); color: #0b0e14; border: none; padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 900; cursor: pointer; }
+    .btn-cancel-cycle { flex: 1; background: rgba(255, 59, 107, 0.15); border: 1px solid var(--red); color: var(--red); padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 800; cursor: pointer; }
+    .btn-confirm-exit { flex: 1; background: linear-gradient(135deg, #ff3b6b, #c9184a); color: #ffffff; border: none; padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 900; cursor: pointer; }
 
-    /* نافذة تفاصيل السحب الشفافة */
-    .zoom-square-box { width: min(92vw, 360px); display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    /* Zoom Traffic Modal */
+    .zoom-square-box { width: min(92vw, 350px); display: flex; flex-direction: column; align-items: center; gap: 15px; }
     .zoom-close-btn {
-      position: fixed; top: 18px; left: 18px; width: 48px; height: 48px; border-radius: 50%;
+      position: fixed; top: 18px; right: 18px; width: 46px; height: 46px; border-radius: 50%;
       background: rgba(255, 59, 107, 0.25); border: 2px solid rgba(255, 59, 107, 0.8);
-      color: #ff4d79; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; cursor: pointer;
+      color: #ff4d79; font-size: 20px; font-weight: 900; display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
-    .zoom-details-grid { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 8px; }
-    .zoom-detail-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 800; color: #cbd5e1; }
-    .zoom-detail-row b { color: #ffffff; font-size: 15px; font-weight: 900; }
-    .zoom-detail-row b.green { color: var(--green); }
+    .zoom-details-grid { width: 100%; max-width: 290px; display: flex; flex-direction: column; gap: 8px; }
+    .zoom-detail-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; color: #cbd5e1; }
+    .zoom-detail-row b { color: #ffffff; font-size: 14px; font-weight: 900; }
+    .zoom-detail-row b.gold { color: var(--gold-bright); }
   </style>
 </head>
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 
-  <!-- تعريف تدرجات الألوان لحلقات SVG -->
   <svg width="0" height="0" style="position:absolute;">
     <defs>
-      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <linearGradient id="goldArc" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#ffe082" />
-        <stop offset="100%" stop-color="#e69500" />
+        <stop offset="100%" stop-color="#d98a00" />
       </linearGradient>
-      <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#69f0ae" />
-        <stop offset="100%" stop-color="#00c853" />
+      <linearGradient id="areaGold" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="rgba(245, 185, 66, 0.48)" />
+        <stop offset="100%" stop-color="rgba(245, 185, 66, 0.02)" />
       </linearGradient>
     </defs>
   </svg>
 
   <div class="app-shell">
-    <!-- 1. الشريط العلوي My-Network -->
-    <div class="top-navbar">
-      <button type="button" class="nav-icon-btn" onclick="openCycleModal()" title="القائمة">☰</button>
-      <div class="brand-center">
-        <div class="brand-title-row">
-          <svg class="wifi-emblem" viewBox="0 0 24 24" fill="none" stroke="#f5b942" stroke-width="2.4" stroke-linecap="round">
-            <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
-            <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
-            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
-            <circle cx="12" cy="20" r="1.5" fill="#f5b942"/>
-          </svg>
-          <span class="brand-name">My-Network</span>
+    <!-- 1. Top Header -->
+    <div class="top-header">
+      <div class="brand-group">
+        <svg class="wifi-logo" viewBox="0 0 24 24" fill="none" stroke="#f5b942" stroke-width="2.4" stroke-linecap="round">
+          <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+          <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+          <circle cx="12" cy="20" r="1.5" fill="#f5b942"/>
+        </svg>
+        <div class="brand-titles">
+          <span class="brand-title">My-Network</span>
+          <span class="brand-subtitle">MikroTik Network Management</span>
         </div>
-        <div class="brand-sub">إدارة ومراقبة الشبكة</div>
       </div>
-      <div class="nav-icons-pair">
-        <button type="button" class="nav-icon-btn" onclick="openDailyZoom()" title="التنبيهات">🔔</button>
-        <button type="button" class="nav-icon-btn" onclick="openCycleModal()" title="الإعدادات">⚙️</button>
+
+      <div class="header-actions">
+        <button type="button" class="hdr-btn" onclick="openDailyZoom()" title="Traffic Details">
+          <span>🔔</span>
+          <span class="bell-dot"></span>
+        </button>
+        <button type="button" class="hdr-btn" onclick="openCycleModal()" title="Package Settings">👤</button>
       </div>
     </div>
 
-    <!-- 2. كارت الراوتر واسم الشبكة -->
+    <!-- 2. Hero Router Card -->
     <div class="hero-card">
-      <div class="hero-right-col">
-        <div class="status-chip" id="serverStatusPill">
-          <span class="status-dot"></span>
-          <span id="serverStatusText">جاري الفحص...</span>
-        </div>
-        <div class="network-title-wrap">
-          <svg class="globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="2" y1="12" x2="22" y2="12"/>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-          </svg>
-          <div>
-            <div class="net-label-1">شبكة الإنترنت</div>
-            <div class="net-label-2">أبو يمنى</div>
-          </div>
-        </div>
+      <div class="router-img-wrap">
+        <img src="https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/router.png" alt="MikroTik hAP ax²" onerror="this.src='https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/images%20(4).jpeg'">
       </div>
 
-      <img class="hero-router-img" src="https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/router.png" alt="hAP ax²" onerror="this.src='https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/images%20(4).jpeg'">
-
-      <div class="hero-left-specs">
+      <div class="hero-center-info">
         <div class="mk-brand">MikroTik</div>
         <div class="mk-model">hAP ax²</div>
-        <div class="spec-item">⚙️ RouterOS <span id="rosVerVal">7.24.5</span></div>
-        <div class="spec-item">📡 hAP ax2 (C52iG)</div>
-        <div class="spec-item">🔲 CPU: <span>4 Cores</span></div>
-        <div class="spec-item">💾 RAM: <span>1 GB</span></div>
+        <div class="mk-code">C52iG-5HaxD2HaxD</div>
+        <div class="ros-pill">RouterOS <span id="rosVerVal">7.24.5</span></div>
       </div>
-    </div>
 
-    <!-- 3. شريط الإحصائيات الأربعة -->
-    <div class="stats-4-grid">
-      <div class="stat-mini-card gold-glow">
-        <div class="stat-circle-icon icon-gold">👥</div>
-        <div class="stat-text-col">
-          <span class="stat-lbl">المشتركين</span>
-          <span class="stat-val" id="totalUsers">...</span>
+      <div class="hero-right-telemetry">
+        <div class="online-pill" id="serverStatusPill">
+          <span class="online-dot"></span>
+          <span id="serverStatusText">Online &amp; Running</span>
         </div>
-      </div>
-      <div class="stat-mini-card green-glow">
-        <div class="stat-circle-icon icon-green">👤</div>
-        <div class="stat-text-col">
-          <span class="stat-lbl">النشطين حالياً</span>
-          <span class="stat-val green" id="activeUsers">...</span>
+        <div class="tele-row">
+          <span>🗄️ IP Address</span>
+          <b>192.168.16.1</b>
         </div>
-      </div>
-      <div class="stat-mini-card">
-        <div class="stat-circle-icon icon-gray">↑</div>
-        <div class="stat-text-col">
-          <span class="stat-lbl">سحب اليوم</span>
-          <span class="stat-val" id="miniDayGb">0.0 GB</span>
+        <div class="tele-row" id="uptimeRow">
+          <span>🕒 Uptime</span>
+          <b id="srvUptime">Loading...</b>
         </div>
-      </div>
-      <div class="stat-mini-card">
-        <div class="stat-circle-icon icon-gray">↓</div>
-        <div class="stat-text-col">
-          <span class="stat-lbl">المعدل اليومي</span>
-          <span class="stat-val">25.0 GB</span>
+        <div class="tele-row" id="clockRow">
+          <span>📅 Server Time</span>
+          <b id="srvClock">--:--:--</b>
+        </div>
+        <div class="tele-row">
+          <span>🌡️ Start Date</span>
+          <b id="heroStartDate">06/11</b>
         </div>
       </div>
     </div>
 
-    <!-- 4. كارتين الحلقات المضيئة (متبقي للباقة + سحب اليوم) -->
-    <div class="gauges-2-grid">
-      <!-- الكارت اليمين في RTL: متبقي للباقة -->
-      <div class="gauge-panel gold-panel" onclick="stopCalmSiren(true)">
-        <div class="gp-header">
-          <div class="gp-title gold">🗂️ متبقي للباقة</div>
-          <button type="button" class="gp-pill-btn" id="daysRemBtn" onclick="event.stopPropagation(); openCycleModal()">
-            <span>📅</span>
-            <span id="daysRemVal">متبقي 30 يوم</span>
-          </button>
+    <!-- 3. 4 Summary Stat Cards -->
+    <div class="stats-4-row">
+      <div class="stat-card interactive" onclick="go('info.html?from=dash')">
+        <span class="sc-ico">👥</span>
+        <span class="sc-val" id="totalUsers">...</span>
+        <span class="sc-lbl">Total Users</span>
+      </div>
+      <div class="stat-card interactive" onclick="go('active.html?from=dash')">
+        <span class="sc-ico">👤</span>
+        <span class="sc-val" id="activeUsers">...</span>
+        <span class="sc-lbl">Active Now</span>
+      </div>
+      <div class="stat-card interactive" id="daysRemCard" onclick="handleDaysCardClick()">
+        <span class="sc-ico">📅</span>
+        <span class="sc-val" id="daysRemVal">30</span>
+        <span class="sc-lbl">Days Remaining</span>
+      </div>
+      <div class="stat-card">
+        <span class="sc-ico">📚</span>
+        <span class="sc-val">750 GB</span>
+        <span class="sc-lbl">Total Quota</span>
+      </div>
+    </div>
+
+    <!-- 4. Two Circular Gauge Cards -->
+    <div class="gauges-2-row">
+      <!-- Package Usage -->
+      <div class="gauge-card" onclick="stopCalmSiren(true)">
+        <div class="gc-head">
+          <span class="ico">📚</span>
+          <span>Package Usage</span>
         </div>
-        <div class="gp-body">
-          <div class="gp-metrics">
-            <div class="metric-item">
-              <span class="m-lbl">المتبقي</span>
-              <span class="m-val gold" id="cycleRemGbVal">750 GB</span>
-            </div>
-            <div class="metric-item">
-              <span class="m-lbl">المسحوب</span>
-              <span class="m-val" id="cycleUsedGbVal">0 GB</span>
-            </div>
-            <div class="metric-item">
-              <span class="m-lbl">إجمالي الباقة</span>
-              <span class="m-val">750 GB</span>
-            </div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 88 88">
+            <circle class="ring-bg" cx="44" cy="44" r="34"/>
+            <circle class="ring-fg" id="cycleRingArc" cx="44" cy="44" r="34" stroke-dasharray="213.63" stroke-dashoffset="213.63"/>
+          </svg>
+          <span class="ring-pct" id="cyclePctVal">0%</span>
+        </div>
+        <div class="gc-foot">
+          <div class="gc-stat">
+            <span class="gcs-lbl"><i class="dot-gold"></i> Used</span>
+            <span class="gcs-val" id="cycleUsedGbVal">0 GB</span>
           </div>
-          <div class="ring-box">
-            <svg viewBox="0 0 84 84">
-              <circle class="ring-track" cx="42" cy="42" r="33"/>
-              <circle class="ring-fill-gold" id="cycleRingCircle" cx="42" cy="42" r="33" stroke-dasharray="207.35" stroke-dashoffset="0"/>
-            </svg>
-            <span class="ring-center-text" id="cyclePctVal">0%</span>
+          <div class="gc-stat">
+            <span class="gcs-lbl"><i class="dot-gray"></i> Remaining</span>
+            <span class="gcs-val" id="cycleRemGbVal">750 GB</span>
           </div>
         </div>
       </div>
 
-      <!-- الكارت الشمال في RTL: سحب اليوم (in1) -->
-      <div class="gauge-panel green-panel" id="dailyGaugeCard">
-        <div class="gp-header">
-          <div class="gp-title green">📊 سحب اليوم (in1)</div>
-          <button type="button" class="gp-pill-btn" onclick="event.stopPropagation(); openCycleModal()">
-            <span id="startBadge">6/11</span>
-            <span>📅</span>
-          </button>
+      <!-- Today Traffic (in1) -->
+      <div class="gauge-card" id="dailyGaugeCard">
+        <div class="gc-head">
+          <span class="ico">⇅</span>
+          <span>Today Traffic (in1)</span>
         </div>
-        <div class="gp-body">
-          <div class="gp-metrics">
-            <div class="metric-item green-line">
-              <span class="m-lbl">السحب</span>
-              <span class="m-val green" id="dailyGbVal">0.0 GB</span>
-            </div>
-            <div class="metric-item green-line">
-              <span class="m-lbl">المعدل</span>
-              <span class="m-val">25.0 GB</span>
-            </div>
-            <div class="metric-item green-line">
-              <span class="m-lbl">الباقي اليوم</span>
-              <span class="m-val" id="dailyRemVal">25.0 GB</span>
-            </div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 88 88">
+            <circle class="ring-bg" cx="44" cy="44" r="34"/>
+            <circle class="ring-fg" id="dailyRingArc" cx="44" cy="44" r="34" stroke-dasharray="213.63" stroke-dashoffset="213.63"/>
+          </svg>
+          <span class="ring-pct" id="dailyPctVal">0%</span>
+        </div>
+        <div class="gc-foot">
+          <div class="gc-stat">
+            <span class="gcs-lbl" style="color:var(--gold);">↓ Today</span>
+            <span class="gcs-val" id="dailyGbVal">0.0 GB</span>
           </div>
-          <div class="ring-box">
-            <svg viewBox="0 0 84 84">
-              <circle class="ring-track" cx="42" cy="42" r="33"/>
-              <circle class="ring-fill-green" id="dailyRingCircle" cx="42" cy="42" r="33" stroke-dasharray="207.35" stroke-dashoffset="207.35"/>
-            </svg>
-            <span class="ring-center-text" id="dailyPctVal">0%</span>
+          <div class="gc-stat">
+            <span class="gcs-lbl">↑ Daily Avg</span>
+            <span class="gcs-val">25.0 GB</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 5. مدة التشغيل وساعة السيرفر -->
-    <div class="time-2-grid">
-      <div class="time-card" id="uptimeBox">
-        <div class="time-info">
-          <span class="t-lbl">مدة التشغيل (Uptime)</span>
-          <span class="t-val" id="srvUptime">جاري الجلب...</span>
-        </div>
-        <div class="time-icon-ring">🕒</div>
+    <!-- 5. Bandwidth Usage Area Chart -->
+    <div class="chart-card" onclick="openDailyZoom()">
+      <div class="chart-head">
+        <span class="chart-title"><span style="color:var(--gold);">📊</span> Bandwidth Usage (in1)</span>
+        <span class="chart-pill">Last 24 Hours ▾</span>
       </div>
-      <div class="time-card" id="clockBox">
-        <div class="time-info">
-          <span class="t-lbl">ساعة السيرفر</span>
-          <span class="t-val" id="srvClock">--:--:--</span>
-        </div>
-        <div class="time-icon-ring">🗄️</div>
+      <div class="chart-legend">
+        <span><i class="dot-gold"></i> Download</span>
+        <span><i class="dot-gray"></i> Upload</span>
       </div>
-    </div>
-
-    <!-- 6. الأزرار الأربعة الرئيسية (2×2) -->
-    <div class="actions-2x2-grid">
-      <div class="act-tile green-tile" onclick="go('active.html?from=dash')">
-        <div class="act-text">
-          <div class="act-title">المشتركين النشطين</div>
-          <div class="act-sub">عرض المتصلين حالياً</div>
-        </div>
-        <div class="act-circle-badge">👥</div>
-      </div>
-
-      <div class="act-tile gold-tile" onclick="go('index.html?from=dash')">
-        <div class="act-text">
-          <div class="act-title">إضافة مستخدم جديد</div>
-          <div class="act-sub">إنشاء حساب الآن</div>
-        </div>
-        <div class="act-circle-badge">➕</div>
-      </div>
-
-      <div class="act-tile green-tile" onclick="go('renew.html?from=dash')">
-        <div class="act-text">
-          <div class="act-title">تجديد باقة مشترك</div>
-          <div class="act-sub">تجديد وتغيير السرعات</div>
-        </div>
-        <div class="act-circle-badge">🔄</div>
-      </div>
-
-      <div class="act-tile gold-tile" onclick="go('info.html?from=dash')">
-        <div class="act-text">
-          <div class="act-title">استعلام عن مشترك</div>
-          <div class="act-sub">بحث وتفاصيل الاستهلاك</div>
-        </div>
-        <div class="act-circle-badge">🔍</div>
+      <div class="chart-svg-wrap">
+        <svg viewBox="0 0 340 50" preserveAspectRatio="none">
+          <line x1="34" y1="8" x2="336" y2="8" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
+          <line x1="34" y1="22" x2="336" y2="22" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
+          <line x1="34" y1="36" x2="336" y2="36" stroke="rgba(255,255,255,0.06)" stroke-width="0.7"/>
+          <text x="0" y="10" fill="#94a3b8" font-size="6.5" font-weight="700">30 Mbps</text>
+          <text x="0" y="24" fill="#94a3b8" font-size="6.5" font-weight="700">20 Mbps</text>
+          <text x="0" y="38" fill="#94a3b8" font-size="6.5" font-weight="700">10 Mbps</text>
+          <text x="24" y="47" fill="#94a3b8" font-size="6.5" font-weight="700">0</text>
+          <path d="M36,36 C55,34 65,24 85,28 C105,32 115,18 135,21 C155,24 165,33 185,26 C205,19 218,8 238,14 C258,20 272,27 292,16 C310,7 322,15 336,12 L336,42 L36,42 Z" fill="url(#areaGold)"/>
+          <path d="M36,36 C55,34 65,24 85,28 C105,32 115,18 135,21 C155,24 165,33 185,26 C205,19 218,8 238,14 C258,20 272,27 292,16 C310,7 322,15 336,12" fill="none" stroke="#f5b942" stroke-width="1.6"/>
+          <path d="M36,40 C65,38 95,35 125,37 C155,39 185,32 215,34 C245,36 275,28 305,31 C320,32 330,30 336,29" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1"/>
+          <text x="38" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">00:00</text>
+          <text x="82" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">03:00</text>
+          <text x="126" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">06:00</text>
+          <text x="170" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">09:00</text>
+          <text x="214" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">12:00</text>
+          <text x="258" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">15:00</text>
+          <text x="302" y="49" fill="#94a3b8" font-size="6.2" font-weight="700">18:00</text>
+        </svg>
       </div>
     </div>
 
-    <!-- 7. زر الخروج -->
-    <button type="button" class="exit-bar-btn" onclick="openExitConfirm()">
-      <span>الخروج من اللوحة</span>
-      <span>⏻</span>
+    <!-- 6. 8-Button Grid (2x4) -->
+    <div class="actions-8-grid">
+      <div class="act-btn" onclick="go('info.html?from=dash')">
+        <span class="act-ico">👥</span>
+        <span class="act-lbl">Users</span>
+      </div>
+      <div class="act-btn" onclick="go('active.html?from=dash')">
+        <span class="act-ico">📶</span>
+        <span class="act-lbl">Hotspot</span>
+      </div>
+      <div class="act-btn" onclick="openDailyZoom()">
+        <span class="act-ico">⏱️</span>
+        <span class="act-lbl">Bandwidth</span>
+      </div>
+      <div class="act-btn" onclick="go('renew.html?from=dash')">
+        <span class="act-ico">📚</span>
+        <span class="act-lbl">Packages</span>
+      </div>
+      <div class="act-btn" onclick="go('index.html?from=dash')">
+        <span class="act-ico">➕</span>
+        <span class="act-lbl">Add User</span>
+      </div>
+      <div class="act-btn" onclick="go('info.html?from=dash')">
+        <span class="act-ico">📋</span>
+        <span class="act-lbl">User List</span>
+      </div>
+      <div class="act-btn" onclick="openDailyZoom()">
+        <span class="act-ico">⇅</span>
+        <span class="act-lbl">Traffic</span>
+      </div>
+      <div class="act-btn" onclick="openCycleModal()">
+        <span class="act-ico">⚙️</span>
+        <span class="act-lbl">Settings</span>
+      </div>
+    </div>
+
+    <!-- 7. Logout Button -->
+    <button type="button" class="logout-btn" onclick="openExitConfirm()">
+      <span class="power-ring">⏻</span>
+      <span>Logout from Dashboard</span>
     </button>
-
-    <!-- 8. الشريط السفلي ذو الـ 5 أيقونات -->
-    <div class="bottom-dock">
-      <div class="dock-item" onclick="go('active.html?from=dash')">
-        <span class="d-ico">📊</span>
-        <span>التقارير</span>
-      </div>
-      <div class="dock-item" onclick="openCycleModal()">
-        <span class="d-ico">⚙️</span>
-        <span>الإعدادات</span>
-      </div>
-      <div class="dock-item active-home" onclick="loadLiveStats()">
-        <span class="d-ico">🏠</span>
-        <span>الرئيسية</span>
-      </div>
-      <div class="dock-item" onclick="go('info.html?from=dash')">
-        <span class="d-ico">👥</span>
-        <span>المشتركين</span>
-      </div>
-      <div class="dock-item" onclick="openDailyZoom()">
-        <span class="d-ico">🗄️</span>
-        <span>البيانات</span>
-      </div>
-    </div>
   </div>
 
-  <!-- نافذة تأكيد الخروج -->
+  <!-- Exit Confirmation Modal -->
   <div class="modal-overlay" id="exitConfirmModal" style="z-index: 10080;" onclick="if(event.target===this) closeExitConfirm()">
     <div class="modal-box" style="border-color: rgba(255, 59, 107, 0.65);">
-      <div class="modal-title" style="color: #ff4d79;">⏻ تأكيد الخروج</div>
-      <div class="modal-desc">هل أنت متأكد أنك تريد إغلاق لوحة التحكم والخروج من البرنامج؟</div>
+      <div class="modal-title" style="color: #ff4d79;">⏻ Confirm Logout</div>
+      <div class="modal-desc">Are you sure you want to close the dashboard and exit the app?</div>
       <div class="modal-btns">
-        <button type="button" class="btn-confirm-exit" onclick="confirmExitDash()">نعم، خروج</button>
-        <button type="button" class="btn-save-cycle" onclick="closeExitConfirm()">البقاء في اللوحة</button>
+        <button type="button" class="btn-confirm-exit" onclick="confirmExitDash()">Yes, Exit</button>
+        <button type="button" class="btn-save-cycle" onclick="closeExitConfirm()">Stay</button>
       </div>
     </div>
   </div>
 
-  <!-- نافذة ضبط بداية الباقة -->
+  <!-- Package Start Date Modal -->
   <div class="modal-overlay" id="cycleModal" style="z-index: 10050;">
     <div class="modal-box">
-      <div class="modal-title">📅 تاريخ بداية الباقة (30 يوم)</div>
-      <div class="modal-desc">اختر أي يوم بدأت فيه الباقة ليحسب منه الـ 30 يوم وإجمالي الـ 750 GB</div>
+      <div class="modal-title">📅 Package Start Date (30 Days)</div>
+      <div class="modal-desc">Select the start date of your 30-day cycle (750 GB Quota)</div>
       <input type="date" id="cycleStartInput" class="date-input">
       <label class="check-row">
         <input type="checkbox" id="resetCycleCheck">
-        <span>تصفير عداد الـ 750 GB وبدء باقة جديدة</span>
+        <span>Reset 750 GB counter &amp; start new cycle</span>
       </label>
       <div class="modal-btns">
-        <button type="button" class="btn-save-cycle" id="btnSaveCycle" onclick="saveCycleSettings()">✅ حفظ وبدء الحساب</button>
-        <button type="button" class="btn-cancel-cycle" onclick="closeCycleModal()">إلغاء</button>
+        <button type="button" class="btn-save-cycle" id="btnSaveCycle" onclick="saveCycleSettings()">✅ Save &amp; Apply</button>
+        <button type="button" class="btn-cancel-cycle" onclick="closeCycleModal()">Cancel</button>
       </div>
     </div>
   </div>
 
-  <!-- نافذة تفاصيل السحب اليومي -->
+  <!-- Daily Traffic Details Modal -->
   <div class="modal-overlay" id="dailyZoomModal" onclick="if(event.target===this) closeDailyZoom()">
     <button type="button" class="zoom-close-btn" onclick="closeDailyZoom()">✕</button>
     <div class="zoom-square-box" onclick="if(event.target===this) closeDailyZoom()">
-      <div style="font-size:18px;font-weight:900;color:#5cffaa;">📊 تفاصيل سحب اليوم (in1)</div>
-      <div class="ring-box" style="width:165px;height:165px;">
-        <svg viewBox="0 0 84 84" style="width:165px;height:165px;">
-          <circle class="ring-track" cx="42" cy="42" r="33"/>
-          <circle class="ring-fill-green" id="zoomRingCircle" cx="42" cy="42" r="33" stroke-dasharray="207.35" stroke-dashoffset="207.35"/>
+      <div style="font-size:17px;font-weight:900;color:var(--gold-bright);">📊 Today Traffic Details (in1)</div>
+      <div class="ring-wrap" style="width:160px;height:160px;">
+        <svg viewBox="0 0 88 88" style="width:160px;height:160px;">
+          <circle class="ring-bg" cx="44" cy="44" r="34"/>
+          <circle class="ring-fg" id="zoomRingArc" cx="44" cy="44" r="34" stroke-dasharray="213.63" stroke-dashoffset="213.63"/>
         </svg>
-        <span class="ring-center-text" id="zoomDailyPctPill" style="font-size:28px;">0%</span>
+        <span class="ring-pct" id="zoomDailyPctPill" style="font-size:28px;">0%</span>
       </div>
       <div class="zoom-details-grid">
         <div class="zoom-detail-row">
-          <span>السحب الفعلي اليوم:</span>
-          <b class="green" id="zoomDailyGb">0.0 GB</b>
+          <span>Used Today (in1):</span>
+          <b class="gold" id="zoomDailyGb">0.0 GB</b>
         </div>
         <div class="zoom-detail-row">
-          <span>المعدل اليومي المخصص:</span>
+          <span>Daily Target Quota:</span>
           <b>25.0 GB</b>
         </div>
         <div class="zoom-detail-row">
-          <span>تاريخ بداية الباقة:</span>
-          <button type="button" class="gp-pill-btn" style="font-size:12px;padding:3px 9px;" onclick="event.stopPropagation(); openCycleModal()">
-            <span>📅</span>
-            <span id="zoomCycleStart">البداية</span>
+          <span>Cycle Start Date:</span>
+          <button type="button" class="ros-pill" style="cursor:pointer;font-size:11px;" onclick="event.stopPropagation(); openCycleModal()">
+            📅 <span id="zoomCycleStart">06/11</span>
           </button>
         </div>
       </div>
@@ -697,7 +617,7 @@
       if (e.target && e.target.tagName !== 'INPUT') e.preventDefault();
     });
 
-    /* صوت سارينة هادئة للتحذير قبل انتهاء الباقة بيوم */
+    /* Calm Siren Alert when <= 1 day remaining */
     let sirenInterval = null;
     let audioCtx = null;
     let sirenMutedByUser = false;
@@ -750,13 +670,13 @@
     let syncLoopId = null;
     let isPageActive = true;
     let lastStatusObj = null;
-    const RING_CIRC = 207.35;
+    const ARC_CIRC = 213.63;
 
-    function setRingProgress(elId, pct) {
+    function setArcProgress(elId, pct) {
       const el = document.getElementById(elId);
       if (!el) return;
       const clamped = Math.max(0, Math.min(100, pct));
-      el.style.strokeDashoffset = (RING_CIRC - (clamped / 100) * RING_CIRC).toFixed(2);
+      el.style.strokeDashoffset = (ARC_CIRC - (clamped / 100) * ARC_CIRC).toFixed(2);
     }
 
     function stopLiveSync() {
@@ -815,7 +735,12 @@
 
     function formatShortBadge(isoStr) {
       const parts = String(isoStr).replace(/\//g, '-').split('-');
-      return parts.length === 3 ? `${parseInt(parts[2], 10)}/${parseInt(parts[1], 10)}` : 'البداية';
+      return parts.length === 3 ? `${String(parts[2]).padStart(2, '0')}/${String(parts[1]).padStart(2, '0')}` : '06/11';
+    }
+
+    function handleDaysCardClick() {
+      stopCalmSiren(true);
+      openCycleModal();
     }
 
     function openCycleModal() {
@@ -835,8 +760,7 @@
       const card = document.getElementById('dailyGaugeCard');
       if (!card) return;
       let holdTimer = null;
-      const startHold = (e) => {
-        if (e.target && e.target.closest('.gp-pill-btn')) return;
+      const startHold = () => {
         card.classList.add('holding');
         clearTimeout(holdTimer);
         holdTimer = setTimeout(() => { card.classList.remove('holding'); openDailyZoom(); }, 350);
@@ -872,7 +796,7 @@
       const chosen = document.getElementById('cycleStartInput').value || getTodayCairoISO();
       const doReset = document.getElementById('resetCycleCheck').checked ? '1' : '0';
       const btn = document.getElementById('btnSaveCycle');
-      btn.innerText = "⏳ جاري الحفظ...";
+      btn.innerText = "⏳ Saving...";
       btn.disabled = true;
 
       sirenMutedByUser = false;
@@ -888,7 +812,7 @@
         }
       } catch (e) {}
 
-      btn.innerText = "✅ حفظ وبدء الحساب";
+      btn.innerText = "✅ Save & Apply";
       btn.disabled = false;
       closeCycleModal();
       loadLiveStats();
@@ -897,7 +821,7 @@
 
     function updateCycle30DaysUI(isoStart) {
       const badgeStr = formatShortBadge(isoStart);
-      document.getElementById('startBadge').innerText = badgeStr;
+      document.getElementById('heroStartDate').innerText = badgeStr;
       const zoomBadge = document.getElementById('zoomCycleStart');
       if (zoomBadge) zoomBadge.innerText = badgeStr;
 
@@ -910,14 +834,14 @@
       const remaining = Math.max(0, 30 - elapsed);
 
       const daysEl = document.getElementById('daysRemVal');
-      const daysBtn = document.getElementById('daysRemBtn');
-      daysEl.innerText = `متبقي ${remaining} يوم`;
+      const daysCard = document.getElementById('daysRemCard');
+      daysEl.innerText = `${remaining}`;
 
       if (remaining <= 1) {
-        daysBtn.classList.add('urgent-blink');
+        daysCard.classList.add('urgent-blink');
         startCalmSiren();
       } else {
-        daysBtn.classList.remove('urgent-blink');
+        daysCard.classList.remove('urgent-blink');
         stopCalmSiren(false);
       }
     }
@@ -997,8 +921,8 @@
           lastStatusObj = st;
           const pill = document.getElementById('serverStatusPill');
           const statusTxt = document.getElementById('serverStatusText');
-          const clockBox = document.getElementById('clockBox');
-          const uptimeBox = document.getElementById('uptimeBox');
+          const clockRow = document.getElementById('clockRow');
+          const uptimeRow = document.getElementById('uptimeRow');
 
           if (st.ver) document.getElementById('rosVerVal').innerText = st.ver;
 
@@ -1011,26 +935,23 @@
           const dayGB = ((st.day_mb || 0) / 1024);
           const dailyQuota = 750 / 30;
           const dailyPct = Math.min(100, Math.round((dayGB / dailyQuota) * 100));
-          const remDayGB = Math.max(0, dailyQuota - dayGB);
 
           document.getElementById('dailyGbVal').innerText = `${dayGB.toFixed(1)} GB`;
-          document.getElementById('miniDayGb').innerText = `${dayGB.toFixed(1)} GB`;
-          document.getElementById('dailyRemVal').innerText = `${remDayGB.toFixed(1)} GB`;
           document.getElementById('dailyPctVal').innerText = `${dailyPct}%`;
-          setRingProgress('dailyRingCircle', dailyPct);
+          setArcProgress('dailyRingArc', dailyPct);
 
           document.getElementById('zoomDailyGb').innerText = `${dayGB.toFixed(1)} GB`;
           document.getElementById('zoomDailyPctPill').innerText = `${dailyPct}%`;
-          setRingProgress('zoomRingCircle', dailyPct);
+          setArcProgress('zoomRingArc', dailyPct);
 
           const cycleGB = ((st.cycle_mb || st.day_mb || 0) / 1024);
           const remCycleGB = Math.max(0, 750 - cycleGB);
           const cyclePct = Math.min(100, Math.round((cycleGB / 750) * 100));
 
-          document.getElementById('cycleRemGbVal').innerText = `${remCycleGB.toFixed(0)} GB`;
           document.getElementById('cycleUsedGbVal').innerText = `${cycleGB.toFixed(0)} GB`;
+          document.getElementById('cycleRemGbVal').innerText = `${remCycleGB.toFixed(0)} GB`;
           document.getElementById('cyclePctVal').innerText = `${cyclePct}%`;
-          setRingProgress('cycleRingCircle', cyclePct);
+          setArcProgress('cycleRingArc', cyclePct);
 
           let diffSec = 999999;
           if (st.date && st.time) {
@@ -1041,9 +962,9 @@
           if (diffSec <= 120) {
             isServerOnline = true;
             pill.classList.remove('offline');
-            clockBox.classList.remove('frozen');
-            uptimeBox.classList.remove('frozen');
-            statusTxt.innerText = "السيرفر يعمل الآن";
+            clockRow.classList.remove('frozen');
+            uptimeRow.classList.remove('frozen');
+            statusTxt.innerText = "Online & Running";
             renderCairoClock();
             if (st.uptime) {
               let baseUp = parseUptimeToSeconds(st.uptime);
@@ -1055,9 +976,9 @@
           } else {
             isServerOnline = false;
             pill.classList.add('offline');
-            clockBox.classList.add('frozen');
-            uptimeBox.classList.add('frozen');
-            statusTxt.innerText = "السيرفر مفصول حالياً";
+            clockRow.classList.add('frozen');
+            uptimeRow.classList.add('frozen');
+            statusTxt.innerText = "Server Offline";
             document.getElementById('srvClock').innerText = st.time || "--:--:--";
             if (st.uptime) { uptimeTotalSeconds = parseUptimeToSeconds(st.uptime); renderUptime(); }
             document.getElementById('activeUsers').innerText = "0";
