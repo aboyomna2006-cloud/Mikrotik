@@ -34,8 +34,9 @@
     input { -webkit-user-select: auto !important; user-select: auto !important; }
 
     html, body {
-      height: 100dvh;
-      overflow: hidden;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      overflow-y: auto;
       background:
         radial-gradient(ellipse 95% 32% at 50% 8%, rgba(245, 185, 66, 0.22), transparent 72%),
         radial-gradient(ellipse 85% 24% at 50% 34%, rgba(245, 185, 66, 0.10), transparent 70%),
@@ -44,45 +45,45 @@
     }
 
     body {
-      padding: 4px 8px calc(32px + env(safe-area-inset-bottom, 0px));
+      padding: 4px 8px calc(36px + env(safe-area-inset-bottom, 0px));
       display: flex;
       justify-content: center;
       align-items: stretch;
     }
 
     .app-shell {
-      width: 100%; max-width: 450px; height: 100%;
-      display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
+      width: 100%; max-width: 450px; min-height: calc(100dvh - 40px);
+      display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
     }
 
     /* 1. Header */
     .top-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 2px 4px; flex-shrink: 0;
+      padding: 1px 4px; flex-shrink: 0;
     }
     .brand-group { display: flex; align-items: center; gap: 8px; }
     .wifi-logo {
-      width: 30px; height: 30px;
+      width: 28px; height: 28px;
       filter: drop-shadow(0 0 10px rgba(245, 185, 66, 0.75));
       flex-shrink: 0;
     }
     .brand-titles { display: flex; flex-direction: column; }
-    .brand-title { font-size: 20px; font-weight: 900; color: #ffffff; line-height: 1.1; }
-    .brand-subtitle { font-size: 10.5px; font-weight: 600; color: #cbd5e1; line-height: 1.2; }
+    .brand-title { font-size: 19px; font-weight: 900; color: #ffffff; line-height: 1.05; }
+    .brand-subtitle { font-size: 10px; font-weight: 600; color: #cbd5e1; line-height: 1.15; }
 
-    .header-actions { display: flex; align-items: center; gap: 8px; }
+    .header-actions { display: flex; align-items: center; gap: 7px; }
     .hdr-btn {
-      width: 36px; height: 36px; border-radius: 50%;
+      width: 34px; height: 34px; border-radius: 50%;
       background: linear-gradient(145deg, rgba(35, 39, 50, 0.78), rgba(14, 17, 24, 0.88));
       backdrop-filter: blur(10px);
       border: 1.2px solid var(--gold-border);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 224, 130, 0.25);
       color: var(--gold-bright); display: flex; align-items: center; justify-content: center;
-      font-size: 15px; cursor: pointer; position: relative;
+      font-size: 14px; cursor: pointer; position: relative;
     }
     .hdr-btn:active { transform: scale(0.93); }
     .bell-dot {
-      position: absolute; top: 7px; right: 8px; width: 6px; height: 6px;
+      position: absolute; top: 6px; right: 7px; width: 6px; height: 6px;
       border-radius: 50%; background: var(--gold);
     }
 
@@ -91,10 +92,10 @@
       background: linear-gradient(135deg, rgba(36, 28, 16, 0.88) 0%, rgba(15, 19, 28, 0.92) 52%, rgba(22, 18, 14, 0.88) 100%);
       backdrop-filter: blur(12px);
       border: 1.4px solid var(--gold-border);
-      border-radius: 17px;
-      padding: 8px 10px;
+      border-radius: 16px;
+      padding: 6px 9px;
       box-shadow: 0 10px 26px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 217, 125, 0.22);
-      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      display: flex; align-items: center; justify-content: space-between; gap: 7px;
       flex-shrink: 0; position: relative; overflow: hidden;
     }
     .hero-card::before {
@@ -104,7 +105,7 @@
     }
 
     .router-img-wrap {
-      width: 78px; height: 86px; display: flex; align-items: center; justify-content: center;
+      width: 72px; height: 74px; display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; z-index: 1;
     }
     .router-img-wrap img {
@@ -114,28 +115,28 @@
     }
 
     .hero-center-info {
-      display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 1.5px;
       z-index: 1; flex: 1; min-width: 0;
     }
-    .mk-brand { font-size: 14px; font-weight: 800; color: #f8fafc; font-style: italic; line-height: 1; }
-    .mk-model { font-size: 19px; font-weight: 900; color: var(--gold-bright); line-height: 1.1; }
-    .mk-code { font-size: 9.5px; font-weight: 700; color: #cbd5e1; white-space: nowrap; }
+    .mk-brand { font-size: 13px; font-weight: 800; color: #f8fafc; font-style: italic; line-height: 1; }
+    .mk-model { font-size: 18px; font-weight: 900; color: var(--gold-bright); line-height: 1.05; }
+    .mk-code { font-size: 9px; font-weight: 700; color: #cbd5e1; white-space: nowrap; }
     .ros-pill {
-      margin-top: 3px;
+      margin-top: 2px;
       background: rgba(245, 185, 66, 0.14); border: 1px solid rgba(245, 185, 66, 0.5);
-      color: var(--gold-bright); font-size: 10px; font-weight: 800;
-      padding: 2px 9px; border-radius: 20px; white-space: nowrap;
+      color: var(--gold-bright); font-size: 9.5px; font-weight: 800;
+      padding: 1.5px 8px; border-radius: 20px; white-space: nowrap;
     }
 
     .hero-right-telemetry {
-      display: flex; flex-direction: column; gap: 3.5px; z-index: 1; flex-shrink: 0;
-      min-width: 142px;
+      display: flex; flex-direction: column; gap: 2.5px; z-index: 1; flex-shrink: 0;
+      min-width: 138px;
     }
     .online-pill {
       display: inline-flex; align-items: center; justify-content: center; gap: 5px;
       background: rgba(16, 232, 122, 0.14); border: 1px solid rgba(16, 232, 122, 0.45);
-      color: #5cffaa; padding: 2px 9px; border-radius: 20px;
-      font-size: 10px; font-weight: 800; margin-bottom: 1px;
+      color: #5cffaa; padding: 1.5px 8px; border-radius: 20px;
+      font-size: 9.5px; font-weight: 800;
     }
     .online-pill.offline {
       background: rgba(255, 59, 107, 0.16); border: 1px solid rgba(255, 59, 107, 0.52); color: #ff6b8b;
@@ -149,23 +150,23 @@
 
     .tele-row {
       display: flex; align-items: center; justify-content: space-between; gap: 6px;
-      font-size: 9.5px; color: var(--text-sub); font-weight: 600;
+      font-size: 9px; color: var(--text-sub); font-weight: 600;
     }
-    .tele-row b { color: #ffffff; font-weight: 800; font-size: 10px; }
+    .tele-row b { color: #ffffff; font-weight: 800; font-size: 9.5px; }
     .tele-row.frozen b { color: #ff6b8b; }
 
     /* 3. 4 Summary Cards */
     .stats-4-row {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; flex-shrink: 0;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; flex-shrink: 0;
     }
     .stat-card {
       background: linear-gradient(160deg, rgba(28, 32, 44, 0.78), rgba(12, 15, 22, 0.88));
       backdrop-filter: blur(10px);
       border: 1.2px solid var(--gold-border);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 224, 130, 0.18);
-      border-radius: 14px; padding: 6px 4px;
+      border-radius: 13px; padding: 4px 3px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; gap: 2px;
+      text-align: center; gap: 1px;
     }
     .stat-card.interactive { cursor: pointer; transition: transform 0.12s ease, border-color 0.15s ease; }
     .stat-card.interactive:active { transform: scale(0.95); border-color: var(--gold-bright); }
@@ -189,52 +190,52 @@
     .stat-card.urgent-blink .sc-val,
     .stat-card.urgent-blink .sc-lbl { color: #ff6b8b !important; }
 
-    .sc-ico { font-size: 14px; color: var(--gold); line-height: 1.1; }
-    .sc-val { font-size: 16px; font-weight: 900; color: #ffffff; line-height: 1.15; }
-    .sc-lbl { font-size: 9px; font-weight: 700; color: var(--text-sub); line-height: 1.15; white-space: nowrap; }
+    .sc-ico { font-size: 13px; color: var(--gold); line-height: 1.05; }
+    .sc-val { font-size: 15px; font-weight: 900; color: #ffffff; line-height: 1.1; }
+    .sc-lbl { font-size: 8.5px; font-weight: 700; color: var(--text-sub); line-height: 1.1; white-space: nowrap; }
 
     /* 4. Two Circular Gauge Cards */
     .gauges-2-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 7px; flex-shrink: 0;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex-shrink: 0;
     }
     .gauge-card {
       background: linear-gradient(160deg, rgba(24, 28, 38, 0.82), rgba(11, 14, 20, 0.90));
       backdrop-filter: blur(12px);
       border: 1.2px solid var(--gold-border);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 224, 130, 0.16);
-      border-radius: 16px; padding: 7px 8px;
-      display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 4px;
+      border-radius: 15px; padding: 5px 7px;
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 2px;
     }
     .gauge-card.holding { transform: scale(0.97); }
     .gc-head {
       width: 100%; display: flex; align-items: center; gap: 5px;
-      font-size: 11.5px; font-weight: 800; color: #ffffff;
+      font-size: 11px; font-weight: 800; color: #ffffff;
     }
-    .gc-head span.ico { color: var(--gold); font-size: 13px; }
+    .gc-head span.ico { color: var(--gold); font-size: 12px; }
 
     .ring-wrap {
-      position: relative; width: 82px; height: 82px;
+      position: relative; width: 70px; height: 70px;
       display: flex; align-items: center; justify-content: center;
     }
-    .ring-wrap svg { width: 82px; height: 82px; transform: rotate(-90deg); }
-    .ring-bg { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 9; }
+    .ring-wrap svg { width: 70px; height: 70px; transform: rotate(-90deg); }
+    .ring-bg { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 8.5; }
     .ring-fg {
-      fill: none; stroke: url(#goldArc); stroke-width: 9; stroke-linecap: round;
+      fill: none; stroke: url(#goldArc); stroke-width: 8.5; stroke-linecap: round;
       filter: drop-shadow(0 0 7px rgba(245, 185, 66, 0.65));
       transition: stroke-dashoffset 0.5s ease;
     }
-    .ring-pct { position: absolute; font-size: 17px; font-weight: 900; color: #ffffff; }
+    .ring-pct { position: absolute; font-size: 15.5px; font-weight: 900; color: #ffffff; }
 
     .gc-foot {
       width: 100%; display: grid; grid-template-columns: 1fr 1fr;
-      border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 3px;
     }
     .gc-stat { display: flex; flex-direction: column; align-items: center; text-align: center; }
     .gc-stat:first-child { border-right: 1px solid rgba(255, 255, 255, 0.08); }
-    .gcs-lbl { font-size: 9px; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 3px; }
+    .gcs-lbl { font-size: 8.5px; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 3px; }
     .dot-gold { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); display: inline-block; }
     .dot-gray { width: 6px; height: 6px; border-radius: 50%; background: #94a3b8; display: inline-block; }
-    .gcs-val { font-size: 11.5px; font-weight: 900; color: #ffffff; }
+    .gcs-val { font-size: 11px; font-weight: 900; color: #ffffff; }
 
     /* 5. Bandwidth Usage Area Chart */
     .chart-card {
@@ -242,26 +243,26 @@
       backdrop-filter: blur(12px);
       border: 1.2px solid var(--gold-border);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 224, 130, 0.16);
-      border-radius: 16px; padding: 6px 10px;
-      display: flex; flex-direction: column; gap: 2px; flex-shrink: 0;
+      border-radius: 15px; padding: 5px 9px;
+      display: flex; flex-direction: column; gap: 1px; flex-shrink: 0;
     }
     .chart-head { display: flex; align-items: center; justify-content: space-between; }
-    .chart-title { font-size: 11.5px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 5px; }
+    .chart-title { font-size: 11px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 5px; }
     .chart-pill {
       background: rgba(245, 185, 66, 0.12); border: 1px solid rgba(245, 185, 66, 0.42);
-      color: var(--gold-bright); font-size: 9px; font-weight: 700;
-      padding: 1.5px 8px; border-radius: 10px;
+      color: var(--gold-bright); font-size: 8.5px; font-weight: 700;
+      padding: 1px 7px; border-radius: 10px;
     }
     .chart-legend {
-      display: flex; align-items: center; gap: 12px; font-size: 9px; color: var(--text-sub); font-weight: 700;
+      display: flex; align-items: center; gap: 12px; font-size: 8.5px; color: var(--text-sub); font-weight: 700;
       padding-left: 34px;
     }
-    .chart-svg-wrap { width: 100%; height: 50px; }
+    .chart-svg-wrap { width: 100%; height: 42px; }
     .chart-svg-wrap svg { width: 100%; height: 100%; overflow: visible; }
 
     /* 6. 8 Glassy Action Tiles (2x4) */
     .actions-8-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;
       flex: 1; min-height: 0;
     }
     .act-btn {
@@ -269,31 +270,31 @@
       backdrop-filter: blur(10px);
       border: 1.2px solid var(--gold-border);
       box-shadow: 0 5px 14px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 224, 130, 0.22);
-      border-radius: 14px; padding: 5px 3px;
+      border-radius: 13px; padding: 4px 2px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 3px; cursor: pointer; transition: transform 0.12s ease, border-color 0.15s ease;
+      gap: 2px; cursor: pointer; transition: transform 0.12s ease, border-color 0.15s ease;
     }
     .act-btn:active { transform: scale(0.95); border-color: var(--gold-bright); }
-    .act-ico { font-size: 18px; color: var(--gold-bright); line-height: 1.1; filter: drop-shadow(0 0 6px rgba(245, 185, 66, 0.35)); }
-    .act-lbl { font-size: 10px; font-weight: 800; color: #ffffff; line-height: 1.15; white-space: nowrap; }
+    .act-ico { font-size: 16px; color: var(--gold-bright); line-height: 1.05; filter: drop-shadow(0 0 6px rgba(245, 185, 66, 0.35)); }
+    .act-lbl { font-size: 9.5px; font-weight: 800; color: #ffffff; line-height: 1.1; white-space: nowrap; }
 
     /* 7. Logout Glass Pill Button */
     .logout-btn {
-      width: 100%; padding: 7px;
+      width: 100%; padding: 6px;
       background: linear-gradient(90deg, rgba(32, 28, 22, 0.82), rgba(48, 41, 28, 0.88), rgba(32, 28, 22, 0.82));
       backdrop-filter: blur(10px);
       border: 1.4px solid var(--gold-border);
       border-radius: 22px; color: #ffffff;
-      font-size: 12.5px; font-weight: 800;
+      font-size: 12px; font-weight: 800;
       display: flex; align-items: center; justify-content: center; gap: 8px;
       cursor: pointer; flex-shrink: 0;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 224, 130, 0.2);
     }
     .logout-btn:active { transform: scale(0.98); }
     .power-ring {
-      width: 20px; height: 20px; border-radius: 50%;
+      width: 19px; height: 19px; border-radius: 50%;
       border: 1.5px solid var(--gold-bright); color: var(--gold-bright);
-      display: inline-flex; align-items: center; justify-content: center; font-size: 11px;
+      display: inline-flex; align-items: center; justify-content: center; font-size: 10.5px;
     }
 
     /* Modals */
@@ -316,11 +317,6 @@
     .btn-confirm-exit { flex: 1; background: linear-gradient(135deg, #ff3b6b, #c9184a); color: #ffffff; border: none; padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 900; cursor: pointer; }
 
     .zoom-square-box { width: min(92vw, 350px); display: flex; flex-direction: column; align-items: center; gap: 15px; }
-    .zoom-close-btn {
-      position: fixed; top: 18px; right: 18px; width: 46px; height: 46px; border-radius: 50%;
-      background: rgba(255, 59, 107, 0.25); border: 2px solid rgba(255, 59, 107, 0.8);
-      color: #ff4d79; font-size: 20px; font-weight: 900; display: flex; align-items: center; justify-content: center; cursor: pointer;
-    }
     .zoom-details-grid { width: 100%; max-width: 290px; display: flex; flex-direction: column; gap: 8px; }
     .zoom-detail-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; color: #cbd5e1; }
     .zoom-detail-row b { color: #ffffff; font-size: 14px; font-weight: 900; }
@@ -584,9 +580,8 @@
     </div>
   </div>
 
-  <!-- Daily Traffic Details Modal -->
+  <!-- Daily Traffic Details Modal (بدون علامة X؛ الإغلاق بالضغط على الخلفية) -->
   <div class="modal-overlay" id="dailyZoomModal" onclick="if(event.target===this) closeDailyZoom()">
-    <button type="button" class="zoom-close-btn" onclick="closeDailyZoom()">✕</button>
     <div class="zoom-square-box" onclick="if(event.target===this) closeDailyZoom()">
       <div style="font-size:17px;font-weight:900;color:var(--gold-bright);">📊 Today Traffic Details (in1)</div>
       <div class="ring-wrap" style="width:160px;height:160px;">
@@ -625,7 +620,6 @@
       if (e.target && e.target.tagName !== 'INPUT') e.preventDefault();
     });
 
-    /* Calm Siren Alert when <= 1 day remaining */
     let sirenInterval = null;
     let audioCtx = null;
     let sirenMutedByUser = false;
@@ -739,7 +733,6 @@
       return `${cairo.getFullYear()}-${String(cairo.getMonth() + 1).padStart(2, '0')}-${String(cairo.getDate()).padStart(2, '0')}`;
     }
 
-    /* تحويل أي صيغة تاريخ بأمان إلى YYYY-MM-DD لمنع تشوه حقل الإدخال */
     function normalizeDateToISO(rawStr) {
       if (!rawStr) return getTodayCairoISO();
       const s = String(rawStr).trim();
@@ -995,7 +988,7 @@
             if (!isNaN(parsed)) diffSec = Math.floor((Date.now() - parsed) / 1000);
           }
 
-          if (diffSec <= 120) {
+          if (diffSec <= 300) {
             isServerOnline = true;
             pill.classList.remove('offline');
             clockRow.classList.remove('frozen');
