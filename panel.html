@@ -3,23 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>شبكة إنترنت أبو يمنى - hAP ax²</title>
+  <title>My-Network - شبكة إنترنت أبو يمنى</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #070d14;
-      --glass-bg: rgba(16, 26, 40, 0.88);
-      --border: #1e3148;
-      --cyan: #00e5ff;
-      --green: #00e676;
-      --amber: #ffab00;
-      --lime: #1de9b6;
-      --red: #ff3d71;
+      --bg-dark: #07090e;
+      --card-bg: rgba(16, 20, 29, 0.92);
+      --card-inner: #0d1119;
+      --gold: #f5b942;
+      --gold-bright: #ffd97d;
+      --gold-border: rgba(245, 185, 66, 0.42);
+      --green: #10e87a;
+      --green-border: rgba(16, 232, 122, 0.42);
+      --red: #ff3b6b;
       --text-main: #ffffff;
-      --text-sub: #8fa6c2;
+      --text-sub: #94a3b8;
     }
 
     * {
@@ -27,405 +28,608 @@
       font-family: 'Cairo', system-ui, sans-serif;
       -webkit-tap-highlight-color: transparent;
       -webkit-user-select: none !important;
-      -moz-user-select: none !important;
-      -ms-user-select: none !important;
       user-select: none !important;
-      -webkit-touch-callout: none !important;
     }
 
-    input {
-      -webkit-user-select: auto !important;
-      user-select: auto !important;
-    }
+    input { -webkit-user-select: auto !important; user-select: auto !important; }
 
     html, body {
       height: 100dvh;
       overflow: hidden;
-      background: radial-gradient(circle at top, #132840 0%, var(--bg) 78%);
+      background: radial-gradient(circle at 50% 8%, #261e12 0%, #0b0e14 48%, #06080c 100%);
       color: var(--text-main);
     }
 
-    /* رفع الحاوية بالكامل بعيداً عن شريط التنقل السفلي للموبايل */
     body {
-      padding: 4px 8px calc(38px + env(safe-area-inset-bottom, 0px));
+      padding: 4px 8px calc(34px + env(safe-area-inset-bottom, 0px));
       display: flex;
       justify-content: center;
       align-items: stretch;
     }
 
-    .hub-container {
+    .app-shell {
       width: 100%; max-width: 450px; height: 100%;
-      background: linear-gradient(180deg, #111e2f 0%, #0b131e 100%);
-      border: 1.5px solid var(--border); border-radius: 20px;
-      padding: 4px 10px 9px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
-      display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 5px;
     }
 
-    .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; margin-bottom: 6px; }
-    .embossed-title-wrap {
-      flex: 1; text-align: right; padding-right: 14px; padding-top: 6px;
-      position: relative;
+    /* الهيدر العلوي: My-Network */
+    .top-navbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 2px 4px; flex-shrink: 0;
     }
-    .title-line-1 {
-      font-size: 21px; font-weight: 900; line-height: 1.15;
-      background: linear-gradient(180deg, #ffffff 15%, #b8e8f8 55%, #4fa3c7 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 1px rgba(10, 22, 36, 0.98)) drop-shadow(0 0 14px rgba(0, 229, 255, 0.42));
+    .nav-icon-btn {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #e2e8f0; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; cursor: pointer;
     }
-    .title-line-2 {
-      font-size: 32px; font-weight: 900; line-height: 1.22; padding-bottom: 4px;
-      background: linear-gradient(180deg, #ffffff 10%, #ccf5ff 48%, #54c5d0 78%, #267d8e 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 2px 0 #173c4d) drop-shadow(0 5px 10px rgba(0, 0, 0, 0.96)) drop-shadow(0 0 20px rgba(0, 229, 255, 0.55));
+    .nav-icon-btn:active { transform: scale(0.93); }
+    .nav-icons-pair { display: flex; align-items: center; gap: 6px; }
+
+    .brand-center {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .brand-title-row {
+      display: flex; align-items: center; gap: 6px; direction: ltr;
+    }
+    .wifi-emblem {
+      width: 24px; height: 24px;
+      filter: drop-shadow(0 0 8px rgba(245, 185, 66, 0.8));
+    }
+    .brand-name {
+      font-size: 19px; font-weight: 900; color: #ffffff; letter-spacing: 0.3px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+    }
+    .brand-sub {
+      font-size: 10.5px; font-weight: 800; color: var(--gold-bright);
+      margin-top: -4px; opacity: 0.92;
     }
 
-    .inline-status-line {
-      position: absolute;
-      right: 14px;
-      bottom: -25px;
+    /* الكارت الرئيسي للراوتر واسم الشبكة */
+    .hero-card {
+      background: linear-gradient(135deg, rgba(35, 27, 17, 0.94) 0%, rgba(14, 18, 26, 0.96) 55%, rgba(18, 28, 24, 0.94) 100%);
+      border: 1.5px solid var(--gold-border);
+      border-radius: 18px;
+      padding: 8px 10px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75), inset 0 0 22px rgba(245, 185, 66, 0.08);
+      display: flex; align-items: center; justify-content: space-between; gap: 4px;
+      flex-shrink: 0; position: relative; overflow: hidden;
+    }
+    .hero-card::before {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(circle at 48% 55%, rgba(245, 185, 66, 0.16), transparent 62%);
+      pointer-events: none;
+    }
+
+    .hero-right-col {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 5px; z-index: 1;
+    }
+    .status-chip {
       display: inline-flex; align-items: center; gap: 6px;
-      color: #5cffaa; font-size: 12px; font-weight: 900; line-height: 1;
-      white-space: nowrap;
-      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95);
+      background: rgba(16, 232, 122, 0.14); border: 1px solid rgba(16, 232, 122, 0.45);
+      color: #5cffaa; padding: 2px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 900; white-space: nowrap;
     }
-    .inline-status-line.offline { color: #ff6b8b; }
-    .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #00ff88; animation: pulse 1.5s infinite; flex-shrink: 0; }
-    .inline-status-line.offline .pulse-dot { background: #ff1744; animation: none; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-    .router-box { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-    .router-visual { width: 146px; height: 108px; display: flex; align-items: center; justify-content: center; }
-    .router-visual img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; pointer-events: none; }
-
-    .ros-badge {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      font-size: 11.5px; font-weight: 800; letter-spacing: 0.3px;
-      color: #ffffff; background: transparent; border: none;
-      padding: 0; margin-top: -4px;
-      direction: ltr; text-shadow: 0 1px 5px rgba(0, 0, 0, 0.95);
+    .status-chip.offline {
+      background: rgba(255, 59, 107, 0.16); border-color: rgba(255, 59, 107, 0.5); color: #ff6b8b;
     }
-    .ros-badge span { color: var(--cyan); font-weight: 900; }
-
-    .gauges-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
-      background: rgba(10, 17, 27, 0.84); border: 1px solid rgba(34, 55, 82, 0.95);
-      border-radius: 15px; padding: 5px; box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7); flex-shrink: 0;
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+      box-shadow: 0 0 8px var(--green); animation: pulse 1.5s infinite;
     }
+    .status-chip.offline .status-dot { background: var(--red); box-shadow: none; animation: none; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-    .gauge-card {
-      background: linear-gradient(180deg, #132133 0%, #0b131e 100%);
-      border: 1px solid rgba(76, 114, 153, 0.32); border-radius: 12px;
-      padding: 5px 5px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 3px;
-      transition: transform 0.15s ease, border-color 0.15s ease;
-      overflow: hidden;
+    .network-title-wrap {
+      display: flex; align-items: center; gap: 7px;
     }
-    .gauge-card.holding { transform: scale(0.97); border-color: var(--cyan); }
-
-    .gauge-header-row {
-      width: 100%; display: flex; align-items: center; justify-content: center; gap: 5px;
-      white-space: nowrap; min-height: 22px; padding: 0 2px;
+    .globe-icon {
+      width: 26px; height: 26px; color: var(--gold-bright);
+      filter: drop-shadow(0 0 8px rgba(245, 185, 66, 0.6)); flex-shrink: 0;
+    }
+    .net-label-1 { font-size: 13px; font-weight: 800; color: #e2e8f0; line-height: 1.1; }
+    .net-label-2 {
+      font-size: 25px; font-weight: 900; line-height: 1.15;
+      background: linear-gradient(180deg, #fff5d6 15%, #f5b942 85%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.9));
     }
 
-    .gauge-title-side {
-      font-size: 10.8px; font-weight: 900; color: var(--cyan); line-height: 1.2;
-      white-space: nowrap;
-    }
-
-    .gauge-highlight-line {
-      font-size: 13px; font-weight: 900; color: #5cffaa; line-height: 1.2;
-      white-space: nowrap; text-align: center; width: 100%;
-    }
-
-    .gauge-highlight-line.urgent-blink {
-      color: #ff1744;
-      animation: redUrgentBlink 0.75s infinite ease-in-out;
-    }
-    @keyframes redUrgentBlink {
-      0%, 100% {
-        color: #ff1744;
-        text-shadow: 0 0 8px #ff1744, 0 0 18px rgba(255, 23, 68, 0.98), 0 0 28px rgba(255, 61, 113, 0.85);
-        opacity: 1;
-        transform: scale(1.03);
-      }
-      50% {
-        color: #ff9eb5;
-        text-shadow: 0 0 2px rgba(255, 23, 68, 0.25);
-        opacity: 0.38;
-        transform: scale(0.98);
-      }
-    }
-
-    .gauge-bottom-stats {
-      width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 1px; text-align: center;
-    }
-    .gauge-sub-line { font-size: 10.5px; font-weight: 800; color: var(--text-sub); line-height: 1.2; white-space: nowrap; }
-    .gauge-sub-line b { color: #ffffff; font-weight: 900; }
-
-    .btn-renew-inline {
-      background: linear-gradient(180deg, rgba(255, 171, 0, 0.32), rgba(255, 136, 0, 0.18));
-      border: 1.5px solid #ffab00; color: #ffd54f; border-radius: 8px;
-      padding: 2px 8px; font-size: 11px; font-weight: 900; line-height: 1.2;
-      cursor: pointer; display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0;
-      box-shadow: 0 0 10px rgba(255, 171, 0, 0.35);
-    }
-    .btn-renew-inline:active { transform: scale(0.94); }
-
-    .neon-disc {
-      position: relative; width: 60px; height: 60px; border-radius: 50%;
-      background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
-      box-shadow: 0 0 14px rgba(255, 23, 68, 0.38), 0 0 12px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
-      display: flex; align-items: center; justify-content: center;
+    .hero-router-img {
+      width: 96px; height: 88px; object-fit: contain; z-index: 1;
+      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.95));
       flex-shrink: 0;
     }
-    .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; }
 
-    .disc-inner-cap {
-      position: relative; z-index: 2;
-      width: 28px; height: 28px; border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #192b42 0%, #09111c 85%);
-      border: 1.5px solid rgba(255, 255, 255, 0.24);
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.85), 0 0 6px rgba(0, 0, 0, 0.75);
+    .hero-left-specs {
+      display: flex; flex-direction: column; align-items: flex-end; text-align: left;
+      direction: ltr; z-index: 1; gap: 2px;
+    }
+    .mk-brand { font-size: 13px; font-weight: 900; color: #ffffff; font-style: italic; line-height: 1; }
+    .mk-model { font-size: 15px; font-weight: 900; color: var(--gold-bright); line-height: 1.15; margin-bottom: 2px; }
+    .spec-item { font-size: 9.5px; font-weight: 800; color: #cbd5e1; line-height: 1.25; white-space: nowrap; }
+    .spec-item span { color: var(--gold); }
+
+    /* صف الإحصائيات الأربعة */
+    .stats-4-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;
+      flex-shrink: 0;
+    }
+    .stat-mini-card {
+      background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 13px; padding: 5px 4px;
+      display: flex; align-items: center; justify-content: space-between; gap: 4px;
+    }
+    .stat-mini-card.gold-glow { border-color: rgba(245, 185, 66, 0.35); }
+    .stat-mini-card.green-glow { border-color: rgba(16, 232, 122, 0.35); }
+    .stat-circle-icon {
+      width: 24px; height: 24px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 9.5px; font-weight: 900; color: #ffffff;
-      direction: ltr; letter-spacing: -0.4px;
+      font-size: 11px; font-weight: 900; flex-shrink: 0;
+    }
+    .icon-gold { background: rgba(245, 185, 66, 0.14); border: 1px solid rgba(245, 185, 66, 0.45); color: var(--gold-bright); }
+    .icon-green { background: rgba(16, 232, 122, 0.14); border: 1px solid rgba(16, 232, 122, 0.45); color: var(--green); }
+    .icon-gray { background: rgba(148, 163, 184, 0.14); border: 1px solid rgba(148, 163, 184, 0.4); color: #e2e8f0; }
+
+    .stat-text-col { display: flex; flex-direction: column; text-align: right; overflow: hidden; }
+    .stat-lbl { font-size: 8.8px; font-weight: 800; color: var(--text-sub); line-height: 1.15; white-space: nowrap; }
+    .stat-val { font-size: 12.5px; font-weight: 900; color: #ffffff; line-height: 1.2; direction: ltr; text-align: right; white-space: nowrap; }
+    .stat-val.green { color: var(--green); }
+
+    /* كارتين الدوائر الكبيرة (متبقي للباقة + سحب اليوم) */
+    .gauges-2-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 7px; flex-shrink: 0;
+    }
+    .gauge-panel {
+      background: linear-gradient(180deg, rgba(22, 26, 36, 0.95) 0%, rgba(11, 14, 21, 0.98) 100%);
+      border-radius: 16px; padding: 7px 8px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
+      position: relative;
+    }
+    .gauge-panel.gold-panel {
+      border: 1.5px solid var(--gold-border);
+      box-shadow: inset 0 0 18px rgba(245, 185, 66, 0.06);
+    }
+    .gauge-panel.green-panel {
+      border: 1.5px solid var(--green-border);
+      box-shadow: inset 0 0 18px rgba(16, 232, 122, 0.06);
+    }
+    .gauge-panel.holding { transform: scale(0.97); }
+
+    .gp-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 4px;
+    }
+    .gp-title {
+      font-size: 12px; font-weight: 900; display: flex; align-items: center; gap: 4px; white-space: nowrap;
+    }
+    .gp-title.gold { color: var(--gold-bright); }
+    .gp-title.green { color: #5cffaa; }
+
+    .gp-pill-btn {
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(245, 185, 66, 0.45);
+      color: var(--gold-bright); border-radius: 7px; padding: 1px 6px;
+      font-size: 10px; font-weight: 900; display: inline-flex; align-items: center; gap: 3px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .gp-pill-btn.urgent-blink {
+      border-color: var(--red); color: #ff4d79;
+      animation: redBlink 0.75s infinite ease-in-out;
+    }
+    @keyframes redBlink {
+      0%, 100% { background: rgba(255, 59, 107, 0.28); box-shadow: 0 0 10px rgba(255, 59, 107, 0.8); }
+      50% { background: rgba(255, 59, 107, 0.05); box-shadow: none; }
     }
 
-    .telemetry-panel { display: flex; flex-direction: column; gap: 3px; background: rgba(10, 17, 27, 0.78); border: 1px solid rgba(34, 55, 82, 0.9); border-radius: 12px; padding: 4px 8px; flex-shrink: 0; }
-
-    .dual-embossed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-    .embossed-box { background: linear-gradient(180deg, #162436 0%, #0b131e 100%); border: 1px solid rgba(76, 114, 153, 0.38); border-radius: 9px; padding: 3px 6px; text-align: center; direction: ltr; }
-    .embossed-box .e-lbl { display: block; font-size: 10px; font-weight: 900; color: #8fb4da; line-height: 1.15; margin-bottom: 1px; }
-    .embossed-box .e-val { display: block; font-size: 14.5px; font-weight: 900; color: #ffffff; line-height: 1.15; letter-spacing: 0.3px; }
-    .embossed-box.frozen .e-val { color: #ff8fa3; }
-
-    .quick-stats { display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; color: var(--text-sub); padding-top: 2px; border-top: 1px dashed rgba(255, 255, 255, 0.08); }
-    .quick-stats span b { color: var(--green); font-size: 12.5px; }
-
-    /* مستطيلات متناسقة ومضغوطة قليلاً مع خط أكبر وأوضح */
-    .cards-stack { display: flex; flex-direction: column; justify-content: space-between; gap: 4px; flex: 1; min-height: 0; }
-    .action-card {
-      flex: 1;
-      max-height: 52px;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 2px 12px; border-radius: 11px;
-      background: var(--glass-bg); cursor: pointer;
-      transition: transform 0.12s ease;
+    .gp-body {
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
     }
-    .action-card:active { transform: scale(0.985); }
-    .card-info { display: flex; flex-direction: column; text-align: right; gap: 1px; }
-    .card-title { font-size: 15px; font-weight: 900; color: #fff; line-height: 1.15; }
-    .card-desc { font-size: 10.5px; color: var(--text-sub); font-weight: 700; line-height: 1.15; }
-    .card-icon-box { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 900; flex-shrink: 0; }
 
-    .card-add { border: 1.5px solid rgba(0, 229, 255, 0.45); }
-    .card-add .card-icon-box { background: rgba(0, 229, 255, 0.14); border: 1px solid rgba(0, 229, 255, 0.4); color: var(--cyan); }
-    .card-info-btn { border: 1.5px solid rgba(0, 230, 118, 0.45); }
-    .card-info-btn .card-icon-box { background: rgba(0, 230, 118, 0.14); border: 1px solid rgba(0, 230, 118, 0.4); color: var(--green); }
-    .card-renew { border: 1.5px solid rgba(255, 171, 0, 0.45); }
-    .card-renew .card-icon-box { background: rgba(255, 171, 0, 0.14); border: 1px solid rgba(255, 171, 0, 0.4); color: var(--amber); }
-    .card-active { border: 1.5px solid rgba(29, 233, 182, 0.45); }
-    .card-active .card-icon-box { background: rgba(29, 233, 182, 0.14); border: 1px solid rgba(29, 233, 182, 0.4); color: var(--lime); }
+    .gp-metrics {
+      display: flex; flex-direction: column; gap: 4px; flex: 1;
+    }
+    .metric-item {
+      border-right: 2px solid rgba(245, 185, 66, 0.55);
+      padding-right: 6px; display: flex; flex-direction: column;
+    }
+    .metric-item.green-line { border-right-color: rgba(16, 232, 122, 0.55); }
+    .m-lbl { font-size: 9px; font-weight: 800; color: var(--text-sub); line-height: 1.1; }
+    .m-val { font-size: 11px; font-weight: 900; color: #ffffff; line-height: 1.2; direction: ltr; text-align: right; }
+    .m-val.gold { color: var(--gold-bright); }
+    .m-val.green { color: var(--green); }
 
-    .btn-exit {
-      width: 100%; padding: 6px; margin-top: 2px;
-      background: rgba(255, 61, 113, 0.16);
-      border: 1.5px solid rgba(255, 61, 113, 0.6);
-      color: #ff4d79; border-radius: 11px;
-      font-size: 13.5px; font-weight: 900;
+    /* حلقات النسب المئوية المضيئة */
+    .ring-box {
+      position: relative; width: 76px; height: 76px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ring-box svg { width: 76px; height: 76px; transform: rotate(-90deg); }
+    .ring-track { fill: none; stroke: rgba(255, 255, 255, 0.09); stroke-width: 8.5; }
+    .ring-fill-gold {
+      fill: none; stroke: url(#goldGrad); stroke-width: 8.5; stroke-linecap: round;
+      filter: drop-shadow(0 0 6px rgba(245, 185, 66, 0.65));
+      transition: stroke-dashoffset 0.5s ease;
+    }
+    .ring-fill-green {
+      fill: none; stroke: url(#greenGrad); stroke-width: 8.5; stroke-linecap: round;
+      filter: drop-shadow(0 0 6px rgba(16, 232, 122, 0.65));
+      transition: stroke-dashoffset 0.5s ease;
+    }
+    .ring-center-text {
+      position: absolute; font-size: 15px; font-weight: 900; color: #ffffff; direction: ltr;
+    }
+
+    /* كارتين الساعة ومدة التشغيل */
+    .time-2-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 7px; flex-shrink: 0;
+    }
+    .time-card {
+      background: var(--card-bg); border: 1px solid rgba(245, 185, 66, 0.28);
+      border-radius: 13px; padding: 5px 10px;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .time-info { display: flex; flex-direction: column; text-align: right; }
+    .t-lbl { font-size: 9.5px; font-weight: 800; color: var(--text-sub); line-height: 1.15; }
+    .t-val { font-size: 13.5px; font-weight: 900; color: #ffffff; direction: ltr; text-align: right; line-height: 1.2; }
+    .time-card.frozen .t-val { color: #ff6b8b; }
+    .time-icon-ring {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(245, 185, 66, 0.12); border: 1.5px solid rgba(245, 185, 66, 0.45);
+      color: var(--gold-bright); display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+
+    /* شبكة الأزرار الأربعة (2x2) */
+    .actions-2x2-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; min-height: 0;
+    }
+    .act-tile {
+      background: linear-gradient(135deg, rgba(22, 27, 38, 0.95), rgba(12, 16, 24, 0.98));
+      border-radius: 14px; padding: 5px 9px;
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      cursor: pointer; transition: transform 0.12s ease;
+    }
+    .act-tile:active { transform: scale(0.97); }
+    .act-tile.gold-tile { border: 1.5px solid var(--gold-border); }
+    .act-tile.green-tile { border: 1.5px solid var(--green-border); }
+
+    .act-text { display: flex; flex-direction: column; text-align: right; overflow: hidden; }
+    .act-title { font-size: 12.5px; font-weight: 900; color: #ffffff; line-height: 1.15; white-space: nowrap; }
+    .act-sub { font-size: 9px; font-weight: 700; color: var(--text-sub); line-height: 1.15; white-space: nowrap; }
+
+    .act-circle-badge {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 900; flex-shrink: 0;
+    }
+    .gold-tile .act-circle-badge {
+      background: rgba(245, 185, 66, 0.14); border: 1.5px solid rgba(245, 185, 66, 0.55); color: var(--gold-bright);
+    }
+    .green-tile .act-circle-badge {
+      background: rgba(16, 232, 122, 0.14); border: 1.5px solid rgba(16, 232, 122, 0.55); color: var(--green);
+    }
+
+    /* زر الخروج من اللوحة */
+    .exit-bar-btn {
+      width: 100%; padding: 6px;
+      background: linear-gradient(90deg, rgba(60, 16, 26, 0.9), rgba(95, 22, 38, 0.92), rgba(60, 16, 26, 0.9));
+      border: 1.5px solid rgba(255, 59, 107, 0.55);
+      border-radius: 13px; color: #ff6b8b;
+      font-size: 13px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
       cursor: pointer; flex-shrink: 0;
     }
-    .btn-exit:active { transform: scale(0.98); }
+    .exit-bar-btn:active { transform: scale(0.98); }
 
-    .modal-overlay { position: fixed; inset: 0; background: rgba(4, 9, 15, 0.88); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
-    .modal-overlay.open { display: flex; }
-    .modal-box { width: 100%; max-width: 350px; background: linear-gradient(180deg, #132236 0%, #0a121d 100%); border: 1.5px solid rgba(0, 229, 255, 0.5); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 11px; }
-    .modal-title { font-size: 16px; font-weight: 900; color: var(--cyan); text-align: center; }
-    .modal-desc { font-size: 12px; color: var(--text-sub); text-align: center; font-weight: 700; line-height: 1.4; }
-    .date-input { width: 100%; background: #0b131e; border: 1.5px solid var(--border); color: #fff; padding: 9px 12px; border-radius: 10px; font-size: 15px; font-weight: 800; text-align: center; color-scheme: dark; }
-    .check-row { display: flex; align-items: center; gap: 8px; background: rgba(255, 171, 0, 0.1); border: 1px solid rgba(255, 171, 0, 0.35); padding: 8px 10px; border-radius: 10px; font-size: 12px; font-weight: 800; color: var(--amber); cursor: pointer; }
-    .check-row input { width: 16px; height: 16px; accent-color: var(--amber); }
-    .modal-btns { display: flex; gap: 8px; }
-    .btn-save-cycle { flex: 1; background: linear-gradient(135deg, #00e676, #00b259); color: #04120a; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
-    .btn-cancel-cycle { flex: 1; background: rgba(255, 61, 113, 0.15); border: 1px solid var(--red); color: var(--red); padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
-    .btn-confirm-exit { flex: 1; background: linear-gradient(135deg, #ff3d71, #d50032); color: #ffffff; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
-
-    .zoom-square-box {
-      width: min(92vw, 370px);
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      padding: 10px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 18px;
-      position: relative;
-      animation: popSquare 0.2s cubic-bezier(0.2, 0.85, 0.3, 1.15);
-    }
-    @keyframes popSquare {
-      from { transform: scale(0.72); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    .zoom-close-btn {
-      position: fixed; top: 18px; left: 18px;
-      width: 52px; height: 52px; border-radius: 50%;
-      background: rgba(255, 61, 113, 0.26); border: 2px solid rgba(255, 61, 113, 0.8);
-      color: #ff4d79; font-size: 24px; font-weight: 900;
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.75);
-      z-index: 10020;
-    }
-    .zoom-close-btn:active { transform: scale(0.92); }
-
-    .zoom-header-title {
-      font-size: 18px; font-weight: 900; color: var(--cyan); text-align: center;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
-    }
-
-    .zoom-disc-large {
-      position: relative; width: 178px; height: 178px; border-radius: 50%;
-      background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
-      box-shadow: 0 0 32px rgba(255, 23, 68, 0.5), 0 0 28px rgba(0, 255, 136, 0.45), inset 0 3px 10px rgba(255, 255, 255, 0.35);
-      display: flex; align-items: center; justify-content: center;
+    /* الشريط السفلي ذو الـ 5 أيقونات */
+    .bottom-dock {
+      background: rgba(14, 18, 26, 0.96);
+      border-top: 1px solid rgba(245, 185, 66, 0.25);
+      border-radius: 16px; padding: 4px 6px;
+      display: grid; grid-template-columns: repeat(5, 1fr); align-items: center;
       flex-shrink: 0;
     }
-    .zoom-disc-large::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.3), transparent 60%); pointer-events: none; }
-
-    .zoom-inner-cap {
-      position: relative; z-index: 2;
-      width: 76px; height: 76px; border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #192b42 0%, #09111c 85%);
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.9), 0 0 16px rgba(0, 0, 0, 0.85);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; font-weight: 900; color: #ffffff;
-      direction: ltr;
+    .dock-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+      color: var(--text-sub); font-size: 9.5px; font-weight: 800; cursor: pointer;
+      padding: 2px 0;
+    }
+    .dock-item span.d-ico { font-size: 15px; line-height: 1.1; }
+    .dock-item.active-home {
+      background: radial-gradient(circle at top, rgba(245, 185, 66, 0.25), rgba(245, 185, 66, 0.05));
+      border: 1px solid rgba(245, 185, 66, 0.55);
+      border-radius: 12px; color: var(--gold-bright);
+      padding: 3px 0; margin-top: -6px;
+      box-shadow: 0 0 14px rgba(245, 185, 66, 0.3);
     }
 
-    .zoom-details-grid {
-      width: 100%; max-width: 310px;
-      display: flex; flex-direction: column; gap: 8px;
-      background: transparent; border: none; padding: 4px 8px;
+    /* النوافذ المنبثقة */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(4, 6, 10, 0.88); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { width: 100%; max-width: 350px; background: linear-gradient(180deg, #171c26 0%, #0c0f15 100%); border: 1.5px solid var(--gold-border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 11px; }
+    .modal-title { font-size: 16px; font-weight: 900; color: var(--gold-bright); text-align: center; }
+    .modal-desc { font-size: 12px; color: var(--text-sub); text-align: center; font-weight: 700; line-height: 1.4; }
+    .date-input { width: 100%; background: #090c12; border: 1.5px solid var(--gold-border); color: #fff; padding: 9px 12px; border-radius: 10px; font-size: 15px; font-weight: 800; text-align: center; color-scheme: dark; }
+    .check-row { display: flex; align-items: center; gap: 8px; background: rgba(245, 185, 66, 0.1); border: 1px solid rgba(245, 185, 66, 0.35); padding: 8px 10px; border-radius: 10px; font-size: 12px; font-weight: 800; color: var(--gold-bright); cursor: pointer; }
+    .check-row input { width: 16px; height: 16px; accent-color: var(--gold); }
+    .modal-btns { display: flex; gap: 8px; }
+    .btn-save-cycle { flex: 1; background: linear-gradient(135deg, #10e87a, #08b85e); color: #04120a; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
+    .btn-cancel-cycle { flex: 1; background: rgba(255, 59, 107, 0.15); border: 1px solid var(--red); color: var(--red); padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
+    .btn-confirm-exit { flex: 1; background: linear-gradient(135deg, #ff3b6b, #c9184a); color: #ffffff; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
+
+    /* نافذة تفاصيل السحب الشفافة */
+    .zoom-square-box { width: min(92vw, 360px); display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .zoom-close-btn {
+      position: fixed; top: 18px; left: 18px; width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255, 59, 107, 0.25); border: 2px solid rgba(255, 59, 107, 0.8);
+      color: #ff4d79; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
-    .zoom-detail-row {
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 14px; font-weight: 800; color: #c5d6eb;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.98);
-    }
+    .zoom-details-grid { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 8px; }
+    .zoom-detail-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 800; color: #cbd5e1; }
     .zoom-detail-row b { color: #ffffff; font-size: 15px; font-weight: 900; }
-    .zoom-detail-row b.green { color: #5cffaa; }
+    .zoom-detail-row b.green { color: var(--green); }
   </style>
 </head>
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 
-  <div class="hub-container">
-    <div class="hero-header">
-      <div class="embossed-title-wrap">
-        <div class="title-line-1">شبكة إنترنت</div>
-        <div class="title-line-2">أبو يمنى</div>
-        <div class="inline-status-line" id="serverStatusPill">
-          <span class="pulse-dot"></span>
-          <span id="serverStatusText">جاري فحص السيرفر...</span>
-        </div>
-      </div>
+  <!-- تعريف تدرجات الألوان لحلقات SVG -->
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffe082" />
+        <stop offset="100%" stop-color="#e69500" />
+      </linearGradient>
+      <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#69f0ae" />
+        <stop offset="100%" stop-color="#00c853" />
+      </linearGradient>
+    </defs>
+  </svg>
 
-      <div class="router-box">
-        <div class="router-visual">
-          <img src="https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/router.png" alt="hAP ax²" onerror="this.src='https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/images%20(4).jpeg'">
+  <div class="app-shell">
+    <!-- 1. الشريط العلوي My-Network -->
+    <div class="top-navbar">
+      <button type="button" class="nav-icon-btn" onclick="openCycleModal()" title="القائمة">☰</button>
+      <div class="brand-center">
+        <div class="brand-title-row">
+          <svg class="wifi-emblem" viewBox="0 0 24 24" fill="none" stroke="#f5b942" stroke-width="2.4" stroke-linecap="round">
+            <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+            <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+            <circle cx="12" cy="20" r="1.5" fill="#f5b942"/>
+          </svg>
+          <span class="brand-name">My-Network</span>
         </div>
-        <div class="ros-badge">RouterOS: <span id="rosVerVal">7.24.5</span></div>
+        <div class="brand-sub">إدارة ومراقبة الشبكة</div>
+      </div>
+      <div class="nav-icons-pair">
+        <button type="button" class="nav-icon-btn" onclick="openDailyZoom()" title="التنبيهات">🔔</button>
+        <button type="button" class="nav-icon-btn" onclick="openCycleModal()" title="الإعدادات">⚙️</button>
       </div>
     </div>
 
-    <div class="gauges-row">
-      <!-- كارت سحب اليوم -->
-      <div class="gauge-card" id="dailyGaugeCard">
-        <div class="gauge-header-row">
-          <div class="gauge-title-side">📊 سحب اليوم (in1)</div>
-          <button type="button" class="btn-renew-inline" onclick="event.stopPropagation(); openCycleModal()">
+    <!-- 2. كارت الراوتر واسم الشبكة -->
+    <div class="hero-card">
+      <div class="hero-right-col">
+        <div class="status-chip" id="serverStatusPill">
+          <span class="status-dot"></span>
+          <span id="serverStatusText">جاري الفحص...</span>
+        </div>
+        <div class="network-title-wrap">
+          <svg class="globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <div>
+            <div class="net-label-1">شبكة الإنترنت</div>
+            <div class="net-label-2">أبو يمنى</div>
+          </div>
+        </div>
+      </div>
+
+      <img class="hero-router-img" src="https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/router.png" alt="hAP ax²" onerror="this.src='https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/images%20(4).jpeg'">
+
+      <div class="hero-left-specs">
+        <div class="mk-brand">MikroTik</div>
+        <div class="mk-model">hAP ax²</div>
+        <div class="spec-item">⚙️ RouterOS <span id="rosVerVal">7.24.5</span></div>
+        <div class="spec-item">📡 hAP ax2 (C52iG)</div>
+        <div class="spec-item">🔲 CPU: <span>4 Cores</span></div>
+        <div class="spec-item">💾 RAM: <span>1 GB</span></div>
+      </div>
+    </div>
+
+    <!-- 3. شريط الإحصائيات الأربعة -->
+    <div class="stats-4-grid">
+      <div class="stat-mini-card gold-glow">
+        <div class="stat-circle-icon icon-gold">👥</div>
+        <div class="stat-text-col">
+          <span class="stat-lbl">المشتركين</span>
+          <span class="stat-val" id="totalUsers">...</span>
+        </div>
+      </div>
+      <div class="stat-mini-card green-glow">
+        <div class="stat-circle-icon icon-green">👤</div>
+        <div class="stat-text-col">
+          <span class="stat-lbl">النشطين حالياً</span>
+          <span class="stat-val green" id="activeUsers">...</span>
+        </div>
+      </div>
+      <div class="stat-mini-card">
+        <div class="stat-circle-icon icon-gray">↑</div>
+        <div class="stat-text-col">
+          <span class="stat-lbl">سحب اليوم</span>
+          <span class="stat-val" id="miniDayGb">0.0 GB</span>
+        </div>
+      </div>
+      <div class="stat-mini-card">
+        <div class="stat-circle-icon icon-gray">↓</div>
+        <div class="stat-text-col">
+          <span class="stat-lbl">المعدل اليومي</span>
+          <span class="stat-val">25.0 GB</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. كارتين الحلقات المضيئة (متبقي للباقة + سحب اليوم) -->
+    <div class="gauges-2-grid">
+      <!-- الكارت اليمين في RTL: متبقي للباقة -->
+      <div class="gauge-panel gold-panel" onclick="stopCalmSiren(true)">
+        <div class="gp-header">
+          <div class="gp-title gold">🗂️ متبقي للباقة</div>
+          <button type="button" class="gp-pill-btn" id="daysRemBtn" onclick="event.stopPropagation(); openCycleModal()">
             <span>📅</span>
-            <span id="startBadge">البداية</span>
+            <span id="daysRemVal">متبقي 30 يوم</span>
           </button>
         </div>
-        <div class="neon-disc" id="dailyDisc" style="--pct:0%;">
-          <div class="disc-inner-cap" id="dailyPctVal">0%</div>
-        </div>
-        <div class="gauge-bottom-stats">
-          <div class="gauge-sub-line">السحب: <b id="dailyGbVal">0.0 GB</b></div>
-          <div class="gauge-sub-line">المعدل: <b>25.0 GB</b></div>
+        <div class="gp-body">
+          <div class="gp-metrics">
+            <div class="metric-item">
+              <span class="m-lbl">المتبقي</span>
+              <span class="m-val gold" id="cycleRemGbVal">750 GB</span>
+            </div>
+            <div class="metric-item">
+              <span class="m-lbl">المسحوب</span>
+              <span class="m-val" id="cycleUsedGbVal">0 GB</span>
+            </div>
+            <div class="metric-item">
+              <span class="m-lbl">إجمالي الباقة</span>
+              <span class="m-val">750 GB</span>
+            </div>
+          </div>
+          <div class="ring-box">
+            <svg viewBox="0 0 84 84">
+              <circle class="ring-track" cx="42" cy="42" r="33"/>
+              <circle class="ring-fill-gold" id="cycleRingCircle" cx="42" cy="42" r="33" stroke-dasharray="207.35" stroke-dashoffset="0"/>
+            </svg>
+            <span class="ring-center-text" id="cyclePctVal">0%</span>
+          </div>
         </div>
       </div>
 
-      <!-- كارت الباقة الـ 30 يوم -->
-      <div class="gauge-card" onclick="stopCalmSiren(true)">
-        <div class="gauge-header-row">
-          <div class="gauge-highlight-line" id="daysRemVal">متبقي 30 يوم للباقة</div>
+      <!-- الكارت الشمال في RTL: سحب اليوم (in1) -->
+      <div class="gauge-panel green-panel" id="dailyGaugeCard">
+        <div class="gp-header">
+          <div class="gp-title green">📊 سحب اليوم (in1)</div>
+          <button type="button" class="gp-pill-btn" onclick="event.stopPropagation(); openCycleModal()">
+            <span id="startBadge">6/11</span>
+            <span>📅</span>
+          </button>
         </div>
-        <div class="neon-disc" id="cycleDisc" style="--pct:0%;">
-          <div class="disc-inner-cap" id="cyclePctVal">0%</div>
-        </div>
-        <div class="gauge-bottom-stats">
-          <div class="gauge-sub-line">متبقي: <b id="cycleRemGbVal">750 GB</b></div>
-          <div class="gauge-sub-line">مسحوب: <b id="cycleUsedGbVal">0 GB</b></div>
+        <div class="gp-body">
+          <div class="gp-metrics">
+            <div class="metric-item green-line">
+              <span class="m-lbl">السحب</span>
+              <span class="m-val green" id="dailyGbVal">0.0 GB</span>
+            </div>
+            <div class="metric-item green-line">
+              <span class="m-lbl">المعدل</span>
+              <span class="m-val">25.0 GB</span>
+            </div>
+            <div class="metric-item green-line">
+              <span class="m-lbl">الباقي اليوم</span>
+              <span class="m-val" id="dailyRemVal">25.0 GB</span>
+            </div>
+          </div>
+          <div class="ring-box">
+            <svg viewBox="0 0 84 84">
+              <circle class="ring-track" cx="42" cy="42" r="33"/>
+              <circle class="ring-fill-green" id="dailyRingCircle" cx="42" cy="42" r="33" stroke-dasharray="207.35" stroke-dashoffset="207.35"/>
+            </svg>
+            <span class="ring-center-text" id="dailyPctVal">0%</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="telemetry-panel">
-      <div class="dual-embossed-row">
-        <div class="embossed-box" id="clockBox">
-          <span class="e-lbl">🕒 ساعة السيرفر</span>
-          <span class="e-val" id="srvClock">--:--:--</span>
+    <!-- 5. مدة التشغيل وساعة السيرفر -->
+    <div class="time-2-grid">
+      <div class="time-card" id="uptimeBox">
+        <div class="time-info">
+          <span class="t-lbl">مدة التشغيل (Uptime)</span>
+          <span class="t-val" id="srvUptime">جاري الجلب...</span>
         </div>
-        <div class="embossed-box" id="uptimeBox">
-          <span class="e-lbl">⏱️ مدة التشغيل Uptime</span>
-          <span class="e-val" id="srvUptime">جاري الجلب...</span>
-        </div>
+        <div class="time-icon-ring">🕒</div>
       </div>
-      <div class="quick-stats">
-        <span>إجمالي المشتركين: <b id="totalUsers">...</b></span>
-        <span>النشطين حالياً: <b id="activeUsers">...</b></span>
-      </div>
-    </div>
-
-    <div class="cards-stack">
-      <div class="action-card card-add" onclick="go('index.html?from=dash')">
-        <div class="card-info">
-          <div class="card-title">إضافة مستخدم جديد</div>
-          <div class="card-desc">إنشاء حسابات هوتسبوت جديدة فوراً</div>
+      <div class="time-card" id="clockBox">
+        <div class="time-info">
+          <span class="t-lbl">ساعة السيرفر</span>
+          <span class="t-val" id="srvClock">--:--:--</span>
         </div>
-        <div class="card-icon-box">➕</div>
-      </div>
-      <div class="action-card card-info-btn" onclick="go('info.html?from=dash')">
-        <div class="card-info">
-          <div class="card-title">استعلام عن مشترك</div>
-          <div class="card-desc">بحث، تفاصيل الاستهلاك والباقات</div>
-        </div>
-        <div class="card-icon-box">📋</div>
-      </div>
-      <div class="action-card card-renew" onclick="go('renew.html?from=dash')">
-        <div class="card-info">
-          <div class="card-title">تجديد باقة مشترك</div>
-          <div class="card-desc">تجديد الباقات وتغيير السرعات والكومنت</div>
-        </div>
-        <div class="card-icon-box">🔄</div>
-      </div>
-      <div class="action-card card-active" onclick="go('active.html?from=dash')">
-        <div class="card-info">
-          <div class="card-title">المشتركين النشطين</div>
-          <div class="card-desc">عرض المتصلين حالياً واستهلاكهم الفوري</div>
-        </div>
-        <div class="card-icon-box">📡</div>
+        <div class="time-icon-ring">🗄️</div>
       </div>
     </div>
 
-    <button type="button" class="btn-exit" onclick="openExitConfirm()">🚪 الخروج من اللوحة</button>
+    <!-- 6. الأزرار الأربعة الرئيسية (2×2) -->
+    <div class="actions-2x2-grid">
+      <div class="act-tile green-tile" onclick="go('active.html?from=dash')">
+        <div class="act-text">
+          <div class="act-title">المشتركين النشطين</div>
+          <div class="act-sub">عرض المتصلين حالياً</div>
+        </div>
+        <div class="act-circle-badge">👥</div>
+      </div>
+
+      <div class="act-tile gold-tile" onclick="go('index.html?from=dash')">
+        <div class="act-text">
+          <div class="act-title">إضافة مستخدم جديد</div>
+          <div class="act-sub">إنشاء حساب الآن</div>
+        </div>
+        <div class="act-circle-badge">➕</div>
+      </div>
+
+      <div class="act-tile green-tile" onclick="go('renew.html?from=dash')">
+        <div class="act-text">
+          <div class="act-title">تجديد باقة مشترك</div>
+          <div class="act-sub">تجديد وتغيير السرعات</div>
+        </div>
+        <div class="act-circle-badge">🔄</div>
+      </div>
+
+      <div class="act-tile gold-tile" onclick="go('info.html?from=dash')">
+        <div class="act-text">
+          <div class="act-title">استعلام عن مشترك</div>
+          <div class="act-sub">بحث وتفاصيل الاستهلاك</div>
+        </div>
+        <div class="act-circle-badge">🔍</div>
+      </div>
+    </div>
+
+    <!-- 7. زر الخروج -->
+    <button type="button" class="exit-bar-btn" onclick="openExitConfirm()">
+      <span>الخروج من اللوحة</span>
+      <span>⏻</span>
+    </button>
+
+    <!-- 8. الشريط السفلي ذو الـ 5 أيقونات -->
+    <div class="bottom-dock">
+      <div class="dock-item" onclick="go('active.html?from=dash')">
+        <span class="d-ico">📊</span>
+        <span>التقارير</span>
+      </div>
+      <div class="dock-item" onclick="openCycleModal()">
+        <span class="d-ico">⚙️</span>
+        <span>الإعدادات</span>
+      </div>
+      <div class="dock-item active-home" onclick="loadLiveStats()">
+        <span class="d-ico">🏠</span>
+        <span>الرئيسية</span>
+      </div>
+      <div class="dock-item" onclick="go('info.html?from=dash')">
+        <span class="d-ico">👥</span>
+        <span>المشتركين</span>
+      </div>
+      <div class="dock-item" onclick="openDailyZoom()">
+        <span class="d-ico">🗄️</span>
+        <span>البيانات</span>
+      </div>
+    </div>
   </div>
 
   <!-- نافذة تأكيد الخروج -->
   <div class="modal-overlay" id="exitConfirmModal" style="z-index: 10080;" onclick="if(event.target===this) closeExitConfirm()">
-    <div class="modal-box" style="border-color: rgba(255, 61, 113, 0.65);">
-      <div class="modal-title" style="color: #ff4d79;">🚪 تأكيد الخروج</div>
+    <div class="modal-box" style="border-color: rgba(255, 59, 107, 0.65);">
+      <div class="modal-title" style="color: #ff4d79;">⏻ تأكيد الخروج</div>
       <div class="modal-desc">هل أنت متأكد أنك تريد إغلاق لوحة التحكم والخروج من البرنامج؟</div>
       <div class="modal-btns">
         <button type="button" class="btn-confirm-exit" onclick="confirmExitDash()">نعم، خروج</button>
@@ -434,6 +638,7 @@
     </div>
   </div>
 
+  <!-- نافذة ضبط بداية الباقة -->
   <div class="modal-overlay" id="cycleModal" style="z-index: 10050;">
     <div class="modal-box">
       <div class="modal-title">📅 تاريخ بداية الباقة (30 يوم)</div>
@@ -450,12 +655,17 @@
     </div>
   </div>
 
+  <!-- نافذة تفاصيل السحب اليومي -->
   <div class="modal-overlay" id="dailyZoomModal" onclick="if(event.target===this) closeDailyZoom()">
     <button type="button" class="zoom-close-btn" onclick="closeDailyZoom()">✕</button>
     <div class="zoom-square-box" onclick="if(event.target===this) closeDailyZoom()">
-      <div class="zoom-header-title">📊 تفاصيل سحب اليوم (in1)</div>
-      <div class="zoom-disc-large" id="zoomDailyDisc" style="--pct:0%;">
-        <div class="zoom-inner-cap" id="zoomDailyPctPill">0%</div>
+      <div style="font-size:18px;font-weight:900;color:#5cffaa;">📊 تفاصيل سحب اليوم (in1)</div>
+      <div class="ring-box" style="width:165px;height:165px;">
+        <svg viewBox="0 0 84 84" style="width:165px;height:165px;">
+          <circle class="ring-track" cx="42" cy="42" r="33"/>
+          <circle class="ring-fill-green" id="zoomRingCircle" cx="42" cy="42" r="33" stroke-dasharray="207.35" stroke-dashoffset="207.35"/>
+        </svg>
+        <span class="ring-center-text" id="zoomDailyPctPill" style="font-size:28px;">0%</span>
       </div>
       <div class="zoom-details-grid">
         <div class="zoom-detail-row">
@@ -468,7 +678,7 @@
         </div>
         <div class="zoom-detail-row">
           <span>تاريخ بداية الباقة:</span>
-          <button type="button" class="btn-renew-inline" style="font-size: 12px; padding: 3px 9px;" onclick="event.stopPropagation(); openCycleModal()">
+          <button type="button" class="gp-pill-btn" style="font-size:12px;padding:3px 9px;" onclick="event.stopPropagation(); openCycleModal()">
             <span>📅</span>
             <span id="zoomCycleStart">البداية</span>
           </button>
@@ -487,6 +697,7 @@
       if (e.target && e.target.tagName !== 'INPUT') e.preventDefault();
     });
 
+    /* صوت سارينة هادئة للتحذير قبل انتهاء الباقة بيوم */
     let sirenInterval = null;
     let audioCtx = null;
     let sirenMutedByUser = false;
@@ -502,7 +713,6 @@
         const now = audioCtx.currentTime;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-
         osc.type = 'sine';
         osc.frequency.setValueAtTime(520, now);
         osc.frequency.exponentialRampToValueAtTime(760, now + 0.35);
@@ -527,10 +737,7 @@
 
     function stopCalmSiren(manualMute = false) {
       if (manualMute) sirenMutedByUser = true;
-      if (sirenInterval) {
-        clearInterval(sirenInterval);
-        sirenInterval = null;
-      }
+      if (sirenInterval) { clearInterval(sirenInterval); sirenInterval = null; }
     }
 
     ['touchstart', 'click'].forEach(evt => {
@@ -543,6 +750,14 @@
     let syncLoopId = null;
     let isPageActive = true;
     let lastStatusObj = null;
+    const RING_CIRC = 207.35;
+
+    function setRingProgress(elId, pct) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      const clamped = Math.max(0, Math.min(100, pct));
+      el.style.strokeDashoffset = (RING_CIRC - (clamped / 100) * RING_CIRC).toFixed(2);
+    }
 
     function stopLiveSync() {
       isPageActive = false;
@@ -566,29 +781,24 @@
 
     function go(page) { stopLiveSync(); window.location.href = page; }
 
-    function openExitConfirm() {
-      document.getElementById('exitConfirmModal').classList.add('open');
-    }
-    function closeExitConfirm() {
-      document.getElementById('exitConfirmModal').classList.remove('open');
-    }
+    function openExitConfirm() { document.getElementById('exitConfirmModal').classList.add('open'); }
+    function closeExitConfirm() { document.getElementById('exitConfirmModal').classList.remove('open'); }
+
     function confirmExitDash() {
       closeExitConfirm();
       stopLiveSync();
       if (isInsideTelegram) {
         tg.close();
-      } else {
-        try { window.close(); } catch (e) {}
-        setTimeout(() => {
-          document.body.innerHTML = `
-            <div style="height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:20px;">
-              <div style="font-size:44px;">🔒</div>
-              <div style="font-size:18px;font-weight:900;color:#00e5ff;">تم إغلاق لوحة التحكم</div>
-              <div style="font-size:13px;color:#8fa6c2;font-weight:700;">يمكنك إغلاق التطبيق من زر الرجوع في هاتفك أو إعادة الفتح أدناه</div>
-              <button onclick="location.reload()" style="margin-top:8px;background:linear-gradient(135deg,#00e676,#00b259);color:#04120a;border:none;padding:10px 22px;border-radius:12px;font-size:14px;font-weight:900;cursor:pointer;">🔄 إعادة فتح اللوحة</button>
-            </div>`;
-        }, 250);
+        return;
       }
+      try { if (navigator.app && navigator.app.exitApp) navigator.app.exitApp(); } catch (e) {}
+      try { if (window.Android && window.Android.closeApp) window.Android.closeApp(); } catch (e) {}
+      try { window.open('', '_self', ''); window.close(); } catch (e) {}
+      try {
+        if (window.history.length > 1) {
+          window.history.go(-(window.history.length - 1));
+        }
+      } catch (e) {}
     }
 
     document.addEventListener('visibilitychange', () => {
@@ -618,42 +828,25 @@
     function openDailyZoom() {
       document.getElementById('zoomCycleStart').innerText = formatShortBadge(cycleStartDate);
       document.getElementById('dailyZoomModal').classList.add('open');
-      if (tg && tg.HapticFeedback) {
-        try { tg.HapticFeedback.impactOccurred('medium'); } catch (e) {}
-      }
     }
-    function closeDailyZoom() {
-      document.getElementById('dailyZoomModal').classList.remove('open');
-    }
+    function closeDailyZoom() { document.getElementById('dailyZoomModal').classList.remove('open'); }
 
     (function initDailyHoldGesture() {
       const card = document.getElementById('dailyGaugeCard');
       if (!card) return;
       let holdTimer = null;
-
       const startHold = (e) => {
-        if (e.target && e.target.closest('.btn-renew-inline')) return;
+        if (e.target && e.target.closest('.gp-pill-btn')) return;
         card.classList.add('holding');
         clearTimeout(holdTimer);
-        holdTimer = setTimeout(() => {
-          card.classList.remove('holding');
-          if (window.getSelection) { try { window.getSelection().removeAllRanges(); } catch (err) {} }
-          openDailyZoom();
-        }, 350);
+        holdTimer = setTimeout(() => { card.classList.remove('holding'); openDailyZoom(); }, 350);
       };
-
-      const cancelHold = () => {
-        card.classList.remove('holding');
-        clearTimeout(holdTimer);
-      };
-
+      const cancelHold = () => { card.classList.remove('holding'); clearTimeout(holdTimer); };
       card.addEventListener('touchstart', startHold, { passive: true });
       card.addEventListener('touchend', cancelHold);
       card.addEventListener('touchmove', cancelHold);
-      card.addEventListener('touchcancel', cancelHold);
       card.addEventListener('mousedown', startHold);
       card.addEventListener('mouseup', cancelHold);
-      card.addEventListener('mouseleave', cancelHold);
     })();
 
     async function updateGitHubFileDirect(fileName, contentStr) {
@@ -715,20 +908,18 @@
       const todayMid = new Date(cairoNow.getFullYear(), cairoNow.getMonth(), cairoNow.getDate());
       const elapsed = Math.max(0, Math.min(30, Math.floor((todayMid - start) / 86400000)));
       const remaining = Math.max(0, 30 - elapsed);
-      const pctElapsed = Math.min(100, Math.round((elapsed / 30) * 100));
 
       const daysEl = document.getElementById('daysRemVal');
-      daysEl.innerText = `متبقي ${remaining} يوم للباقة`;
+      const daysBtn = document.getElementById('daysRemBtn');
+      daysEl.innerText = `متبقي ${remaining} يوم`;
 
       if (remaining <= 1) {
-        daysEl.classList.add('urgent-blink');
+        daysBtn.classList.add('urgent-blink');
         startCalmSiren();
       } else {
-        daysEl.classList.remove('urgent-blink');
+        daysBtn.classList.remove('urgent-blink');
         stopCalmSiren(false);
       }
-
-      document.getElementById('cycleDisc').style.setProperty('--pct', `${pctElapsed}%`);
     }
     updateCycle30DaysUI(cycleStartDate);
 
@@ -820,21 +1011,26 @@
           const dayGB = ((st.day_mb || 0) / 1024);
           const dailyQuota = 750 / 30;
           const dailyPct = Math.min(100, Math.round((dayGB / dailyQuota) * 100));
+          const remDayGB = Math.max(0, dailyQuota - dayGB);
+
           document.getElementById('dailyGbVal').innerText = `${dayGB.toFixed(1)} GB`;
+          document.getElementById('miniDayGb').innerText = `${dayGB.toFixed(1)} GB`;
+          document.getElementById('dailyRemVal').innerText = `${remDayGB.toFixed(1)} GB`;
           document.getElementById('dailyPctVal').innerText = `${dailyPct}%`;
-          document.getElementById('dailyDisc').style.setProperty('--pct', `${dailyPct}%`);
+          setRingProgress('dailyRingCircle', dailyPct);
 
           document.getElementById('zoomDailyGb').innerText = `${dayGB.toFixed(1)} GB`;
-          document.getElementById('zoomDailyDisc').style.setProperty('--pct', `${dailyPct}%`);
           document.getElementById('zoomDailyPctPill').innerText = `${dailyPct}%`;
-          document.getElementById('zoomCycleStart').innerText = formatShortBadge(cycleStartDate);
+          setRingProgress('zoomRingCircle', dailyPct);
 
           const cycleGB = ((st.cycle_mb || st.day_mb || 0) / 1024);
           const remCycleGB = Math.max(0, 750 - cycleGB);
           const cyclePct = Math.min(100, Math.round((cycleGB / 750) * 100));
+
           document.getElementById('cycleRemGbVal').innerText = `${remCycleGB.toFixed(0)} GB`;
           document.getElementById('cycleUsedGbVal').innerText = `${cycleGB.toFixed(0)} GB`;
           document.getElementById('cyclePctVal').innerText = `${cyclePct}%`;
+          setRingProgress('cycleRingCircle', cyclePct);
 
           let diffSec = 999999;
           if (st.date && st.time) {
@@ -847,7 +1043,7 @@
             pill.classList.remove('offline');
             clockBox.classList.remove('frozen');
             uptimeBox.classList.remove('frozen');
-            statusTxt.innerText = "السيرفر يعمل الآن ونشط";
+            statusTxt.innerText = "السيرفر يعمل الآن";
             renderCairoClock();
             if (st.uptime) {
               let baseUp = parseUptimeToSeconds(st.uptime);
