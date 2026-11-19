@@ -45,19 +45,25 @@
       color: var(--text-main);
     }
 
-    body { padding: 4px 8px; display: flex; justify-content: center; align-items: stretch; }
+    /* رفع الحاوية بالكامل بعيداً عن شريط التنقل السفلي للموبايل */
+    body {
+      padding: 4px 8px calc(38px + env(safe-area-inset-bottom, 0px));
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
 
     .hub-container {
       width: 100%; max-width: 450px; height: 100%;
       background: linear-gradient(180deg, #111e2f 0%, #0b131e 100%);
       border: 1.5px solid var(--border); border-radius: 20px;
-      padding: 4px 10px 7px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+      padding: 4px 10px 9px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
       display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
     }
 
-    .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; margin-bottom: 8px; }
+    .hero-header { display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; padding-top: 2px; margin-bottom: 6px; }
     .embossed-title-wrap {
-      flex: 1; text-align: right; padding-right: 14px; padding-top: 8px;
+      flex: 1; text-align: right; padding-right: 14px; padding-top: 6px;
       position: relative;
     }
     .title-line-1 {
@@ -76,7 +82,7 @@
     .inline-status-line {
       position: absolute;
       right: 14px;
-      bottom: -27px;
+      bottom: -25px;
       display: inline-flex; align-items: center; gap: 6px;
       color: #5cffaa; font-size: 12px; font-weight: 900; line-height: 1;
       white-space: nowrap;
@@ -88,7 +94,7 @@
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
     .router-box { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-    .router-visual { width: 152px; height: 114px; display: flex; align-items: center; justify-content: center; }
+    .router-visual { width: 146px; height: 108px; display: flex; align-items: center; justify-content: center; }
     .router-visual img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; pointer-events: none; }
 
     .ros-badge {
@@ -103,13 +109,13 @@
     .gauges-row {
       display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
       background: rgba(10, 17, 27, 0.84); border: 1px solid rgba(34, 55, 82, 0.95);
-      border-radius: 15px; padding: 6px; box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7); flex-shrink: 0;
+      border-radius: 15px; padding: 5px; box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7); flex-shrink: 0;
     }
 
     .gauge-card {
       background: linear-gradient(180deg, #132133 0%, #0b131e 100%);
       border: 1px solid rgba(76, 114, 153, 0.32); border-radius: 12px;
-      padding: 6px 5px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 4px;
+      padding: 5px 5px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 3px;
       transition: transform 0.15s ease, border-color 0.15s ease;
       overflow: hidden;
     }
@@ -117,7 +123,7 @@
 
     .gauge-header-row {
       width: 100%; display: flex; align-items: center; justify-content: center; gap: 5px;
-      white-space: nowrap; min-height: 23px; padding: 0 2px;
+      white-space: nowrap; min-height: 22px; padding: 0 2px;
     }
 
     .gauge-title-side {
@@ -153,7 +159,7 @@
       width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 1px; text-align: center;
     }
-    .gauge-sub-line { font-size: 10.5px; font-weight: 800; color: var(--text-sub); line-height: 1.25; white-space: nowrap; }
+    .gauge-sub-line { font-size: 10.5px; font-weight: 800; color: var(--text-sub); line-height: 1.2; white-space: nowrap; }
     .gauge-sub-line b { color: #ffffff; font-weight: 900; }
 
     .btn-renew-inline {
@@ -166,7 +172,7 @@
     .btn-renew-inline:active { transform: scale(0.94); }
 
     .neon-disc {
-      position: relative; width: 64px; height: 64px; border-radius: 50%;
+      position: relative; width: 60px; height: 60px; border-radius: 50%;
       background: conic-gradient(from 0deg, #ff1744 0%, #ff4d6d var(--pct, 0%), #00ff88 var(--pct, 0%), #00c853 100%);
       box-shadow: 0 0 14px rgba(255, 23, 68, 0.38), 0 0 12px rgba(0, 255, 136, 0.32), inset 0 2px 6px rgba(255, 255, 255, 0.32);
       display: flex; align-items: center; justify-content: center;
@@ -174,10 +180,9 @@
     }
     .neon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%); pointer-events: none; }
 
-    /* تصغير الدائرة الداخلية قليلاً لتكون متناسقة وأنيقة */
     .disc-inner-cap {
       position: relative; z-index: 2;
-      width: 29px; height: 29px; border-radius: 50%;
+      width: 28px; height: 28px; border-radius: 50%;
       background: radial-gradient(circle at 35% 30%, #192b42 0%, #09111c 85%);
       border: 1.5px solid rgba(255, 255, 255, 0.24);
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.85), 0 0 6px rgba(0, 0, 0, 0.75);
@@ -186,23 +191,32 @@
       direction: ltr; letter-spacing: -0.4px;
     }
 
-    .telemetry-panel { display: flex; flex-direction: column; gap: 4px; background: rgba(10, 17, 27, 0.78); border: 1px solid rgba(34, 55, 82, 0.9); border-radius: 12px; padding: 5px 8px; flex-shrink: 0; }
+    .telemetry-panel { display: flex; flex-direction: column; gap: 3px; background: rgba(10, 17, 27, 0.78); border: 1px solid rgba(34, 55, 82, 0.9); border-radius: 12px; padding: 4px 8px; flex-shrink: 0; }
 
     .dual-embossed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-    .embossed-box { background: linear-gradient(180deg, #162436 0%, #0b131e 100%); border: 1px solid rgba(76, 114, 153, 0.38); border-radius: 9px; padding: 4px 6px; text-align: center; direction: ltr; }
-    .embossed-box .e-lbl { display: block; font-size: 10.5px; font-weight: 900; color: #8fb4da; line-height: 1.2; margin-bottom: 1px; }
-    .embossed-box .e-val { display: block; font-size: 15px; font-weight: 900; color: #ffffff; line-height: 1.2; letter-spacing: 0.3px; }
+    .embossed-box { background: linear-gradient(180deg, #162436 0%, #0b131e 100%); border: 1px solid rgba(76, 114, 153, 0.38); border-radius: 9px; padding: 3px 6px; text-align: center; direction: ltr; }
+    .embossed-box .e-lbl { display: block; font-size: 10px; font-weight: 900; color: #8fb4da; line-height: 1.15; margin-bottom: 1px; }
+    .embossed-box .e-val { display: block; font-size: 14.5px; font-weight: 900; color: #ffffff; line-height: 1.15; letter-spacing: 0.3px; }
     .embossed-box.frozen .e-val { color: #ff8fa3; }
 
     .quick-stats { display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; color: var(--text-sub); padding-top: 2px; border-top: 1px dashed rgba(255, 255, 255, 0.08); }
     .quick-stats span b { color: var(--green); font-size: 12.5px; }
 
-    .cards-stack { display: flex; flex-direction: column; justify-content: space-between; gap: 4px; flex: 1; }
-    .action-card { flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 2px 11px; border-radius: 11px; background: var(--glass-bg); cursor: pointer; }
-    .card-info { display: flex; flex-direction: column; text-align: right; }
-    .card-title { font-size: 13.5px; font-weight: 900; color: #fff; line-height: 1.15; }
-    .card-desc { font-size: 9.5px; color: var(--text-sub); font-weight: 700; line-height: 1.15; }
-    .card-icon-box { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; flex-shrink: 0; }
+    /* مستطيلات متناسقة ومضغوطة قليلاً مع خط أكبر وأوضح */
+    .cards-stack { display: flex; flex-direction: column; justify-content: space-between; gap: 4px; flex: 1; min-height: 0; }
+    .action-card {
+      flex: 1;
+      max-height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 2px 12px; border-radius: 11px;
+      background: var(--glass-bg); cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .action-card:active { transform: scale(0.985); }
+    .card-info { display: flex; flex-direction: column; text-align: right; gap: 1px; }
+    .card-title { font-size: 15px; font-weight: 900; color: #fff; line-height: 1.15; }
+    .card-desc { font-size: 10.5px; color: var(--text-sub); font-weight: 700; line-height: 1.15; }
+    .card-icon-box { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 900; flex-shrink: 0; }
 
     .card-add { border: 1.5px solid rgba(0, 229, 255, 0.45); }
     .card-add .card-icon-box { background: rgba(0, 229, 255, 0.14); border: 1px solid rgba(0, 229, 255, 0.4); color: var(--cyan); }
@@ -213,19 +227,28 @@
     .card-active { border: 1.5px solid rgba(29, 233, 182, 0.45); }
     .card-active .card-icon-box { background: rgba(29, 233, 182, 0.14); border: 1px solid rgba(29, 233, 182, 0.4); color: var(--lime); }
 
-    .btn-exit { width: 100%; padding: 5px; background: rgba(255, 61, 113, 0.14); border: 1.5px solid rgba(255, 61, 113, 0.55); color: var(--red); border-radius: 10px; font-size: 12.5px; font-weight: 900; cursor: pointer; flex-shrink: 0; }
+    .btn-exit {
+      width: 100%; padding: 6px; margin-top: 2px;
+      background: rgba(255, 61, 113, 0.16);
+      border: 1.5px solid rgba(255, 61, 113, 0.6);
+      color: #ff4d79; border-radius: 11px;
+      font-size: 13.5px; font-weight: 900;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .btn-exit:active { transform: scale(0.98); }
 
     .modal-overlay { position: fixed; inset: 0; background: rgba(4, 9, 15, 0.88); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 16px; }
     .modal-overlay.open { display: flex; }
-    .modal-box { width: 100%; max-width: 350px; background: linear-gradient(180deg, #132236 0%, #0a121d 100%); border: 1.5px solid rgba(0, 229, 255, 0.5); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-    .modal-title { font-size: 15px; font-weight: 900; color: var(--cyan); text-align: center; }
-    .modal-desc { font-size: 11.5px; color: var(--text-sub); text-align: center; font-weight: 700; }
+    .modal-box { width: 100%; max-width: 350px; background: linear-gradient(180deg, #132236 0%, #0a121d 100%); border: 1.5px solid rgba(0, 229, 255, 0.5); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 11px; }
+    .modal-title { font-size: 16px; font-weight: 900; color: var(--cyan); text-align: center; }
+    .modal-desc { font-size: 12px; color: var(--text-sub); text-align: center; font-weight: 700; line-height: 1.4; }
     .date-input { width: 100%; background: #0b131e; border: 1.5px solid var(--border); color: #fff; padding: 9px 12px; border-radius: 10px; font-size: 15px; font-weight: 800; text-align: center; color-scheme: dark; }
     .check-row { display: flex; align-items: center; gap: 8px; background: rgba(255, 171, 0, 0.1); border: 1px solid rgba(255, 171, 0, 0.35); padding: 8px 10px; border-radius: 10px; font-size: 12px; font-weight: 800; color: var(--amber); cursor: pointer; }
     .check-row input { width: 16px; height: 16px; accent-color: var(--amber); }
     .modal-btns { display: flex; gap: 8px; }
     .btn-save-cycle { flex: 1; background: linear-gradient(135deg, #00e676, #00b259); color: #04120a; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
     .btn-cancel-cycle { flex: 1; background: rgba(255, 61, 113, 0.15); border: 1px solid var(--red); color: var(--red); padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
+    .btn-confirm-exit { flex: 1; background: linear-gradient(135deg, #ff3d71, #d50032); color: #ffffff; border: none; padding: 9px; border-radius: 10px; font-size: 13.5px; font-weight: 900; cursor: pointer; }
 
     .zoom-square-box {
       width: min(92vw, 370px);
@@ -268,7 +291,6 @@
     }
     .zoom-disc-large::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.3), transparent 60%); pointer-events: none; }
 
-    /* تصغير الدائرة الداخلية في نافذة التفاصيل قليلاً لتكون متناسقة */
     .zoom-inner-cap {
       position: relative; z-index: 2;
       width: 76px; height: 76px; border-radius: 50%;
@@ -397,7 +419,19 @@
       </div>
     </div>
 
-    <button type="button" class="btn-exit" onclick="exitDash()">🚪 الخروج من اللوحة</button>
+    <button type="button" class="btn-exit" onclick="openExitConfirm()">🚪 الخروج من اللوحة</button>
+  </div>
+
+  <!-- نافذة تأكيد الخروج -->
+  <div class="modal-overlay" id="exitConfirmModal" style="z-index: 10080;" onclick="if(event.target===this) closeExitConfirm()">
+    <div class="modal-box" style="border-color: rgba(255, 61, 113, 0.65);">
+      <div class="modal-title" style="color: #ff4d79;">🚪 تأكيد الخروج</div>
+      <div class="modal-desc">هل أنت متأكد أنك تريد إغلاق لوحة التحكم والخروج من البرنامج؟</div>
+      <div class="modal-btns">
+        <button type="button" class="btn-confirm-exit" onclick="confirmExitDash()">نعم، خروج</button>
+        <button type="button" class="btn-save-cycle" onclick="closeExitConfirm()">البقاء في اللوحة</button>
+      </div>
+    </div>
   </div>
 
   <div class="modal-overlay" id="cycleModal" style="z-index: 10050;">
@@ -445,6 +479,7 @@
 
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
+    const isInsideTelegram = !!(tg && tg.initData && tg.initData.length > 0);
     if (tg) { tg.ready(); tg.expand(); }
 
     document.addEventListener('contextmenu', e => e.preventDefault());
@@ -530,7 +565,31 @@
     }
 
     function go(page) { stopLiveSync(); window.location.href = page; }
-    function exitDash() { stopLiveSync(); if (tg) tg.close(); }
+
+    function openExitConfirm() {
+      document.getElementById('exitConfirmModal').classList.add('open');
+    }
+    function closeExitConfirm() {
+      document.getElementById('exitConfirmModal').classList.remove('open');
+    }
+    function confirmExitDash() {
+      closeExitConfirm();
+      stopLiveSync();
+      if (isInsideTelegram) {
+        tg.close();
+      } else {
+        try { window.close(); } catch (e) {}
+        setTimeout(() => {
+          document.body.innerHTML = `
+            <div style="height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:20px;">
+              <div style="font-size:44px;">🔒</div>
+              <div style="font-size:18px;font-weight:900;color:#00e5ff;">تم إغلاق لوحة التحكم</div>
+              <div style="font-size:13px;color:#8fa6c2;font-weight:700;">يمكنك إغلاق التطبيق من زر الرجوع في هاتفك أو إعادة الفتح أدناه</div>
+              <button onclick="location.reload()" style="margin-top:8px;background:linear-gradient(135deg,#00e676,#00b259);color:#04120a;border:none;padding:10px 22px;border-radius:12px;font-size:14px;font-weight:900;cursor:pointer;">🔄 إعادة فتح اللوحة</button>
+            </div>`;
+        }, 250);
+      }
+    }
 
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) stopLiveSync(); else startLiveSync();
@@ -640,7 +699,7 @@
       btn.disabled = false;
       closeCycleModal();
       loadLiveStats();
-      if (tg) tg.sendData(`set_cycle|${chosen}|${doReset}`);
+      if (isInsideTelegram) tg.sendData(`set_cycle|${chosen}|${doReset}`);
     }
 
     function updateCycle30DaysUI(isoStart) {
