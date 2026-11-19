@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>تجديد / تعديل مشترك</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: #0b111a;
+      --card-bg: #121c2a;
+      --item-bg: #0e1622;
+      --card-border: #23344d;
+      --accent-cyan: #00e5ff;
+      --accent-amber: #ffab00;
+      --accent-green: #00e676;
+      --accent-red: #ff5252;
+      --text-main: #ffffff;
+      --text-sub: #9cb2cc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      padding: 12px;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .winbox-window {
+      width: 100%;
+      max-width: 460px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 18px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .win-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); display: flex; align-items: center; gap: 6px; }
+    .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.14); border: 1px solid rgba(0, 230, 118, 0.35); color: var(--accent-green); padding: 4px 10px; border-radius: 9px; font-weight: 800; cursor: pointer; }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
+    .label-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; font-weight: 700; color: var(--text-sub); }
+    .hint-orange { color: var(--accent-amber); font-weight: 800; }
+
+    .btn-add-days {
+      background: rgba(0, 230, 118, 0.15);
+      border: 1px solid rgba(0, 230, 118, 0.45);
+      color: var(--accent-green);
+      padding: 2px 9px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-add-days:active { transform: scale(0.95); }
+
+    .search-row { display: flex; gap: 8px; align-items: center; }
+    .btn-search-icon {
+      background: linear-gradient(135deg, #00b0ff, #0081cb);
+      border: none;
+      border-radius: 11px;
+      width: 44px;
+      height: 44px;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .input-box {
+      width: 100%;
+      background: var(--item-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 11px;
+      color: #fff;
+      padding: 11px 13px;
+      font-size: 14px;
+      font-weight: 700;
+      outline: none;
+      direction: ltr;
+    }
+    .input-box:focus { border-color: var(--accent-cyan); }
+
+    .dropdown-list {
+      position: absolute;
+      top: 74px;
+      left: 0;
+      right: 0;
+      background: #162233;
+      border: 1.5px solid var(--accent-cyan);
+      border-radius: 12px;
+      max-height: 210px;
+      overflow-y: auto;
+      z-index: 99;
+      display: none;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+    }
+    .drop-item {
+      padding: 10px 13px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      direction: ltr;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .drop-item:hover, .drop-item:active { background: rgba(0, 229, 255, 0.15); }
+
+    .quota-card {
+      background: var(--item-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 13px;
+      padding: 10px 14px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .quota-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+    }
+    .q-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+    .q-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: 6px;
+    }
+    .q-val { direction: ltr; font-weight: 800; }
+
+    .donut-wrap {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .donut-svg { width: 68px; height: 68px; transform: rotate(-90deg); }
+    .donut-bg { fill: none; stroke: rgba(255, 171, 0, 0.25); stroke-width: 7; }
+    .donut-fg {
+      fill: none;
+      stroke: var(--accent-cyan);
+      stroke-width: 7;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease;
+    }
+    .donut-center {
+      position: absolute;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .donut-center small { display: block; font-size: 9px; color: var(--text-sub); font-weight: 700; }
+
+    .prof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .gb-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+
+    .chip-btn {
+      background: var(--item-bg);
+      border: 1.5px solid var(--card-border);
+      color: #fff;
+      padding: 10px 6px;
+      border-radius: 11px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .chip-btn.active {
+      background: linear-gradient(135deg, #ffb300, #ff8f00);
+      border-color: #ffe082;
+      color: #0b111a;
+      box-shadow: 0 0 12px rgba(255, 179, 0, 0.35);
+    }
+
+    select.input-box {
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg fill='%239cb2cc' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+      background-repeat: no-repeat;
+      background-position: left 12px center;
+      padding-left: 34px;
+    }
+
+    .actions-row { display: grid; grid-template-columns: 1fr 1fr 1.6fr; gap: 8px; margin-top: 4px; }
+    .btn-home {
+      background: rgba(0, 229, 255, 0.14);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 800;
+      padding: 12px 6px;
+      cursor: pointer;
+    }
+    .btn-save {
+      background: linear-gradient(90deg, #ffca28, #00e676);
+      border: none;
+      border-radius: 12px;
+      color: #09131c;
+      font-size: 14.5px;
+      font-weight: 900;
+      padding: 12px 8px;
+      cursor: pointer;
+    }
+    .btn-save:disabled { opacity: 0.6; cursor: wait; }
+    .btn-cancel {
+      background: rgba(255, 61, 113, 0.14);
+      border: 1px solid rgba(255, 61, 113, 0.45);
+      color: #ff5277;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 12px 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="winbox-window">
+    <div class="win-header">
+      <div class="win-title">🔄 تجديد / تعديل مشترك</div>
+      <div class="win-badge" id="totalBadge" onclick="loadUsers()">جاري التحميل...</div>
+    </div>
+
+    <!-- البحث -->
+    <div class="field-group">
+      <div class="label-row">
+        <span>🔍 ابحث باليوزر أو الكومنت</span>
+        <span class="hint-orange">إنجليزي / أرقام</span>
+      </div>
+      <div class="search-row">
+        <button type="button" class="btn-search-icon" onclick="showAllUsers()">🔍</button>
+        <input type="text" id="searchInput" class="input-box" placeholder="اكتب اسم المشترك..." oninput="filterUsers()" onfocus="filterUsers()">
+      </div>
+      <div class="dropdown-list" id="dropdownList"></div>
+    </div>
+
+    <!-- دائرة المسحوب والمتبقي -->
+    <div class="quota-card" id="quotaCard">
+      <div class="quota-stats">
+        <div class="q-row">
+          <span><i class="q-dot" style="background:var(--accent-cyan);" id="remDot"></i>المتبقي:</span>
+          <span class="q-val" id="remText" style="color:var(--accent-cyan);">0 GB</span>
+        </div>
+        <div class="q-row">
+          <span><i class="q-dot" style="background:var(--accent-amber);"></i>المسحوب:</span>
+          <span class="q-val" id="usedText" style="color:var(--accent-amber);">0 MB</span>
+        </div>
+        <div class="q-row" style="border-top:1px solid rgba(255,255,255,0.07); padding-top:4px;">
+          <span style="color:var(--text-sub);">إجمالي الباقة:</span>
+          <span class="q-val" id="limitText">0 GB</span>
+        </div>
+      </div>
+
+      <div class="donut-wrap">
+        <svg class="donut-svg" viewBox="0 0 72 72">
+          <circle class="donut-bg" cx="36" cy="36" r="28"></circle>
+          <circle class="donut-fg" id="donutCircle" cx="36" cy="36" r="28" stroke-dasharray="175.93" stroke-dashoffset="0"></circle>
+        </svg>
+        <div class="donut-center" id="donutPercent">100%<small>متبقي</small></div>
+      </div>
+    </div>
+
+    <!-- الكومنت -->
+    <div class="field-group">
+      <div class="label-row">
+        <span>💬 الكومنت (يزيد +30 يوم تلقائياً)</span>
+        <button type="button" class="btn-add-days" onclick="bumpCommentDays(30)">+30 يوم ➕</button>
+      </div>
+      <input type="text" id="commentInput" class="input-box" placeholder="الكومنت...">
+    </div>
+
+    <!-- البروفايل -->
+    <div class="field-group">
+      <div class="label-row">
+        <span>🚀 البروفايل (اختر أو عدّل من القائمة)</span>
+        <span class="hint-orange" id="currProfBadge">الحالي: -</span>
+      </div>
+      <div class="prof-grid">
+        <button type="button" class="chip-btn active" id="btnProfMain" onclick="selectProfile('512+')">512+ (الأساسي)</button>
+        <button type="button" class="chip-btn" id="btnProfSlow" onclick="selectProfile('120K/400K')">120K/400K</button>
+      </div>
+      <select id="profileSelect" class="input-box" onchange="onSelectDropdown(this.value)">
+        <option value="512+">512+</option>
+        <option value="120K/400K">120K/400K</option>
+        <option value="512X2">512X2</option>
+        <option value="1M">1M</option>
+        <option value="2M">2M</option>
+        <option value="3M">3M</option>
+        <option value="default">default</option>
+      </select>
+    </div>
+
+    <!-- الباقة -->
+    <div class="field-group">
+      <div class="label-row">
+        <span>📦 الباقة (اختر "بدون تصفير" لتعديل البروفايل والكومنت فقط)</span>
+      </div>
+      <div class="gb-grid">
+        <button type="button" class="chip-btn active" data-gb="12" onclick="selectGb(12, this)">12 جيجا</button>
+        <button type="button" class="chip-btn" data-gb="15" onclick="selectGb(15, this)">15 جيجا</button>
+        <button type="button" class="chip-btn" data-gb="20" onclick="selectGb(20, this)">20 جيجا</button>
+        <button type="button" class="chip-btn" data-gb="0" onclick="selectGb(0, this)">بدون تصفير</button>
+      </div>
+    </div>
+
+    <!-- أزرار الحفظ والرجوع -->
+    <div class="actions-row">
+      <button type="button" class="btn-home" onclick="window.location.href='panel.html'">🏠 الرئيسية</button>
+      <button type="button" class="btn-cancel" onclick="closeOrBack()">إلغاء</button>
+      <button type="button" class="btn-save" id="btnSaveRenew" onclick="submitRenewal()">✅ حفظ التعديل</button>
+    </div>
+  </div>
+
+  <script>
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    const isInsideTelegram = !!(tg && tg.initData && tg.initData.length > 0);
+    if (tg) { tg.ready(); tg.expand(); }
+
+    const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
+
+    let usersList = [];
+    let selectedUser = null;
+    let selectedProfile = '512+';
+    let selectedGb = 12;
+
+    function closeOrBack() {
+      if (isInsideTelegram) { tg.close(); }
+      else { window.location.href = 'panel.html'; }
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const preUser = urlParams.get('user');
+
+    async function loadUsers() {
+      const badge = document.getElementById('totalBadge');
+      badge.innerText = 'جاري التحميل...';
+      const ts = Date.now();
+      const urls = [
+        `https://aboyomna2006-cloud.github.io/Mikrotik/users.json?v=${ts}`,
+        `https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?v=${ts}`
+      ];
+
+      for (const url of urls) {
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              usersList = data;
+              badge.innerText = `متصل • ${usersList.length} مشترك`;
+              if (preUser) {
+                const found = usersList.find(u => u.n === preUser || u.id === preUser);
+                if (found) pickUser(found.id);
+              }
+              return;
+            }
+          }
+        } catch (e) {}
+      }
+      badge.innerText = 'اضغط لإعادة المحاولة 🔄';
+    }
+
+    function addDaysToComment(rawComm, daysToAdd, fromToday = false) {
+      const baseText = (rawComm || '').trim();
+      const dateRegex = /(To\s+)(\d{1,2})[-/](\d{1,2})[-/](\d{4})/i;
+      const match = baseText.match(dateRegex);
+
+      let dt = new Date();
+      if (!fromToday && match) {
+        const d = parseInt(match[2], 10);
+        const m = parseInt(match[3], 10) - 1;
+        const y = parseInt(match[4], 10);
+        dt = new Date(y, m, d);
+      }
+
+      dt.setDate(dt.getDate() + daysToAdd);
+      const newDateStr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
+
+      if (match) {
+        return baseText.replace(dateRegex, `${match[1]}${newDateStr}`);
+      } else {
+        return baseText ? `${baseText} To ${newDateStr}` : `To ${newDateStr}`;
+      }
+    }
+
+    function bumpCommentDays(days) {
+      const inp = document.getElementById('commentInput');
+      inp.value = addDaysToComment(inp.value, days, false);
+    }
+
+    function formatDataSize(mb) {
+      if (mb >= 1024) return `${(mb / 1024).toFixed(2)} GB`;
+      return `${Math.round(mb)} MB`;
+    }
+
+    function updateQuotaRing(user) {
+      const card = document.getElementById('quotaCard');
+      card.style.display = 'flex';
+
+      const limitGb = Number(user.l || 0);
+      const usedMb = Number(user.u || 0);
+      const limitMb = limitGb * 1024;
+
+      const circle = document.getElementById('donutCircle');
+      const circumference = 175.93;
+      const remDot = document.getElementById('remDot');
+      const remText = document.getElementById('remText');
+      const usedText = document.getElementById('usedText');
+      const limitText = document.getElementById('limitText');
+      const pctBox = document.getElementById('donutPercent');
+
+      usedText.innerText = formatDataSize(usedMb);
+
+      if (limitGb <= 0) {
+        limitText.innerText = 'مفتوحة ♾️';
+        remText.innerText = 'غير محدود';
+        remText.style.color = 'var(--accent-green)';
+        remDot.style.background = 'var(--accent-green)';
+        circle.style.stroke = 'var(--accent-green)';
+        circle.style.strokeDashoffset = 0;
+        pctBox.innerHTML = '♾️<small>مفتوح</small>';
+        return;
+      }
+
+      limitText.innerText = `${limitGb} GB`;
+      const remMb = Math.max(0, limitMb - usedMb);
+      const remPct = Math.max(0, Math.min(100, Math.round((remMb / limitMb) * 100)));
+
+      remText.innerText = formatDataSize(remMb);
+      pctBox.innerHTML = `${remPct}%<small>متبقي</small>`;
+
+      const offset = circumference - ((remPct / 100) * circumference);
+      circle.style.strokeDashoffset = offset;
+
+      if (remPct <= 15) {
+        circle.style.stroke = 'var(--accent-red)';
+        remText.style.color = 'var(--accent-red)';
+        remDot.style.background = 'var(--accent-red)';
+      } else {
+        circle.style.stroke = 'var(--accent-cyan)';
+        remText.style.color = 'var(--accent-cyan)';
+        remDot.style.background = 'var(--accent-cyan)';
+      }
+    }
+
+    function renderDropdown(items) {
+      const box = document.getElementById('dropdownList');
+      if (!items.length) { box.style.display = 'none'; return; }
+      box.innerHTML = items.map(u => {
+        const label = (u.c && u.c.trim()) ? u.c : u.n;
+        return `<div class="drop-item" onclick="pickUser('${u.id}')"><span>${label}</span><span style="color:#00e5ff;font-size:11px;">${u.p}</span></div>`;
+      }).join('');
+      box.style.display = 'block';
+    }
+
+    function filterUsers() {
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      if (!q) { renderDropdown(usersList.slice(0, 15)); return; }
+      const matches = usersList.filter(u =>
+        (u.n && u.n.toLowerCase().includes(q)) ||
+        (u.c && u.c.toLowerCase().includes(q))
+      );
+      renderDropdown(matches);
+    }
+
+    function showAllUsers() {
+      const box = document.getElementById('dropdownList');
+      if (box.style.display === 'block') { box.style.display = 'none'; return; }
+      renderDropdown(usersList);
+    }
+
+    function pickUser(id) {
+      const u = usersList.find(x => x.id === id);
+      if (!u) return;
+      selectedUser = u;
+      document.getElementById('dropdownList').style.display = 'none';
+      document.getElementById('searchInput').value = (u.c && u.c.trim()) ? u.c : u.n;
+      document.getElementById('currProfBadge').innerText = `الحالي: ${u.p}`;
+
+      const origComm = u.c || '';
+      document.getElementById('commentInput').value = addDaysToComment(origComm, 30, selectedGb === 0);
+
+      updateQuotaRing(u);
+
+      const sel = document.getElementById('profileSelect');
+      let exists = Array.from(sel.options).some(o => o.value === u.p);
+      if (!exists && u.p) {
+        const opt = document.createElement('option');
+        opt.value = u.p; opt.text = u.p;
+        sel.add(opt);
+      }
+      selectProfile(u.p || '512+');
+    }
+
+    function selectProfile(prof) {
+      selectedProfile = prof;
+      document.getElementById('profileSelect').value = prof;
+      document.getElementById('btnProfMain').classList.toggle('active', prof === '512+');
+      document.getElementById('btnProfSlow').classList.toggle('active', prof === '120K/400K');
+    }
+
+    function onSelectDropdown(val) {
+      selectProfile(val);
+    }
+
+    function selectGb(gb, el) {
+      selectedGb = gb;
+      document.querySelectorAll('.gb-grid .chip-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+
+      if (selectedUser) {
+        const origComm = selectedUser.c || '';
+        document.getElementById('commentInput').value = addDaysToComment(origComm, 30, gb === 0);
+      }
+    }
+
+    async function sendDirectCommandToRouter(payload) {
+      const apiUrl = "https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/cmd.txt";
+      const headers = {
+        'Authorization': `Bearer ${GH_TK}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      };
+      let sha = "";
+      try {
+        const gRes = await fetch(`${apiUrl}?_=${Date.now()}`, { headers, cache: 'no-store' });
+        if (gRes.ok) { const gJson = await gRes.json(); sha = gJson.sha || ""; }
+      } catch (e) {}
+      const cmdWithId = `${Date.now()}::${payload}`;
+      const b64 = btoa(unescape(encodeURIComponent(cmdWithId)));
+      const body = sha
+        ? JSON.stringify({ message: "App Cmd", content: b64, sha })
+        : JSON.stringify({ message: "App Cmd", content: b64 });
+      const res = await fetch(apiUrl, { method: 'PUT', headers, body });
+      return res.ok;
+    }
+
+    async function submitRenewal() {
+      if (!selectedUser) {
+        alert('من فضلك اختر المشترك أولاً من قائمة البحث');
+        return;
+      }
+      const target = selectedUser.n.startsWith('Arabic_User_') ? selectedUser.id : selectedUser.n;
+      const comm = document.getElementById('commentInput').value.trim();
+      const payload = `/renew_user|${target}|${selectedProfile}|${selectedGb}|${comm}`;
+
+      if (isInsideTelegram) {
+        tg.sendData(payload);
+      } else {
+        const btn = document.getElementById('btnSaveRenew');
+        btn.innerText = '⏳ جاري الحفظ...';
+        btn.disabled = true;
+        const ok = await sendDirectCommandToRouter(payload);
+        btn.innerText = '✅ حفظ التعديل';
+        btn.disabled = false;
+        if (ok) {
+          alert(`✅ تم إرسال تعديل/تجديد (${target}) للسيرفر بنجاح!`);
+          window.location.href = 'panel.html';
+        } else {
+          alert('❌ تعذر الاتصال بالسيرفر، تأكد من الإنترنت وحاول مرة أخرى');
+        }
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.field-group')) {
+        document.getElementById('dropdownList').style.display = 'none';
+      }
+    });
+
+    loadUsers();
+  </script>
+</body>
+</html>
