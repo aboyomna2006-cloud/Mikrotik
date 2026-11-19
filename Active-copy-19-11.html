@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>المشتركين النشطين</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: #0b111a;
+      --card-bg: #121c2a;
+      --item-bg: #0e1622;
+      --card-border: #23344d;
+      --accent-cyan: #00e5ff;
+      --accent-amber: #ffab00;
+      --accent-green: #00e676;
+      --accent-red: #ff3d71;
+      --accent-purple: #b388ff;
+      --text-main: #ffffff;
+      --text-sub: #9cb2cc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      padding: 12px;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .winbox-window {
+      width: 100%;
+      max-width: 460px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 18px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: 94dvh;
+    }
+    .win-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); display: flex; align-items: center; gap: 6px; }
+    .win-badge {
+      font-size: 13px;
+      background: rgba(0, 230, 118, 0.14);
+      border: 1px solid rgba(0, 230, 118, 0.35);
+      color: var(--accent-green);
+      padding: 5px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+    .win-badge:active { transform: scale(0.93); }
+    .win-badge.loading {
+      background: rgba(0, 229, 255, 0.16);
+      border-color: rgba(0, 229, 255, 0.5);
+      color: var(--accent-cyan);
+    }
+    .win-badge.offline {
+      background: rgba(255, 61, 113, 0.16);
+      border-color: rgba(255, 61, 113, 0.5);
+      color: var(--accent-red);
+    }
+
+    .search-bar {
+      padding: 12px 14px 6px;
+      display: flex;
+      gap: 8px;
+    }
+    .search-input {
+      flex: 1;
+      background: var(--item-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 11px;
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--accent-cyan); }
+    .btn-refresh {
+      background: var(--item-bg);
+      border: 1.5px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      border-radius: 11px;
+      width: 44px;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+    }
+    .btn-refresh:active { transform: scale(0.95); }
+    .btn-refresh.spin { animation: spinAnim 0.7s linear infinite; }
+    @keyframes spinAnim { 100% { transform: rotate(360deg); } }
+
+    .users-list {
+      padding: 8px 14px 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .user-card {
+      background: var(--item-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 13px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, transform 0.12s ease;
+    }
+    .user-card:active {
+      transform: scale(0.98);
+      border-color: var(--accent-cyan);
+    }
+    .user-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .user-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      direction: ltr;
+    }
+    .info-hint {
+      font-size: 11.5px;
+      color: var(--accent-cyan);
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.28);
+      padding: 2px 8px;
+      border-radius: 7px;
+      font-weight: 700;
+    }
+    .user-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      direction: ltr;
+    }
+    .pill-ip {
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: var(--accent-cyan);
+    }
+    .pill-time {
+      background: rgba(179, 136, 255, 0.12);
+      border: 1px solid rgba(179, 136, 255, 0.32);
+      color: var(--accent-purple);
+      direction: rtl;
+    }
+    .pill-mb {
+      background: rgba(255, 171, 0, 0.12);
+      border: 1px solid rgba(255, 171, 0, 0.32);
+      color: var(--accent-amber);
+    }
+
+    .footer-bar {
+      padding: 10px 14px 14px;
+      border-top: 1px solid var(--card-border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .btn-home {
+      background: rgba(0, 229, 255, 0.14);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 11px;
+      border-radius: 12px;
+      font-size: 14.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-close {
+      background: rgba(255, 61, 113, 0.14);
+      border: 1px solid rgba(255, 61, 113, 0.45);
+      color: #ff5277;
+      padding: 11px;
+      border-radius: 12px;
+      font-size: 14.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="winbox-window">
+    <div class="win-header">
+      <div class="win-title">👥 المشتركين النشطين</div>
+      <div class="win-badge" id="countBadge" onclick="loadActive(true)" title="اضغط للتحديث الفوري">متصل الآن: 0</div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="filterInput" class="search-input" placeholder="فلترة بالاسم أو الـ IP..." oninput="renderList()">
+      <button type="button" class="btn-refresh" id="btnRefresh" onclick="loadActive(true)" title="تحديث">🔄</button>
+    </div>
+
+    <div class="users-list" id="usersList"></div>
+
+    <div class="footer-bar">
+      <button type="button" class="btn-home" onclick="window.location.href='dashboard.html'">🏠 الرئيسية</button>
+      <button type="button" class="btn-close" onclick="if(tg) tg.close()">إغلاق</button>
+    </div>
+  </div>
+
+  <script>
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    if (tg) { tg.ready(); tg.expand(); }
+
+    let activeUsers = [];
+
+    function openUserInfo(userName) {
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+      }
+      window.location.href = `info.html?user=${encodeURIComponent(userName)}&from=active`;
+    }
+
+    function formatUptime(raw) {
+      if (!raw) return '⏱️ الآن';
+      let s = String(raw).trim();
+      let weeks = 0, days = 0, hours = 0, mins = 0;
+
+      const wMatch = s.match(/(\d+)w/);
+      if (wMatch) { weeks = parseInt(wMatch[1], 10); s = s.replace(wMatch[0], ''); }
+
+      const dMatch = s.match(/(\d+)d/);
+      if (dMatch) { days = parseInt(dMatch[1], 10); s = s.replace(dMatch[0], ''); }
+
+      const tMatch = s.match(/(\d+):(\d+):(\d+)/);
+      if (tMatch) {
+        hours = parseInt(tMatch[1], 10);
+        mins = parseInt(tMatch[2], 10);
+      }
+
+      const totalDays = (weeks * 7) + days;
+      if (totalDays > 0) return `⏱️ ${totalDays}ي ${hours}س`;
+      if (hours > 0) return `⏱️ ${hours}س ${mins}د`;
+      if (mins > 0) return `⏱️ ${mins}د`;
+      return '⏱️ أقل من دقيقة';
+    }
+
+    async function loadActive(isManual = false) {
+      const badge = document.getElementById('countBadge');
+      const refBtn = document.getElementById('btnRefresh');
+      badge.classList.remove('offline');
+      badge.classList.add('loading');
+      badge.innerText = '🔄 جاري التحديث...';
+      if (refBtn) refBtn.classList.add('spin');
+
+      if (isManual && tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+      }
+
+      const ts = Date.now();
+      const baseRaw = "https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main";
+
+      // فحص حالة السيرفر أولاً: لو مفصول لأكثر من 150 ثانية لا نعرض القائمة القديمة
+      try {
+        const stRes = await fetch(`${baseRaw}/status.json?v=${ts}`);
+        if (stRes.ok) {
+          const st = await stRes.json();
+          if (st.date && st.time) {
+            const cleanDate = st.date.replace(/\//g, '-');
+            const parsed = Date.parse(`${cleanDate} ${st.time} GMT+0200`);
+            if (!isNaN(parsed)) {
+              const diffSec = Math.floor((Date.now() - parsed) / 1000);
+              if (diffSec > 150) {
+                activeUsers = [];
+                badge.classList.remove('loading');
+                badge.classList.add('offline');
+                if (refBtn) refBtn.classList.remove('spin');
+                badge.innerText = '🔴 السيرفر مفصول';
+                document.getElementById('usersList').innerHTML = `<div style="text-align:center;color:#ff6b8b;padding:28px 14px;font-weight:800;line-height:1.7;">🔴 السيرفر مفصول حالياً (انقطاع كهرباء)<br><span style="color:#9cb2cc;font-size:13px;">آخر اتصال مسجل: ${st.time}</span></div>`;
+                return;
+              }
+            }
+          }
+        }
+      } catch (e) {}
+
+      const urls = [
+        `${baseRaw}/active.json?v=${ts}`,
+        `https://aboyomna2006-cloud.github.io/Mikrotik/active.json?v=${ts}`
+      ];
+
+      for (const url of urls) {
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) {
+              activeUsers = data;
+              badge.classList.remove('loading');
+              if (refBtn) refBtn.classList.remove('spin');
+              renderList(isManual);
+              return;
+            }
+          }
+        } catch (e) {}
+      }
+
+      badge.classList.remove('loading');
+      if (refBtn) refBtn.classList.remove('spin');
+      badge.innerText = 'اضغط لإعادة المحاولة 🔄';
+      document.getElementById('usersList').innerHTML = '<div style="text-align:center;color:#9cb2cc;padding:20px;">تعذر تحميل البيانات</div>';
+    }
+
+    function renderList(showUpdatedFlash = false) {
+      const q = document.getElementById('filterInput').value.trim().toLowerCase();
+      const filtered = activeUsers.filter(u => {
+        const uName = u.name || u.n || '';
+        return uName.toLowerCase().includes(q) || (u.ip && u.ip.toLowerCase().includes(q));
+      });
+
+      const badge = document.getElementById('countBadge');
+      if (showUpdatedFlash) {
+        badge.innerText = `✅ تم التحديث: ${filtered.length}`;
+        setTimeout(() => {
+          badge.innerText = `متصل الآن: ${filtered.length}`;
+        }, 1100);
+      } else {
+        badge.innerText = `متصل الآن: ${filtered.length}`;
+      }
+
+      const container = document.getElementById('usersList');
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:#9cb2cc;padding:24px;">لا يوجد مشتركين نشطين</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(u => {
+        const uName = u.name || u.n || 'User';
+        const safeArg = uName.replace(/'/g, "\\'");
+        const mbVal = u.mb >= 1024 ? `${(u.mb / 1024).toFixed(2)} GB` : `${u.mb} MB`;
+        const upStr = formatUptime(u.u);
+        return `
+          <div class="user-card" onclick="openUserInfo('${safeArg}')">
+            <div class="user-top">
+              <div class="user-name-wrap">👤 ${uName}</div>
+              <span class="info-hint">استعلام 📋</span>
+            </div>
+            <div class="user-bottom">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <span class="pill pill-ip">🌐 ${u.ip}</span>
+                <span class="pill pill-time">${upStr}</span>
+              </div>
+              <span class="pill pill-mb">📶 ${mbVal}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    loadActive(false);
+  </script>
+</body>
+</html>
