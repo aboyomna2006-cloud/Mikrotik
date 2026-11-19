@@ -252,7 +252,6 @@
       <div class="win-badge" id="totalBadge" onclick="loadUsers()">جاري التحميل...</div>
     </div>
 
-    <!-- البحث -->
     <div class="field-group">
       <div class="label-row">
         <span>🔍 ابحث باليوزر أو الكومنت</span>
@@ -265,7 +264,6 @@
       <div class="dropdown-list" id="dropdownList"></div>
     </div>
 
-    <!-- دائرة المسحوب والمتبقي -->
     <div class="quota-card" id="quotaCard">
       <div class="quota-stats">
         <div class="q-row">
@@ -291,16 +289,14 @@
       </div>
     </div>
 
-    <!-- الكومنت -->
     <div class="field-group">
       <div class="label-row">
-        <span>💬 الكومنت (يزيد +30 يوم تلقائياً)</span>
+        <span>💬 الكومنت (يمكنك تعديل الاسم أو التاريخ +30 يوم)</span>
         <button type="button" class="btn-add-days" onclick="bumpCommentDays(30)">+30 يوم ➕</button>
       </div>
       <input type="text" id="commentInput" class="input-box" placeholder="الكومنت...">
     </div>
 
-    <!-- البروفايل -->
     <div class="field-group">
       <div class="label-row">
         <span>🚀 البروفايل (اختر أو عدّل من القائمة)</span>
@@ -321,7 +317,6 @@
       </select>
     </div>
 
-    <!-- الباقة -->
     <div class="field-group">
       <div class="label-row">
         <span>📦 الباقة (اختر "بدون تصفير" لتعديل البروفايل والكومنت فقط)</span>
@@ -334,7 +329,6 @@
       </div>
     </div>
 
-    <!-- أزرار الحفظ والرجوع -->
     <div class="actions-row">
       <button type="button" class="btn-home" onclick="window.location.href='panel.html'">🏠 الرئيسية</button>
       <button type="button" class="btn-cancel" onclick="closeOrBack()">إلغاء</button>
@@ -579,13 +573,13 @@
         tg.sendData(payload);
       } else {
         const btn = document.getElementById('btnSaveRenew');
-        btn.innerText = '⏳ جاري الحفظ...';
+        btn.innerText = '⏳ جاري الإرسال...';
         btn.disabled = true;
         const ok = await sendDirectCommandToRouter(payload);
         btn.innerText = '✅ حفظ التعديل';
         btn.disabled = false;
         if (ok) {
-          alert(`✅ تم إرسال تعديل/تجديد (${target}) للسيرفر بنجاح!`);
+          alert(`✅ تم إرسال أمر تعديل (${target}) إلى السيرفر، وسيتم تطبيقه وتحديث الكومنت خلال ثوانٍ.`);
           window.location.href = 'panel.html';
         } else {
           alert('❌ تعذر الاتصال بالسيرفر، تأكد من الإنترنت وحاول مرة أخرى');
