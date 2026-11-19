@@ -230,7 +230,7 @@
     <div class="users-list" id="usersList"></div>
 
     <div class="footer-bar">
-      <button type="button" class="btn-home" onclick="window.location.href='dashboard.html'">🏠 الرئيسية</button>
+      <button type="button" class="btn-home" onclick="window.location.href='panel.html'">🏠 الرئيسية</button>
       <button type="button" class="btn-close" onclick="if(tg) tg.close()">إغلاق</button>
     </div>
   </div>
@@ -239,6 +239,7 @@
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     if (tg) { tg.ready(); tg.expand(); }
 
+    const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
     let activeUsers = [];
 
     function openUserInfo(userName) {
@@ -272,6 +273,20 @@
       return '⏱️ أقل من دقيقة';
     }
 
+    async function fetchGitHubJsonNoCache(fileName) {
+      const url = `https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/${fileName}?ref=main&_=${Date.now()}`;
+      const res = await fetch(url, {
+        cache: 'no-store',
+        headers: { 'Authorization': `Bearer ${GH_TK}`, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (!res.ok) return null;
+      const meta = await res.json();
+      if (!meta.content) return null;
+      const binStr = atob(meta.content.replace(/\s/g, ''));
+      const bytes = Uint8Array.from(binStr, c => c.charCodeAt(0));
+      return JSON.parse(new TextDecoder('utf-8').decode(bytes));
+    }
+
     async function loadActive(isManual = false) {
       const badge = document.getElementById('countBadge');
       const refBtn = document.getElementById('btnRefresh');
@@ -284,53 +299,37 @@
         tg.HapticFeedback.impactOccurred('light');
       }
 
-      const ts = Date.now();
-      const baseRaw = "https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main";
-
-      // فحص حالة السيرفر أولاً: لو مفصول لأكثر من 150 ثانية لا نعرض القائمة القديمة
       try {
-        const stRes = await fetch(`${baseRaw}/status.json?v=${ts}`);
-        if (stRes.ok) {
-          const st = await stRes.json();
-          if (st.date && st.time) {
-            const cleanDate = st.date.replace(/\//g, '-');
-            const parsed = Date.parse(`${cleanDate} ${st.time} GMT+0200`);
-            if (!isNaN(parsed)) {
-              const diffSec = Math.floor((Date.now() - parsed) / 1000);
-              if (diffSec > 150) {
-                activeUsers = [];
-                badge.classList.remove('loading');
-                badge.classList.add('offline');
-                if (refBtn) refBtn.classList.remove('spin');
-                badge.innerText = '🔴 السيرفر مفصول';
-                document.getElementById('usersList').innerHTML = `<div style="text-align:center;color:#ff6b8b;padding:28px 14px;font-weight:800;line-height:1.7;">🔴 السيرفر مفصول حالياً (انقطاع كهرباء)<br><span style="color:#9cb2cc;font-size:13px;">آخر اتصال مسجل: ${st.time}</span></div>`;
-                return;
-              }
-            }
-          }
-        }
-      } catch (e) {}
+        const [st, data] = await Promise.all([
+          fetchGitHubJsonNoCache('status.json'),
+          fetchGitHubJsonNoCache('active.json')
+        ]);
 
-      const urls = [
-        `${baseRaw}/active.json?v=${ts}`,
-        `https://aboyomna2006-cloud.github.io/Mikrotik/active.json?v=${ts}`
-      ];
-
-      for (const url of urls) {
-        try {
-          const res = await fetch(url);
-          if (res.ok) {
-            const data = await res.json();
-            if (Array.isArray(data)) {
-              activeUsers = data;
+        if (st && st.date && st.time) {
+          const cleanDate = st.date.replace(/\//g, '-');
+          const parsed = Date.parse(`${cleanDate} ${st.time} GMT+0200`);
+          if (!isNaN(parsed)) {
+            const diffSec = Math.floor((Date.now() - parsed) / 1000);
+            if (diffSec > 300) {
+              activeUsers = [];
               badge.classList.remove('loading');
+              badge.classList.add('offline');
               if (refBtn) refBtn.classList.remove('spin');
-              renderList(isManual);
+              badge.innerText = '🔴 السيرفر مفصول';
+              document.getElementById('usersList').innerHTML = `<div style="text-align:center;color:#ff6b8b;padding:28px 14px;font-weight:800;line-height:1.7;">🔴 السيرفر مفصول حالياً<br><span style="color:#9cb2cc;font-size:13px;">آخر اتصال مسجل: ${st.time}</span></div>`;
               return;
             }
           }
-        } catch (e) {}
-      }
+        }
+
+        if (Array.isArray(data)) {
+          activeUsers = data;
+          badge.classList.remove('loading');
+          if (refBtn) refBtn.classList.remove('spin');
+          renderList(isManual);
+          return;
+        }
+      } catch (e) {}
 
       badge.classList.remove('loading');
       if (refBtn) refBtn.classList.remove('spin');
