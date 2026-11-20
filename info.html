@@ -31,11 +31,10 @@
       height: 100dvh;
       overflow: hidden;
       overscroll-behavior: none;
-      touch-action: pan-y;
     }
 
     body {
-      padding: 8px 10px 24px;
+      padding: 8px 10px 38px;
       display: flex;
       justify-content: center;
     }
@@ -120,7 +119,6 @@
       flex: 1;
       overflow-y: auto;
       overscroll-behavior: contain;
-      touch-action: pan-y;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -236,7 +234,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
       flex-shrink: 0;
-      margin-bottom: 2px;
+      margin-bottom: 6px;
     }
 
     .btn-foot {
@@ -298,8 +296,7 @@
     const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
     let allUsers = [];
 
-    // منع السحب لأسفل على مستوى الصفحة عندما تكون القائمة في أعلى نقطة
-    (function preventTopPullToRefresh() {
+    (function preventOverscrollPull() {
       const scrollBox = document.getElementById('usersListBox');
       let startY = 0;
 
@@ -312,10 +309,10 @@
       document.addEventListener('touchmove', (e) => {
         if (!e.touches || e.touches.length === 0) return;
         const curY = e.touches[0].clientY;
-        const pullingDown = curY > startY;
+        const deltaY = curY - startY;
         const atTop = !scrollBox || scrollBox.scrollTop <= 0;
 
-        if (pullingDown && atTop && e.cancelable) {
+        if (atTop && deltaY > 0 && e.cancelable) {
           e.preventDefault();
         }
       }, { passive: false });
