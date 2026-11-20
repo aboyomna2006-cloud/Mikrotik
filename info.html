@@ -30,11 +30,10 @@
       color: var(--text-main);
       height: 100dvh;
       overflow: hidden;
-      overscroll-behavior: none;
     }
 
     body {
-      padding: 8px 10px 24px;
+      padding: 8px 10px 64px;
       display: flex;
       justify-content: center;
     }
@@ -46,7 +45,6 @@
       display: flex;
       flex-direction: column;
       gap: 7px;
-      overscroll-behavior: none;
     }
 
     .top-bar {
@@ -118,7 +116,6 @@
     .users-scroll {
       flex: 1;
       overflow-y: auto;
-      overscroll-behavior: none;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -234,7 +231,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
       flex-shrink: 0;
-      margin-bottom: 2px;
+      margin-bottom: 14px;
     }
 
     .btn-foot {
@@ -295,55 +292,6 @@
 
     const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
     let allUsers = [];
-
-    (function initDirectTouchScroll() {
-      const scrollBox = document.getElementById('usersListBox');
-      if (!scrollBox) return;
-
-      let lastY = 0;
-      let tracking = false;
-
-      scrollBox.addEventListener('touchstart', (e) => {
-        if (e.touches && e.touches.length === 1) {
-          lastY = e.touches[0].clientY;
-          tracking = true;
-        }
-      }, { passive: true });
-
-      scrollBox.addEventListener('touchmove', (e) => {
-        if (!tracking || !e.touches || e.touches.length !== 1) return;
-        const curY = e.touches[0].clientY;
-        const dy = curY - lastY;
-        lastY = curY;
-
-        const maxScroll = Math.max(0, scrollBox.scrollHeight - scrollBox.clientHeight);
-        if (maxScroll <= 0) {
-          if (e.cancelable) e.preventDefault();
-          return;
-        }
-
-        // السحب لأسفل (dy > 0) ينقل القائمة لأعلى الصفحة؛ السحب لأعلى (dy < 0) ينقلها لأسفل الصفحة
-        if (dy > 0 && scrollBox.scrollTop > 0) {
-          scrollBox.scrollTop = Math.max(0, scrollBox.scrollTop - dy);
-          if (e.cancelable) e.preventDefault();
-        } else if (dy > 0 && scrollBox.scrollTop <= 0) {
-          if (e.cancelable) e.preventDefault();
-        } else if (dy < 0 && scrollBox.scrollTop < maxScroll) {
-          scrollBox.scrollTop = Math.min(maxScroll, scrollBox.scrollTop - dy);
-          if (e.cancelable) e.preventDefault();
-        }
-      }, { passive: false });
-
-      scrollBox.addEventListener('touchend', () => {
-        tracking = false;
-      }, { passive: true });
-
-      document.addEventListener('touchmove', (e) => {
-        if (!e.target.closest('#usersListBox') && e.cancelable) {
-          e.preventDefault();
-        }
-      }, { passive: false });
-    })();
 
     const urlParams = new URLSearchParams(window.location.search);
     const preUser = urlParams.get('user');
