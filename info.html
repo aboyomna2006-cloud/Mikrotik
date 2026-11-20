@@ -25,14 +25,19 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    body {
+    html, body {
       background: radial-gradient(ellipse at 50% 6%, #262019 0%, transparent 35%), linear-gradient(180deg, #0a0c10, #030405 80%);
       color: var(--text-main);
-      padding: 8px 10px 10px;
       height: 100dvh;
+      overflow: hidden;
+      overscroll-behavior: none;
+      touch-action: pan-y;
+    }
+
+    body {
+      padding: 8px 10px 24px;
       display: flex;
       justify-content: center;
-      overflow: hidden;
     }
 
     .app-shell {
@@ -41,7 +46,8 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
+      overscroll-behavior: none;
     }
 
     .top-bar {
@@ -110,10 +116,11 @@
       cursor: pointer;
     }
 
-    /* قائمة المشتركين القابلة للتمرير (تعرض 8-9 صفوف في الشاشة) */
     .users-scroll {
       flex: 1;
       overflow-y: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -180,7 +187,6 @@
       font-weight: 800;
     }
 
-    /* دائرة السحب المصغرة */
     .mini-ring-wrap {
       position: relative;
       width: 40px;
@@ -230,6 +236,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
       flex-shrink: 0;
+      margin-bottom: 2px;
     }
 
     .btn-foot {
@@ -290,6 +297,29 @@
 
     const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
     let allUsers = [];
+
+    // منع السحب لأسفل على مستوى الصفحة عندما تكون القائمة في أعلى نقطة
+    (function preventTopPullToRefresh() {
+      const scrollBox = document.getElementById('usersListBox');
+      let startY = 0;
+
+      document.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches.length > 0) {
+          startY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      document.addEventListener('touchmove', (e) => {
+        if (!e.touches || e.touches.length === 0) return;
+        const curY = e.touches[0].clientY;
+        const pullingDown = curY > startY;
+        const atTop = !scrollBox || scrollBox.scrollTop <= 0;
+
+        if (pullingDown && atTop && e.cancelable) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+    })();
 
     const urlParams = new URLSearchParams(window.location.search);
     const preUser = urlParams.get('user');
@@ -366,7 +396,7 @@
         return;
       }
 
-      const circ = 100.53; // 2 * PI * 16
+      const circ = 100.53;
 
       document.getElementById('usersListBox').innerHTML = filtered.map(u => {
         const rawName = (u.n || '').trim();
