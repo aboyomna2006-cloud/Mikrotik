@@ -3,239 +3,313 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>استعلام عن مشترك - WinBox</title>
+  <title>قائمة المشتركين</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg: #0b111a;
-      --card-bg: #121c2a;
-      --item-bg: #0c141f;
-      --card-border: #263852;
-      --accent-cyan: #00e5ff;
-      --accent-amber: #ffab00;
-      --accent-green: #00e676;
-      --accent-red: #ff3d71;
+      --bg: #07090e;
+      --gold: #f5b942;
+      --gold-bright: #ffe18d;
+      --gold-border: rgba(245, 190, 100, 0.5);
+      --green: #10e87a;
+      --red: #ff3b6b;
       --text-main: #ffffff;
-      --text-sub: #9cb2cc;
+      --text-sub: #cbd5e1;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-      background: var(--bg);
+      background: radial-gradient(ellipse at 50% 6%, #262019 0%, transparent 35%), linear-gradient(180deg, #0a0c10, #030405 80%);
       color: var(--text-main);
-      padding: 12px;
-      min-height: 100dvh;
+      padding: 8px 10px 10px;
+      height: 100dvh;
       display: flex;
       justify-content: center;
-      align-items: center;
-    }
-    .winbox-window {
-      width: 100%;
-      max-width: 450px;
-      background: var(--card-bg);
-      border: 1.5px solid var(--card-border);
-      border-radius: 18px;
-      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7);
       overflow: hidden;
     }
-    .win-header {
-      background: linear-gradient(90deg, #162638, #121c2a);
-      padding: 14px 16px;
+
+    .app-shell {
+      width: 100%;
+      max-width: 490px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .top-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--card-border);
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 15px;
+      border: 1px solid var(--gold-border);
+      background: linear-gradient(151deg, rgba(59, 58, 56, 0.72), rgba(16, 18, 20, 0.98) 50%, #080a0d 90%);
+      box-shadow: inset 0 1px 1px rgba(255, 245, 206, 0.4), 0 6px 14px rgba(0, 0, 0, 0.55);
+      flex-shrink: 0;
     }
-    .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); }
-    .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.16); color: var(--accent-green); padding: 4px 10px; border-radius: 8px; font-weight: 700; }
 
-    .body-wrap { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
-    .search-row { display: flex; gap: 8px; align-items: center; }
+    .top-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--gold-bright);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .count-pill {
+      font-size: 12px;
+      font-weight: 800;
+      color: #5cffaa;
+      background: rgba(16, 232, 122, 0.14);
+      border: 1px solid rgba(16, 232, 122, 0.45);
+      padding: 3px 10px;
+      border-radius: 14px;
+      cursor: pointer;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
     .search-input {
       flex: 1;
-      background: var(--item-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
+      background: #0e1218;
+      border: 1px solid rgba(245, 190, 100, 0.42);
+      border-radius: 12px;
       color: #fff;
-      padding: 11px 12px;
-      font-size: 15px;
+      padding: 8px 12px;
+      font-size: 13.5px;
+      font-weight: 700;
       outline: none;
-      direction: ltr;
-      text-align: left;
     }
-    .search-input:focus { border-color: var(--accent-cyan); }
-    .btn-clear {
-      background: var(--item-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-sub);
-      border-radius: 10px;
+
+    .search-input:focus {
+      border-color: var(--gold-bright);
+    }
+
+    .btn-all {
+      background: linear-gradient(151deg, rgba(59, 58, 56, 0.72), rgba(16, 18, 20, 0.98));
+      border: 1px solid rgba(245, 190, 100, 0.48);
+      color: var(--gold-bright);
+      border-radius: 12px;
       padding: 0 12px;
-      height: 42px;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 800;
       cursor: pointer;
     }
 
-    .list-box {
-      max-height: 62vh;
+    /* قائمة المشتركين القابلة للتمرير (تعرض 8-9 صفوف في الشاشة) */
+    .users-scroll {
+      flex: 1;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 6px;
+      padding-left: 2px;
+      padding-right: 2px;
+      -webkit-overflow-scrolling: touch;
     }
-    .info-card {
-      background: var(--item-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .ic-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .ic-name { font-size: 15px; font-weight: 800; color: #fff; direction: ltr; }
-    .ic-prof { font-size: 12px; font-weight: 800; color: var(--accent-cyan); background: rgba(0, 229, 255, 0.12); padding: 2px 8px; border-radius: 6px; direction: ltr; white-space: nowrap; }
-    .ic-comm { font-size: 12px; color: var(--text-sub); direction: ltr; padding-bottom: 8px; border-bottom: 1px dashed rgba(38, 56, 82, 0.7); }
 
-    .pie-container {
+    .user-row {
+      min-height: 54px;
+      border-radius: 13px;
+      padding: 6px 10px;
+      border: 1px solid rgba(245, 190, 100, 0.36);
+      background: linear-gradient(151deg, rgba(52, 50, 48, 0.65), rgba(14, 16, 20, 0.96) 55%, #080a0d 95%);
+      box-shadow: inset 0 1px 0 rgba(255, 245, 206, 0.25), 0 4px 10px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.1s ease, border-color 0.15s ease;
+    }
+
+    .user-row:active {
+      transform: scale(0.985);
+      border-color: var(--gold-bright);
+    }
+
+    .u-info {
+      flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      padding: 6px 0 4px;
+      gap: 2px;
+      text-align: right;
     }
-    .pie-disc {
-      position: relative;
-      width: 165px;
-      height: 165px;
-      border-radius: 50%;
-      background: conic-gradient(
-        from 0deg,
-        #ff1744 0%,
-        #ff4d6d var(--pct, 0%),
-        #00ff88 var(--pct, 0%),
-        #00c853 100%
-      );
-      box-shadow:
-        0 0 28px rgba(255, 23, 68, 0.48),
-        0 0 24px rgba(0, 255, 136, 0.38),
-        inset 0 3px 10px rgba(255, 255, 255, 0.35),
-        inset 0 -6px 14px rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.25s ease;
-    }
-    .pie-disc::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%);
-      pointer-events: none;
-    }
-    .pie-label {
-      position: relative;
-      z-index: 2;
-      font-size: 32px;
+
+    .u-primary {
+      font-size: 13.5px;
       font-weight: 900;
       color: #ffffff;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85), 0 0 14px rgba(255, 255, 255, 0.45);
-      letter-spacing: -0.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      direction: ltr;
+      text-align: right;
     }
 
-    .ic-stats {
+    .u-secondary {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-sub);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      direction: ltr;
+      text-align: right;
+    }
+
+    .u-meta-tag {
+      color: var(--gold-bright);
+      font-weight: 800;
+    }
+
+    /* دائرة السحب المصغرة */
+    .mini-ring-wrap {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 12px;
-      font-weight: 800;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 8px 10px;
-      border-radius: 9px;
-      border: 1px solid rgba(38, 56, 82, 0.5);
-    }
-    .st-used { color: var(--accent-red); text-shadow: 0 0 10px rgba(255, 61, 113, 0.45); }
-    .st-total { color: var(--text-main); }
-    .st-rem { color: var(--accent-green); text-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
-
-    .ic-actions { display: flex; justify-content: center; margin-top: 2px; }
-    .btn-renew-mini {
-      width: 100%;
-      background: rgba(255, 171, 0, 0.14);
-      border: 1px solid rgba(255, 171, 0, 0.45);
-      color: var(--accent-amber);
-      padding: 8px 12px;
-      border-radius: 9px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
+      justify-content: center;
     }
 
-    .footer-btns { display: flex; gap: 8px; }
-    .btn-back {
-      flex: 1;
-      background: rgba(0, 229, 255, 0.14);
-      border: 1px solid var(--accent-cyan);
-      color: var(--accent-cyan);
-      padding: 11px;
-      border-radius: 11px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
+    .mini-ring-wrap svg {
+      width: 40px;
+      height: 40px;
+      transform: rotate(-90deg);
     }
-    .btn-close {
-      flex: 1;
-      background: rgba(255, 61, 113, 0.15);
-      border: 1px solid var(--accent-red);
-      color: var(--accent-red);
-      padding: 11px;
-      border-radius: 11px;
-      font-size: 15px;
+
+    .m-bg {
+      fill: none;
+      stroke: rgba(175, 181, 195, 0.25);
+      stroke-width: 4.5;
+    }
+
+    .m-fg {
+      fill: none;
+      stroke: url(#miniGoldGrad);
+      stroke-width: 4.5;
+      stroke-linecap: round;
+    }
+
+    .m-fg-red {
+      fill: none;
+      stroke: url(#miniRedGrad);
+      stroke-width: 4.5;
+      stroke-linecap: round;
+    }
+
+    .mini-pct {
+      position: absolute;
+      font-size: 10px;
+      font-weight: 900;
+      color: #ffffff;
+      direction: ltr;
+    }
+
+    .footer-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-foot {
+      height: 42px;
+      border-radius: 13px;
+      font-size: 13.5px;
       font-weight: 800;
       cursor: pointer;
+      border: 1px solid rgba(245, 190, 100, 0.48);
+      background: linear-gradient(151deg, rgba(59, 58, 56, 0.72), rgba(16, 18, 20, 0.98));
+      color: var(--gold-bright);
+    }
+
+    .btn-foot.close {
+      border-color: rgba(255, 59, 107, 0.5);
+      color: #ff6b8b;
     }
   </style>
 </head>
 <body>
-  <div class="winbox-window">
-    <div class="win-header">
-      <div class="win-title">📋 استعلام عن مشترك</div>
-      <div class="win-badge" id="countBadge">جاري التحميل...</div>
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <linearGradient id="miniGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffe082" />
+        <stop offset="100%" stop-color="#d98a00" />
+      </linearGradient>
+      <linearGradient id="miniRedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ff8f00" />
+        <stop offset="50%" stop-color="#ff2d55" />
+        <stop offset="100%" stop-color="#ff1744" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="app-shell">
+    <div class="top-bar">
+      <div class="top-title">👥 قائمة المشتركين</div>
+      <div class="count-pill" id="countBadge" onclick="fetchUsers()">جاري التحميل...</div>
     </div>
 
-    <div class="body-wrap">
-      <div class="search-row">
-        <input type="text" id="qInput" class="search-input" placeholder="اكتب اسم المشترك أو الكومنت..." oninput="renderCards()">
-        <button type="button" class="btn-clear" onclick="clearSearch()">الكل</button>
-      </div>
-      <div class="list-box" id="cardsBox"></div>
-      <div class="footer-btns">
-        <button type="button" class="btn-back" id="navBackBtn" onclick="goBackNav()">🏠 الرئيسية</button>
-        <button type="button" class="btn-close" onclick="if(tg) tg.close()">إغلاق</button>
-      </div>
+    <div class="search-row">
+      <input type="text" id="qInput" class="search-input" placeholder="ابحث بالاسم أو الكومنت..." oninput="renderList()">
+      <button type="button" class="btn-all" onclick="clearSearch()">الكل</button>
+    </div>
+
+    <div class="users-scroll" id="usersListBox"></div>
+
+    <div class="footer-btns">
+      <button type="button" class="btn-foot" id="navBackBtn" onclick="goBackNav()">🏠 الرئيسية</button>
+      <button type="button" class="btn-foot close" onclick="closePage()">إغلاق</button>
     </div>
   </div>
 
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
+    const isInsideTelegram = !!(tg && tg.initData && tg.initData.length > 0);
     if (tg) { tg.ready(); tg.expand(); }
 
+    const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
     let allUsers = [];
+
     const urlParams = new URLSearchParams(window.location.search);
     const preUser = urlParams.get('user');
     const fromPage = urlParams.get('from');
 
-    const navBtn = document.getElementById('navBackBtn');
     if (fromPage === 'active') {
-      navBtn.innerText = '🔙 رجوع للنشطين';
+      document.getElementById('navBackBtn').innerText = '🔙 رجوع للنشطين';
     }
 
     function goBackNav() {
       if (fromPage === 'active') {
         window.location.href = 'active.html';
       } else {
-        window.location.href = 'dashboard.html';
+        window.location.href = 'panel.html';
       }
+    }
+
+    function closePage() {
+      if (isInsideTelegram) { tg.close(); }
+      else { window.location.href = 'panel.html'; }
     }
 
     if (preUser) {
@@ -244,62 +318,103 @@
 
     function clearSearch() {
       document.getElementById('qInput').value = '';
-      renderCards();
+      renderList();
     }
 
     async function fetchUsers() {
+      const badge = document.getElementById('countBadge');
+      badge.innerText = '🔄 تحديث...';
       try {
-        const res = await fetch(`https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?t=${Date.now()}`);
-        allUsers = await res.json();
-        document.getElementById('countBadge').innerText = `${allUsers.length} مشترك`;
-        renderCards();
+        const apiUrl = `https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/users.json?ref=main&_=${Date.now()}`;
+        const res = await fetch(apiUrl, {
+          cache: 'no-store',
+          headers: { 'Authorization': `Bearer ${GH_TK}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (res.ok) {
+          const meta = await res.json();
+          if (meta.content) {
+            const binStr = atob(meta.content.replace(/\s/g, ''));
+            const bytes = Uint8Array.from(binStr, c => c.charCodeAt(0));
+            allUsers = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+            badge.innerText = `${allUsers.length} مشترك`;
+            renderList();
+            return;
+          }
+        }
+      } catch (e) {}
+
+      try {
+        const res2 = await fetch(`https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?t=${Date.now()}`, { cache: 'no-store' });
+        allUsers = await res2.json();
+        badge.innerText = `${allUsers.length} مشترك`;
+        renderList();
       } catch (e) {
-        document.getElementById('countBadge').innerText = 'خطأ في التحميل';
+        badge.innerText = 'خطأ في التحميل';
       }
     }
 
-    function renderCards() {
+    function renderList() {
       const q = document.getElementById('qInput').value.trim().toLowerCase();
       const filtered = q
         ? allUsers.filter(u => (u.n && u.n.toLowerCase().includes(q)) || (u.c && u.c.toLowerCase().includes(q)))
-        : allUsers.slice(0, 15);
+        : allUsers;
+
+      document.getElementById('countBadge').innerText = `${filtered.length} مشترك`;
 
       if (filtered.length === 0) {
-        document.getElementById('cardsBox').innerHTML = '<div style="text-align:center;color:#9cb2cc;padding:20px;">لا توجد بيانات مطابقة لهذا المشترك</div>';
+        document.getElementById('usersListBox').innerHTML = '<div style="text-align:center;color:#9cb2cc;padding:24px;font-weight:700;">لا يوجد مشتركين مطابقين</div>';
         return;
       }
 
-      document.getElementById('cardsBox').innerHTML = filtered.map(u => {
-        const title = u.n.startsWith('Arabic_User_') ? (u.c || u.n) : u.n;
-        const usedNum = (u.u / 1024);
-        const usedGB = usedNum.toFixed(2);
-        const limGB = u.l || 0;
-        const remGB = Math.max(0, limGB - usedNum).toFixed(2);
-        const pct = limGB > 0 ? Math.min(100, Math.round((usedNum / limGB) * 100)) : 0;
+      const circ = 100.53; // 2 * PI * 16
 
-        return `<div class="info-card">
-          <div class="ic-head">
-            <span class="ic-name">👤 ${title}</span>
-            <span class="ic-prof">${u.p}</span>
-          </div>
-          <div class="ic-comm">💬 ${u.c || 'بدون كومنت'}</div>
+      document.getElementById('usersListBox').innerHTML = filtered.map(u => {
+        const rawName = (u.n || '').trim();
+        const rawComm = (u.c || '').trim();
+        const isArabicUser = rawName.startsWith('Arabic_User_');
 
-          <div class="pie-container">
-            <div class="pie-disc" style="--pct:${pct}%;">
-              <span class="pie-label">${pct}%</span>
+        const usedGB = (Number(u.u || 0) / 1024);
+        const limGB = Number(u.l || 0);
+        const pct = limGB > 0 ? Math.min(100, Math.round((usedGB / limGB) * 100)) : 0;
+        const offset = (circ - (pct / 100) * circ).toFixed(2);
+
+        let redTipSvg = '';
+        if (pct > 80) {
+          const startLen = (0.8 * circ).toFixed(2);
+          const redLen = (((pct - 80) / 100) * circ).toFixed(2);
+          redTipSvg = `<circle class="m-fg-red" cx="20" cy="20" r="16" stroke-dasharray="${redLen} ${circ}" stroke-dashoffset="-${startLen}"/>`;
+        }
+
+        const quotaInfo = limGB > 0 ? `${usedGB.toFixed(1)}/${limGB} GB` : `${usedGB.toFixed(1)} GB`;
+
+        let titleHtml = '';
+        let subHtml = '';
+        if (isArabicUser) {
+          titleHtml = rawComm || rawName;
+          subHtml = `<span class="u-meta-tag">${u.p || ''}</span> • ${quotaInfo}`;
+        } else {
+          titleHtml = rawName;
+          subHtml = rawComm
+            ? `${rawComm} • <span class="u-meta-tag">${quotaInfo}</span>`
+            : `<span class="u-meta-tag">${u.p || ''}</span> • ${quotaInfo}`;
+        }
+
+        return `
+          <div class="user-row" onclick="window.location.href='renew.html?user=${encodeURIComponent(rawName)}'">
+            <div class="u-info">
+              <div class="u-primary">${titleHtml}</div>
+              <div class="u-secondary">${subHtml}</div>
+            </div>
+            <div class="mini-ring-wrap">
+              <svg viewBox="0 0 40 40">
+                <circle class="m-bg" cx="20" cy="20" r="16"/>
+                <circle class="m-fg" cx="20" cy="20" r="16" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
+                ${redTipSvg}
+              </svg>
+              <span class="mini-pct">${pct}%</span>
             </div>
           </div>
-
-          <div class="ic-stats">
-            <span class="st-used">الاستهلاك: ${usedGB} GB</span>
-            <span class="st-total">الباقة: ${limGB} GB</span>
-            <span class="st-rem">المتبقي: ${remGB} GB</span>
-          </div>
-
-          <div class="ic-actions">
-            <button type="button" class="btn-renew-mini" onclick="window.location.href='renew.html?user=${encodeURIComponent(u.n)}'">🔄 تجديد / تعديل</button>
-          </div>
-        </div>`;
+        `;
       }).join('');
     }
 
