@@ -15,6 +15,7 @@
       --accent-amber: #ffab00;
       --accent-green: #00e676;
       --accent-red: #ff5252;
+      --gold-bright: #ffe18d;
       --text-main: #ffffff;
       --text-sub: #9cb2cc;
     }
@@ -44,24 +45,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--card-border);
     }
     .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); display: flex; align-items: center; gap: 6px; }
-    .header-right-tools { display: flex; align-items: center; gap: 6px; }
-    .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.14); border: 1px solid rgba(0, 230, 118, 0.35); color: var(--accent-green); padding: 4px 10px; border-radius: 9px; font-weight: 800; cursor: pointer; white-space: nowrap; }
-    .btn-reload-users {
-      background: rgba(0, 229, 255, 0.14);
-      border: 1px solid rgba(0, 229, 255, 0.4);
-      color: var(--accent-cyan);
-      padding: 4px 9px;
-      border-radius: 9px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .btn-reload-users:active { transform: scale(0.94); }
+    .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.14); border: 1px solid rgba(0, 230, 118, 0.35); color: var(--accent-green); padding: 4px 10px; border-radius: 9px; font-weight: 800; cursor: pointer; }
 
     .field-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
     .label-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; font-weight: 700; color: var(--text-sub); }
@@ -131,14 +119,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-    }
-    .drop-empty {
-      padding: 12px;
-      text-align: center;
-      color: var(--text-sub);
-      font-size: 12.5px;
-      font-weight: 700;
     }
     .drop-item:hover, .drop-item:active { background: rgba(0, 229, 255, 0.15); }
 
@@ -248,12 +228,12 @@
       border: none;
       border-radius: 12px;
       color: #09131c;
-      font-size: 14.5px;
+      font-size: 14px;
       font-weight: 900;
       padding: 12px 8px;
       cursor: pointer;
     }
-    .btn-save:disabled { opacity: 0.6; cursor: wait; }
+    .btn-save:disabled { opacity: 0.7; cursor: wait; }
     .btn-cancel {
       background: rgba(255, 61, 113, 0.14);
       border: 1px solid rgba(255, 61, 113, 0.45);
@@ -264,16 +244,151 @@
       padding: 12px 6px;
       cursor: pointer;
     }
+
+    .tg-toast-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 6, 12, 0.72);
+      backdrop-filter: blur(7px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20000;
+      padding: 18px;
+      opacity: 0;
+      transition: opacity 0.22s ease;
+    }
+
+    .tg-toast-backdrop.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .tg-toast-card {
+      width: 100%;
+      max-width: 340px;
+      background: linear-gradient(155deg, rgba(58, 55, 50, 0.88), rgba(15, 22, 34, 0.98) 52%, #090d14 95%);
+      border: 1.5px solid rgba(255, 210, 110, 0.65);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow:
+        0 18px 42px rgba(0, 0, 0, 0.8),
+        0 0 24px rgba(245, 185, 66, 0.22),
+        inset 0 1px 1px rgba(255, 245, 206, 0.45);
+      transform: scale(0.62);
+      opacity: 0;
+      transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tg-toast-backdrop.show .tg-toast-card {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .tg-toast-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+    }
+
+    .tg-toast-title {
+      font-size: 14.5px;
+      font-weight: 900;
+      color: var(--gold-bright);
+    }
+
+    .tg-toast-sub {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    .tg-preview-box {
+      background: rgba(8, 13, 22, 0.85);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 13px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .tg-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+      padding-bottom: 5px;
+    }
+
+    .tg-line:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .tg-key {
+      color: var(--text-sub);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .tg-val {
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 800;
+      direction: ltr;
+      text-align: left;
+      word-break: break-word;
+    }
+
+    .tg-val.gold {
+      color: var(--gold-bright);
+    }
+
+    .tg-toast-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .tg-btn-ok {
+      background: linear-gradient(90deg, #00e676, #00b0ff);
+      color: #08121e;
+      border: none;
+      border-radius: 11px;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .tg-btn-panel {
+      background: rgba(255, 179, 0, 0.16);
+      border: 1px solid rgba(255, 179, 0, 0.5);
+      color: var(--gold-bright);
+      border-radius: 11px;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div class="winbox-window">
     <div class="win-header">
       <div class="win-title">🔄 تجديد / تعديل مشترك</div>
-      <div class="header-right-tools">
-        <button type="button" class="btn-reload-users" onclick="loadUsers()" title="تحديث قائمة المشتركين">🔄</button>
-        <div class="win-badge" id="totalBadge" onclick="loadUsers()">جاري التحميل...</div>
-      </div>
+      <div class="win-badge" id="totalBadge" onclick="loadUsers()">جاري التحميل...</div>
     </div>
 
     <div class="field-group">
@@ -315,7 +430,7 @@
 
     <div class="field-group">
       <div class="label-row">
-        <span>💬 الكومنت (يحافظ على النص بالكامل + تعديل التاريخ)</span>
+        <span>💬 الكومنت (يزيد +30 يوم تلقائياً)</span>
         <button type="button" class="btn-add-days" onclick="bumpCommentDays(30)">+30 يوم ➕</button>
       </div>
       <input type="text" id="commentInput" class="input-box" placeholder="الكومنت...">
@@ -360,6 +475,37 @@
     </div>
   </div>
 
+  <div class="tg-toast-backdrop" id="tgToastModal" onclick="if(event.target===this) closeTgToast()">
+    <div class="tg-toast-card">
+      <div class="tg-toast-head">
+        <div class="tg-toast-title">🔄 تم إعادة تعديل المشترك</div>
+        <div class="tg-toast-sub">✔ مؤكد من الميكروتك</div>
+      </div>
+      <div class="tg-preview-box">
+        <div class="tg-line">
+          <span class="tg-key">👤 المشترك:</span>
+          <span class="tg-val gold" id="toastUserName">-</span>
+        </div>
+        <div class="tg-line">
+          <span class="tg-key">💬 الكومنت:</span>
+          <span class="tg-val" id="toastComment">-</span>
+        </div>
+        <div class="tg-line">
+          <span class="tg-key">🚀 البروفايل:</span>
+          <span class="tg-val" id="toastProfile">-</span>
+        </div>
+        <div class="tg-line">
+          <span class="tg-key">📦 الباقة:</span>
+          <span class="tg-val gold" id="toastPackage">-</span>
+        </div>
+      </div>
+      <div class="tg-toast-actions">
+        <button type="button" class="tg-btn-ok" onclick="closeTgToast()">تمام 👌</button>
+        <button type="button" class="tg-btn-panel" onclick="window.location.href='panel.html'">🏠 الرئيسية</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     const isInsideTelegram = !!(tg && tg.initData && tg.initData.length > 0);
@@ -372,62 +518,50 @@
     let selectedProfile = '512+';
     let selectedGb = 12;
 
-    function getUserComment(u) {
-      if (!u) return '';
-      return String(u.c ?? u.comment ?? u.cm ?? '');
-    }
-
     function closeOrBack() {
       if (isInsideTelegram) { tg.close(); }
       else { window.location.href = 'panel.html'; }
     }
 
+    function openTgToast({ user, comment, profile, gb }) {
+      const gbLabel = gb === 0 ? 'بدون تصفير (تعديل فقط)' : `تجديد ${gb} GB`;
+      document.getElementById('toastUserName').innerText = user || '-';
+      document.getElementById('toastComment').innerText = comment || '-';
+      document.getElementById('toastProfile').innerText = profile || '-';
+      document.getElementById('toastPackage').innerText = gbLabel;
+
+      const backdrop = document.getElementById('tgToastModal');
+      backdrop.style.display = 'flex';
+      requestAnimationFrame(() => {
+        backdrop.classList.add('show');
+      });
+    }
+
+    function closeTgToast() {
+      const backdrop = document.getElementById('tgToastModal');
+      backdrop.classList.remove('show');
+      setTimeout(() => {
+        if (!backdrop.classList.contains('show')) {
+          backdrop.style.display = 'none';
+        }
+      }, 230);
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const preUser = urlParams.get('user');
-
-    async function fetchUsersFromGitHubApi() {
-      const apiUrl = `https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/users.json?ref=main&_=${Date.now()}`;
-      const res = await fetch(apiUrl, {
-        cache: 'no-store',
-        headers: {
-          'Authorization': `Bearer ${GH_TK}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
-      });
-      if (!res.ok) return null;
-      const meta = await res.json();
-      if (!meta.content) return null;
-      const binStr = atob(meta.content.replace(/\s/g, ''));
-      const bytes = Uint8Array.from(binStr, c => c.charCodeAt(0));
-      return JSON.parse(new TextDecoder('utf-8').decode(bytes));
-    }
 
     async function loadUsers() {
       const badge = document.getElementById('totalBadge');
       badge.innerText = 'جاري التحميل...';
-
-      try {
-        const apiData = await fetchUsersFromGitHubApi();
-        if (Array.isArray(apiData) && apiData.length > 0) {
-          usersList = apiData;
-          badge.innerText = `متصل • ${usersList.length} مشترك`;
-          if (preUser) {
-            const found = usersList.find(u => u.n === preUser || u.id === preUser);
-            if (found) pickUser(found.id);
-          }
-          return;
-        }
-      } catch (e) {}
-
       const ts = Date.now();
       const urls = [
-        `https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?v=${ts}`,
-        `https://aboyomna2006-cloud.github.io/Mikrotik/users.json?v=${ts}`
+        `https://aboyomna2006-cloud.github.io/Mikrotik/users.json?v=${ts}`,
+        `https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?v=${ts}`
       ];
 
       for (const url of urls) {
         try {
-          const res = await fetch(url, { cache: 'no-store' });
+          const res = await fetch(url);
           if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data) && data.length > 0) {
@@ -445,32 +579,32 @@
       badge.innerText = 'اضغط لإعادة المحاولة 🔄';
     }
 
-    function addDaysToComment(rawComm, daysToAdd) {
-      const baseText = String(rawComm ?? '');
+    function addDaysToComment(rawComm, daysToAdd, fromToday = false) {
+      const baseText = (rawComm || '').trim();
       const dateRegex = /(To\s+)(\d{1,2})[-/](\d{1,2})[-/](\d{4})/i;
       const match = baseText.match(dateRegex);
 
-      if (!match) {
-        const dt = new Date();
-        dt.setDate(dt.getDate() + daysToAdd);
-        const newDateStr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
-        return baseText.trim() ? `${baseText.trim()} To ${newDateStr}` : `To ${newDateStr}`;
+      let dt = new Date();
+      if (!fromToday && match) {
+        const d = parseInt(match[2], 10);
+        const m = parseInt(match[3], 10) - 1;
+        const y = parseInt(match[4], 10);
+        dt = new Date(y, m, d);
       }
 
-      const d = parseInt(match[2], 10);
-      const m = parseInt(match[3], 10) - 1;
-      const y = parseInt(match[4], 10);
-      const dt = new Date(y, m, d);
       dt.setDate(dt.getDate() + daysToAdd);
       const newDateStr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
 
-      return baseText.replace(dateRegex, `${match[1]}${newDateStr}`);
+      if (match) {
+        return baseText.replace(dateRegex, `${match[1]}${newDateStr}`);
+      } else {
+        return baseText ? `${baseText} To ${newDateStr}` : `To ${newDateStr}`;
+      }
     }
 
     function bumpCommentDays(days) {
       const inp = document.getElementById('commentInput');
-      const currentVal = inp.value || getUserComment(selectedUser) || (selectedUser ? selectedUser.n : '');
-      inp.value = addDaysToComment(currentVal, days);
+      inp.value = addDaysToComment(inp.value, days, false);
     }
 
     function formatDataSize(mb) {
@@ -528,16 +662,11 @@
       }
     }
 
-    function renderDropdown(items, emptyText = 'لا يوجد مشترك مطابق') {
+    function renderDropdown(items) {
       const box = document.getElementById('dropdownList');
-      if (!items.length) {
-        box.innerHTML = `<div class="drop-empty">${emptyText}</div>`;
-        box.style.display = 'block';
-        return;
-      }
+      if (!items.length) { box.style.display = 'none'; return; }
       box.innerHTML = items.map(u => {
-        const commText = getUserComment(u).trim();
-        const label = commText ? `${commText} (${u.n})` : u.n;
+        const label = (u.c && u.c.trim()) ? u.c : u.n;
         return `<div class="drop-item" onclick="pickUser('${u.id}')"><span>${label}</span><span style="color:#00e5ff;font-size:11px;">${u.p}</span></div>`;
       }).join('');
       box.style.display = 'block';
@@ -546,28 +675,29 @@
     function filterUsers() {
       const q = document.getElementById('searchInput').value.trim().toLowerCase();
       if (!q) { renderDropdown(usersList.slice(0, 15)); return; }
-      const matches = usersList.filter(u => {
-        const commText = getUserComment(u).toLowerCase();
-        return (u.n && u.n.toLowerCase().includes(q)) || commText.includes(q);
-      });
-      renderDropdown(matches, `لا يوجد مشترك مطابق لـ "${document.getElementById('searchInput').value.trim()}"`);
+      const matches = usersList.filter(u =>
+        (u.n && u.n.toLowerCase().includes(q)) ||
+        (u.c && u.c.toLowerCase().includes(q))
+      );
+      renderDropdown(matches);
     }
 
     function showAllUsers() {
       const box = document.getElementById('dropdownList');
       if (box.style.display === 'block') { box.style.display = 'none'; return; }
-      filterUsers();
+      renderDropdown(usersList);
     }
 
     function pickUser(id) {
       const u = usersList.find(x => x.id === id);
       if (!u) return;
       selectedUser = u;
-      const origComm = getUserComment(u);
       document.getElementById('dropdownList').style.display = 'none';
-      document.getElementById('searchInput').value = origComm.trim() || u.n;
+      document.getElementById('searchInput').value = (u.c && u.c.trim()) ? u.c : u.n;
       document.getElementById('currProfBadge').innerText = `الحالي: ${u.p}`;
-      document.getElementById('commentInput').value = origComm;
+
+      const origComm = u.c || '';
+      document.getElementById('commentInput').value = addDaysToComment(origComm, 30, selectedGb === 0);
 
       updateQuotaRing(u);
 
@@ -596,9 +726,14 @@
       selectedGb = gb;
       document.querySelectorAll('.gb-grid .chip-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
+
+      if (selectedUser) {
+        const origComm = selectedUser.c || '';
+        document.getElementById('commentInput').value = addDaysToComment(origComm, 30, gb === 0);
+      }
     }
 
-    async function sendDirectCommandToRouter(payload) {
+    async function sendDirectCommandToRouter(payload, cmdId) {
       const apiUrl = "https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/cmd.txt";
       const headers = {
         'Authorization': `Bearer ${GH_TK}`,
@@ -610,7 +745,7 @@
         const gRes = await fetch(`${apiUrl}?_=${Date.now()}`, { headers, cache: 'no-store' });
         if (gRes.ok) { const gJson = await gRes.json(); sha = gJson.sha || ""; }
       } catch (e) {}
-      const cmdWithId = `${Date.now()}::${payload}`;
+      const cmdWithId = `${cmdId}::${payload}`;
       const b64 = btoa(unescape(encodeURIComponent(cmdWithId)));
       const body = sha
         ? JSON.stringify({ message: "App Cmd", content: b64, sha })
@@ -619,32 +754,83 @@
       return res.ok;
     }
 
+    async function waitForMikrotikAck(expectedCmdId, maxWaitMs = 25000) {
+      const ackUrl = "https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/ack.txt";
+      const headers = {
+        'Authorization': `Bearer ${GH_TK}`,
+        'Accept': 'application/vnd.github.v3+json'
+      };
+      const startTime = Date.now();
+
+      while (Date.now() - startTime < maxWaitMs) {
+        await new Promise(r => setTimeout(r, 1200));
+        try {
+          const res = await fetch(`${ackUrl}?_=${Date.now()}`, { headers, cache: 'no-store' });
+          if (res.ok) {
+            const meta = await res.json();
+            if (meta.content) {
+              const binStr = atob(meta.content.replace(/\s/g, ''));
+              const bytes = Uint8Array.from(binStr, c => c.charCodeAt(0));
+              const rawAck = new TextDecoder('utf-8').decode(bytes).trim();
+              const parts = rawAck.split('|');
+              if (parts.length >= 2 && parts[0] === String(expectedCmdId) && parts[1] === 'ok') {
+                return {
+                  confirmed: true,
+                  user: parts[2] || '',
+                  comment: parts[3] || '',
+                  profile: parts[4] || '',
+                  gb: parts[5] !== undefined ? Number(parts[5]) : null
+                };
+              }
+            }
+          }
+        } catch (e) {}
+      }
+      return { confirmed: false };
+    }
+
     async function submitRenewal() {
       if (!selectedUser) {
         alert('من فضلك اختر المشترك أولاً من قائمة البحث');
         return;
       }
       const target = selectedUser.n.startsWith('Arabic_User_') ? selectedUser.id : selectedUser.n;
-      const fallbackComm = getUserComment(selectedUser);
-      const rawInputComm = document.getElementById('commentInput').value;
-      const comm = (rawInputComm.trim() ? rawInputComm.trim() : fallbackComm.trim()).replace(/\|/g, ' - ');
+      const comm = document.getElementById('commentInput').value.trim();
       const payload = `/renew_user|${target}|${selectedProfile}|${selectedGb}|${comm}`;
+      const cmdId = String(Date.now());
 
       if (isInsideTelegram) {
         tg.sendData(payload);
-      } else {
-        const btn = document.getElementById('btnSaveRenew');
-        btn.innerText = '⏳ جاري الإرسال...';
-        btn.disabled = true;
-        const ok = await sendDirectCommandToRouter(payload);
-        btn.innerText = '✅ حفظ التعديل';
+        return;
+      }
+
+      const btn = document.getElementById('btnSaveRenew');
+      const prevLabel = btn.innerText;
+      btn.innerText = '⏳ انتظار الميكروتك...';
+      btn.disabled = true;
+
+      const sentOk = await sendDirectCommandToRouter(payload, cmdId);
+      if (!sentOk) {
+        btn.innerText = prevLabel;
         btn.disabled = false;
-        if (ok) {
-          alert(`✅ تم إرسال أمر تعديل (${target}) إلى السيرفر، وسيتم تطبيقه وتحديث الكومنت خلال ثوانٍ.`);
-          window.location.href = 'panel.html';
-        } else {
-          alert('❌ تعذر الاتصال بالسيرفر، تأكد من الإنترنت وحاول مرة أخرى');
-        }
+        alert('❌ تعذر إرسال الأمر للسيرفر، تأكد من الإنترنت وحاول مرة أخرى');
+        return;
+      }
+
+      const ack = await waitForMikrotikAck(cmdId, 25000);
+      btn.innerText = prevLabel;
+      btn.disabled = false;
+
+      if (ack.confirmed) {
+        await loadUsers();
+        openTgToast({
+          user: ack.user || target,
+          comment: ack.comment || comm,
+          profile: ack.profile || selectedProfile,
+          gb: ack.gb !== null ? ack.gb : selectedGb
+        });
+      } else {
+        alert('⚠️ تم إرسال الأمر لـ cmd.txt ولكن لم يصل تأكيد من الميكروتك بعد (تأكد من تشغيل Telegram_Receiver على الراوتر)');
       }
     }
 
