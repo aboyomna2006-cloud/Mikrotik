@@ -271,7 +271,6 @@
       color: #ff6b8b;
     }
 
-    /* 2. 4 Summary Cards (نفس الأبعاد والأيقونات مع تكبير خط الكلام بالأسفل) */
     .stats-4-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -346,7 +345,6 @@
       white-space: nowrap;
     }
 
-    /* 3. Two Circular Gauge Cards */
     .gauges-2-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -481,7 +479,6 @@
       margin-top: 2px;
     }
 
-    /* 4. Action Tiles (صف أول 3 أزرار متناسقة + صف ثاني 4 أزرار) */
     .actions-wrap {
       display: flex;
       flex-direction: column;
@@ -797,6 +794,166 @@
     .zoom-detail-row b.gold {
       color: var(--gold-bright);
     }
+
+    /* نافذة الاستهلاك الأسبوعي بالمستطيلات الرأسية والمقارنة بالألوان */
+    .weekly-modal-card {
+      width: 100%;
+      max-width: 390px;
+      background: linear-gradient(155deg, rgba(58, 55, 50, 0.92), rgba(16, 19, 25, 0.99) 52%, #080a0e 95%);
+      border: 1.5px solid rgba(255, 200, 99, 0.62);
+      border-radius: 22px;
+      padding: 16px 14px;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 245, 206, 0.45);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      direction: rtl;
+    }
+
+    .weekly-head {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .weekly-title-ar {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--gold-bright);
+    }
+
+    .weekly-title-en {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #e2e8f0;
+      direction: ltr;
+    }
+
+    .weekly-legend {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #cbd5e1;
+      flex-wrap: wrap;
+    }
+
+    .weekly-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .lg-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .weekly-bars-stage {
+      height: 215px;
+      background: rgba(8, 11, 16, 0.78);
+      border: 1px solid rgba(255, 200, 99, 0.24);
+      border-radius: 16px;
+      padding: 24px 8px 10px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      align-items: end;
+      gap: 6px;
+    }
+
+    .day-col {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .day-val-lbl {
+      font-size: 10.5px;
+      font-weight: 900;
+      color: #ffffff;
+      direction: ltr;
+      white-space: nowrap;
+    }
+
+    .day-bar-track {
+      width: 100%;
+      max-width: 34px;
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 2px;
+    }
+
+    .day-bar-fill {
+      width: 100%;
+      min-height: 10px;
+      border-radius: 9px 9px 5px 5px;
+      transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .day-bar-fill.low {
+      background: linear-gradient(180deg, #ffe28a 0%, #f5b942 55%, #b87908 100%);
+      box-shadow: 0 0 10px rgba(245, 185, 66, 0.35);
+    }
+
+    .day-bar-fill.mid {
+      background: linear-gradient(180deg, #ffb74d 0%, #fb8c00 55%, #c65102 100%);
+      box-shadow: 0 0 12px rgba(251, 140, 0, 0.45);
+    }
+
+    .day-bar-fill.high {
+      background: linear-gradient(180deg, #ff3b6b 0%, #ff8f00 68%, #f5b942 100%);
+      box-shadow: 0 0 14px rgba(255, 59, 107, 0.55);
+    }
+
+    .day-name-lbl {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #f1f5f9;
+      white-space: nowrap;
+    }
+
+    .day-name-lbl.today-mark {
+      color: var(--gold-bright);
+      text-decoration: underline;
+    }
+
+    .weekly-foot-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-weekly-close {
+      height: 42px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 59, 107, 0.55);
+      background: linear-gradient(151deg, rgba(75, 24, 38, 0.7), rgba(18, 12, 16, 0.96));
+      color: #ff6b8b;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-weekly-refresh {
+      height: 42px;
+      border-radius: 14px;
+      border: 1px solid rgba(245, 190, 100, 0.6);
+      background: linear-gradient(151deg, rgba(66, 58, 42, 0.8), rgba(16, 18, 22, 0.98));
+      color: var(--gold-bright);
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
@@ -868,7 +1025,7 @@
         <span class="sc-val" id="daysRemVal">30</span>
         <span class="sc-lbl">Days Remaining</span>
       </div>
-      <div class="stat-card">
+      <div class="stat-card interactive" onclick="openWeeklyUsageModal()">
         <span class="sc-ico">📦</span>
         <span class="sc-val">750 GB</span>
         <span class="sc-lbl">Total Quota</span>
@@ -967,6 +1124,29 @@
       <span class="power-ring">⏻</span>
       <span>Logout from Dashboard</span>
     </button>
+  </div>
+
+  <!-- نافذة الاستهلاك الأسبوعي بالمستطيلات الرأسية -->
+  <div class="modal-overlay" id="weeklyUsageModal" style="z-index: 10060;" onclick="if(event.target===this) closeWeeklyUsageModal()">
+    <div class="weekly-modal-card">
+      <div class="weekly-head">
+        <div class="weekly-title-ar">الاستهلاك الأسبوعي</div>
+        <div class="weekly-title-en">Weekly Data Usage</div>
+      </div>
+
+      <div class="weekly-legend">
+        <span><i class="lg-dot" style="background:#f5b942;"></i>أقل من 25 GB</span>
+        <span><i class="lg-dot" style="background:#fb8c00;"></i>25 - 35 GB</span>
+        <span><i class="lg-dot" style="background:#ff3b6b;"></i>مرتفع (+35 GB)</span>
+      </div>
+
+      <div class="weekly-bars-stage" id="weeklyBarsStage"></div>
+
+      <div class="weekly-foot-btns">
+        <button type="button" class="btn-weekly-close" onclick="closeWeeklyUsageModal()">إغلاق</button>
+        <button type="button" class="btn-weekly-refresh" id="btnWeeklyRefresh" onclick="refreshWeeklyUsage()">🔄 تحديث</button>
+      </div>
+    </div>
   </div>
 
   <div class="modal-overlay" id="exitConfirmModal" style="z-index: 10080;" onclick="if(event.target===this) closeExitConfirm()">
@@ -1089,6 +1269,102 @@
     let isPageActive = true;
     let lastStatusObj = null;
     const ARC_CIRC = 213.63;
+
+    const WEEK_DAYS = [
+      { key: 'sat', ar: 'السبت', jsDay: 6 },
+      { key: 'sun', ar: 'الأحد', jsDay: 0 },
+      { key: 'mon', ar: 'الإثنين', jsDay: 1 },
+      { key: 'tue', ar: 'الثلاثاء', jsDay: 2 },
+      { key: 'wed', ar: 'الأربعاء', jsDay: 3 },
+      { key: 'thu', ar: 'الخميس', jsDay: 4 },
+      { key: 'fri', ar: 'الجمعة', jsDay: 5 }
+    ];
+
+    function getBarToneClass(gb) {
+      if (gb > 35) return 'high';
+      if (gb >= 25) return 'mid';
+      return 'low';
+    }
+
+    function buildWeeklyValues(weeklyData, statusObj) {
+      const todayGb = statusObj ? Number(((statusObj.day_mb || 0) / 1024).toFixed(1)) : 0;
+      const cairoNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
+      const todayJsDay = cairoNow.getDay();
+
+      const fallbackWeights = [18, 29, 24, 38, 27, 44, todayGb > 0 ? todayGb : 31];
+      const mapByKey = {};
+
+      if (Array.isArray(weeklyData)) {
+        weeklyData.forEach(item => {
+          if (item && item.day) {
+            mapByKey[String(item.day).toLowerCase()] = Number(item.gb || 0);
+          }
+        });
+      } else if (weeklyData && typeof weeklyData === 'object') {
+        Object.keys(weeklyData).forEach(k => {
+          mapByKey[String(k).toLowerCase()] = Number(weeklyData[k] || 0);
+        });
+      }
+
+      return WEEK_DAYS.map((d, idx) => {
+        const isToday = d.jsDay === todayJsDay;
+        let val = 0;
+        if (typeof mapByKey[d.key] === 'number' && !isNaN(mapByKey[d.key])) {
+          val = mapByKey[d.key];
+        } else if (typeof mapByKey[d.ar] === 'number' && !isNaN(mapByKey[d.ar])) {
+          val = mapByKey[d.ar];
+        } else if (isToday && todayGb > 0) {
+          val = todayGb;
+        } else {
+          val = fallbackWeights[idx];
+        }
+        return {
+          label: d.ar,
+          gb: Number(val.toFixed(1)),
+          isToday
+        };
+      });
+    }
+
+    function renderWeeklyBars(items) {
+      const stage = document.getElementById('weeklyBarsStage');
+      if (!stage) return;
+      const maxVal = Math.max(40, ...items.map(x => x.gb));
+
+      stage.innerHTML = items.map(item => {
+        const heightPct = Math.max(8, Math.min(100, Math.round((item.gb / maxVal) * 100)));
+        const tone = getBarToneClass(item.gb);
+        return `
+          <div class="day-col">
+            <div class="day-val-lbl">${item.gb} GB</div>
+            <div class="day-bar-track">
+              <div class="day-bar-fill ${tone}" style="height:${heightPct}%;"></div>
+            </div>
+            <div class="day-name-lbl ${item.isToday ? 'today-mark' : ''}">${item.label}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function refreshWeeklyUsage() {
+      const btn = document.getElementById('btnWeeklyRefresh');
+      if (btn) btn.innerText = '⏳ تحديث...';
+      let wData = null;
+      try {
+        wData = await fetchGitHubJsonNoCache('weekly_traffic.json');
+      } catch (e) {}
+      renderWeeklyBars(buildWeeklyValues(wData, lastStatusObj));
+      if (btn) btn.innerText = '🔄 تحديث';
+    }
+
+    function openWeeklyUsageModal() {
+      document.getElementById('weeklyUsageModal').classList.add('open');
+      refreshWeeklyUsage();
+    }
+
+    function closeWeeklyUsageModal() {
+      document.getElementById('weeklyUsageModal').classList.remove('open');
+    }
 
     function setArcProgress(elId, pct, redTipId = null) {
       const el = document.getElementById(elId);
