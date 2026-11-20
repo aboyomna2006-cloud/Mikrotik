@@ -60,7 +60,6 @@
       gap: 10px;
     }
 
-    /* Shared Glassy Gold Surfaces & Bottom Glow */
     .hero-card,
     .stat-card,
     .gauge-card,
@@ -88,7 +87,6 @@
       pointer-events: none;
     }
 
-    /* 1. Hero Card (ارتفاع أقل + خط أكبر في الجزء الأيمن) */
     .hero-card {
       display: grid;
       grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
@@ -273,7 +271,7 @@
       color: #ff6b8b;
     }
 
-    /* 2. 4 Summary Cards */
+    /* 2. 4 Summary Cards (نفس الأبعاد والأيقونات مع تكبير خط الكلام بالأسفل) */
     .stats-4-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -340,10 +338,11 @@
     }
 
     .sc-lbl {
-      font-size: clamp(8px, 2vw, 11px);
-      font-weight: 700;
-      color: #e5e5e8;
+      font-size: clamp(10.5px, 2.75vw, 13.5px);
+      font-weight: 800;
+      color: #f1f5f9;
       line-height: 1.15;
+      letter-spacing: -0.35px;
       white-space: nowrap;
     }
 
@@ -415,6 +414,15 @@
       transition: stroke-dashoffset 0.5s ease;
     }
 
+    .ring-fg-red {
+      fill: none;
+      stroke: url(#redTipArc);
+      stroke-width: 10;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 8px rgba(255, 45, 85, 0.85));
+      transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease, opacity 0.3s ease;
+    }
+
     .ring-pct {
       position: absolute;
       font-size: clamp(24px, 5.8vw, 31px);
@@ -473,14 +481,24 @@
       margin-top: 2px;
     }
 
-    /* 4. 8 Glassy Action Tiles (2x4) */
-    .actions-8-grid {
+    /* 4. Action Tiles (صف أول 3 أزرار متناسقة + صف ثاني 4 أزرار) */
+    .actions-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: none;
+    }
+
+    .actions-row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .actions-row-4 {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
-      margin-top: 0;
-      flex: none;
-      min-height: 0;
     }
 
     .act-btn {
@@ -538,14 +556,13 @@
     }
 
     .act-lbl {
-      font-size: clamp(9px, 2.25vw, 11px);
+      font-size: clamp(9.5px, 2.35vw, 11.5px);
       font-weight: 800;
       color: #ffffff;
       line-height: 1;
       white-space: nowrap;
     }
 
-    /* 5. Logout Button */
     .logout-btn {
       width: 100%;
       min-height: 50px;
@@ -580,7 +597,6 @@
       filter: drop-shadow(0 0 8px #ffbd43);
     }
 
-    /* Responsive Breakpoints */
     @media (min-width: 460px) {
       .hero-card { min-height: 162px; }
       .gauge-card { height: 234px; }
@@ -598,6 +614,7 @@
       .online-pill { font-size: 10.5px; padding: 5px 3px; }
       .tele-row { font-size: 10px; }
       .tele-row b { font-size: 10.5px; }
+      .sc-lbl { font-size: 9.5px; }
       .gauge-card { height: 208px; }
     }
 
@@ -609,6 +626,7 @@
       .router-img-wrap { width: 46%; height: 112px; }
       .hero-center-info { margin-left: 46%; width: 54%; }
       .hero-center-info .ros-pill { font-size: 8px; padding: 3px 4px; }
+      .sc-lbl { font-size: 9px; }
       .gauge-card { height: 185px; padding: 9px 5px; }
       .ring-wrap, .ring-wrap svg { width: 91px; height: 91px; }
       .gcs-val { font-size: 12px; }
@@ -617,7 +635,6 @@
       .act-ico svg { width: 28px; height: 28px; }
     }
 
-    /* Modals */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -790,11 +807,15 @@
         <stop offset="0%" stop-color="#ffe082" />
         <stop offset="100%" stop-color="#d98a00" />
       </linearGradient>
+      <linearGradient id="redTipArc" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ff8f00" />
+        <stop offset="45%" stop-color="#ff2d55" />
+        <stop offset="100%" stop-color="#ff1744" />
+      </linearGradient>
     </defs>
   </svg>
 
   <div class="app-shell">
-    <!-- 1. Hero Router Card -->
     <div class="hero-card">
       <div class="router-img-wrap">
         <img src="https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/router.png" alt="MikroTik hAP ax²" onerror="this.src='https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/images%20(4).jpeg'">
@@ -831,7 +852,6 @@
       </div>
     </div>
 
-    <!-- 2. 4 Summary Stat Cards -->
     <div class="stats-4-row">
       <div class="stat-card interactive" onclick="go('info.html?from=dash')">
         <span class="sc-ico">👥</span>
@@ -855,7 +875,6 @@
       </div>
     </div>
 
-    <!-- 3. Two Circular Gauge Cards -->
     <div class="gauges-2-row">
       <div class="gauge-card" onclick="stopCalmSiren(true)">
         <div class="gc-head">
@@ -866,6 +885,7 @@
           <svg viewBox="0 0 88 88">
             <circle class="ring-bg" cx="44" cy="44" r="34"/>
             <circle class="ring-fg" id="cycleRingArc" cx="44" cy="44" r="34" stroke-dasharray="213.63" stroke-dashoffset="213.63"/>
+            <circle class="ring-fg-red" id="cycleRedTipArc" cx="44" cy="44" r="34" stroke-dasharray="0 213.63" stroke-dashoffset="0" style="opacity:0;"/>
           </svg>
           <span class="ring-pct" id="cyclePctVal">0%</span>
         </div>
@@ -890,6 +910,7 @@
           <svg viewBox="0 0 88 88">
             <circle class="ring-bg" cx="44" cy="44" r="34"/>
             <circle class="ring-fg" id="dailyRingArc" cx="44" cy="44" r="34" stroke-dasharray="213.63" stroke-dashoffset="213.63"/>
+            <circle class="ring-fg-red" id="dailyRedTipArc" cx="44" cy="44" r="34" stroke-dasharray="0 213.63" stroke-dashoffset="0" style="opacity:0;"/>
           </svg>
           <span class="ring-pct" id="dailyPctVal">0%</span>
         </div>
@@ -906,50 +927,48 @@
       </div>
     </div>
 
-    <!-- 4. 8 Glassy Action Tiles (2x4) -->
-    <div class="actions-8-grid">
-      <div class="act-btn" onclick="go('info.html?from=dash')">
-        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M17 11a3 3 0 1 0-1-5M18 15a5 5 0 0 1 3 5v1"/></svg></span>
-        <span class="act-lbl">Users</span>
+    <div class="actions-wrap">
+      <div class="actions-row-3">
+        <div class="act-btn" onclick="go('info.html?from=dash')">
+          <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M17 11a3 3 0 1 0-1-5M18 15a5 5 0 0 1 3 5v1"/></svg></span>
+          <span class="act-lbl">Users</span>
+        </div>
+        <div class="act-btn" onclick="go('active.html?from=dash')">
+          <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a21 21 0 0 1 20 0M5 13a15 15 0 0 1 14 0M8.5 17a9 9 0 0 1 7 0"/><circle cx="12" cy="21" r="1" fill="currentColor" stroke="none"/></svg></span>
+          <span class="act-lbl">Active Now</span>
+        </div>
+        <div class="act-btn" onclick="go('renew.html?from=dash')">
+          <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Zm-9 10 9 5 9-5M3 17l9 5 9-5"/></svg></span>
+          <span class="act-lbl">Renew</span>
+        </div>
       </div>
-      <div class="act-btn" onclick="go('active.html?from=dash')">
-        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a21 21 0 0 1 20 0M5 13a15 15 0 0 1 14 0M8.5 17a9 9 0 0 1 7 0"/><circle cx="12" cy="21" r="1" fill="currentColor" stroke="none"/></svg></span>
-        <span class="act-lbl">Hotspot</span>
-      </div>
-      <div class="act-btn" onclick="openDailyZoom()">
-        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17a8 8 0 1 1 16 0"/><path d="m12 17 5-6"/><circle cx="12" cy="17" r="1.5" fill="currentColor" stroke="none"/><path d="M5 21h14"/></svg></span>
-        <span class="act-lbl">Bandwidth</span>
-      </div>
-      <div class="act-btn" onclick="go('renew.html?from=dash')">
-        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Zm-9 10 9 5 9-5M3 17l9 5 9-5"/></svg></span>
-        <span class="act-lbl">Packages</span>
-      </div>
-      <div class="act-btn" onclick="go('index.html?from=dash')">
-        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 22v-2a7 7 0 0 1 14 0v2M19 8v8M15 12h8"/></svg></span>
-        <span class="act-lbl">Add User</span>
-      </div>
-      <div class="act-btn" onclick="go('info.html?from=dash')">
-        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg></span>
-        <span class="act-lbl">User List</span>
-      </div>
-      <div class="act-btn" onclick="openDailyZoom()">
-        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v18m0 0-4-4m4 4 4-4M17 21V3m0 0-4 4m4-4 4 4"/></svg></span>
-        <span class="act-lbl">Traffic</span>
-      </div>
-      <div class="act-btn" onclick="openCycleModal()">
-        <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4l1 3 3 1 3-1 2 4-2 2v3l2 2-2 4-3-1-3 1-1 3h-4l-1-3-3-1-3 1-2-4 2-2v-3L1 9l2-4 3 1 3-1z"/><circle cx="12" cy="12" r="3"/></svg></span>
-        <span class="act-lbl">Settings</span>
+
+      <div class="actions-row-4">
+        <div class="act-btn" onclick="go('index.html?from=dash')">
+          <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 22v-2a7 7 0 0 1 14 0v2M19 8v8M15 12h8"/></svg></span>
+          <span class="act-lbl">Add User</span>
+        </div>
+        <div class="act-btn" onclick="go('info.html?from=dash')">
+          <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg></span>
+          <span class="act-lbl">User List</span>
+        </div>
+        <div class="act-btn" onclick="openDailyZoom()">
+          <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v18m0 0-4-4m4 4 4-4M17 21V3m0 0-4 4m4-4 4 4"/></svg></span>
+          <span class="act-lbl">Traffic</span>
+        </div>
+        <div class="act-btn" onclick="openCycleModal()">
+          <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4l1 3 3 1 3-1 2 4-2 2v3l2 2-2 4-3-1-3 1-1 3h-4l-1-3-3-1-3 1-2-4 2-2v-3L1 9l2-4 3 1 3-1z"/><circle cx="12" cy="12" r="3"/></svg></span>
+          <span class="act-lbl">Settings</span>
+        </div>
       </div>
     </div>
 
-    <!-- 5. Logout Button -->
     <button type="button" class="logout-btn" onclick="openExitConfirm()">
       <span class="power-ring">⏻</span>
       <span>Logout from Dashboard</span>
     </button>
   </div>
 
-  <!-- Exit Confirmation Modal -->
   <div class="modal-overlay" id="exitConfirmModal" style="z-index: 10080;" onclick="if(event.target===this) closeExitConfirm()">
     <div class="modal-box" style="border-color: rgba(255, 59, 107, 0.65);">
       <div class="modal-title" style="color: #ff4d79;">⏻ Confirm Logout</div>
@@ -961,7 +980,6 @@
     </div>
   </div>
 
-  <!-- Package Start Date Modal -->
   <div class="modal-overlay" id="cycleModal" style="z-index: 10050;">
     <div class="modal-box">
       <div class="modal-title">📅 Package Start Date (30 Days)</div>
@@ -978,7 +996,6 @@
     </div>
   </div>
 
-  <!-- Daily Traffic Details Modal -->
   <div class="modal-overlay" id="dailyZoomModal" onclick="if(event.target===this) closeDailyZoom()">
     <div class="zoom-square-box" onclick="if(event.target===this) closeDailyZoom()">
       <div style="font-size:17px;font-weight:900;color:var(--gold-bright);">📊 Today Traffic Details (in1)</div>
@@ -986,6 +1003,7 @@
         <svg viewBox="0 0 88 88">
           <circle class="ring-bg" cx="44" cy="44" r="34"/>
           <circle class="ring-fg" id="zoomRingArc" cx="44" cy="44" r="34" stroke-dasharray="213.63" stroke-dashoffset="213.63"/>
+          <circle class="ring-fg-red" id="zoomRedTipArc" cx="44" cy="44" r="34" stroke-dasharray="0 213.63" stroke-dashoffset="0" style="opacity:0;"/>
         </svg>
         <span class="ring-pct" id="zoomDailyPctPill" style="font-size:28px;">0%</span>
       </div>
@@ -1072,11 +1090,27 @@
     let lastStatusObj = null;
     const ARC_CIRC = 213.63;
 
-    function setArcProgress(elId, pct) {
+    function setArcProgress(elId, pct, redTipId = null) {
       const el = document.getElementById(elId);
       if (!el) return;
       const clamped = Math.max(0, Math.min(100, pct));
       el.style.strokeDashoffset = (ARC_CIRC - (clamped / 100) * ARC_CIRC).toFixed(2);
+
+      if (redTipId) {
+        const redEl = document.getElementById(redTipId);
+        if (redEl) {
+          const threshold = 80;
+          if (clamped > threshold) {
+            const startLen = (threshold / 100) * ARC_CIRC;
+            const redLen = ((clamped - threshold) / 100) * ARC_CIRC;
+            redEl.style.opacity = '1';
+            redEl.style.strokeDasharray = `${redLen.toFixed(2)} ${ARC_CIRC}`;
+            redEl.style.strokeDashoffset = (-startLen).toFixed(2);
+          } else {
+            redEl.style.opacity = '0';
+          }
+        }
+      }
     }
 
     function stopLiveSync() {
@@ -1365,11 +1399,11 @@
 
           document.getElementById('dailyGbVal').innerText = `${dayGB.toFixed(1)} GB`;
           document.getElementById('dailyPctVal').innerText = `${dailyPct}%`;
-          setArcProgress('dailyRingArc', dailyPct);
+          setArcProgress('dailyRingArc', dailyPct, 'dailyRedTipArc');
 
           document.getElementById('zoomDailyGb').innerText = `${dayGB.toFixed(1)} GB`;
           document.getElementById('zoomDailyPctPill').innerText = `${dailyPct}%`;
-          setArcProgress('zoomRingArc', dailyPct);
+          setArcProgress('zoomRingArc', dailyPct, 'zoomRedTipArc');
 
           const cycleGB = ((st.cycle_mb || st.day_mb || 0) / 1024);
           const remCycleGB = Math.max(0, 750 - cycleGB);
@@ -1378,7 +1412,7 @@
           document.getElementById('cycleUsedGbVal').innerText = `${cycleGB.toFixed(0)} GB`;
           document.getElementById('cycleRemGbVal').innerText = `${remCycleGB.toFixed(0)} GB`;
           document.getElementById('cyclePctVal').innerText = `${cyclePct}%`;
-          setArcProgress('cycleRingArc', cyclePct);
+          setArcProgress('cycleRingArc', cyclePct, 'cycleRedTipArc');
 
           let diffSec = 999999;
           if (st.date && st.time) {
