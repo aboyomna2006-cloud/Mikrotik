@@ -44,11 +44,24 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--card-border);
     }
     .win-title { font-size: 16px; font-weight: 800; color: var(--accent-cyan); display: flex; align-items: center; gap: 6px; }
-    .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.14); border: 1px solid rgba(0, 230, 118, 0.35); color: var(--accent-green); padding: 4px 10px; border-radius: 9px; font-weight: 800; cursor: pointer; }
+    .header-right-tools { display: flex; align-items: center; gap: 6px; }
+    .win-badge { font-size: 12px; background: rgba(0, 230, 118, 0.14); border: 1px solid rgba(0, 230, 118, 0.35); color: var(--accent-green); padding: 4px 10px; border-radius: 9px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+    .btn-reload-users {
+      background: rgba(0, 229, 255, 0.14);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      color: var(--accent-cyan);
+      padding: 4px 9px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-reload-users:active { transform: scale(0.94); }
 
     .field-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
     .label-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; font-weight: 700; color: var(--text-sub); }
@@ -118,6 +131,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
+    }
+    .drop-empty {
+      padding: 12px;
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 12.5px;
+      font-weight: 700;
     }
     .drop-item:hover, .drop-item:active { background: rgba(0, 229, 255, 0.15); }
 
@@ -249,7 +270,10 @@
   <div class="winbox-window">
     <div class="win-header">
       <div class="win-title">🔄 تجديد / تعديل مشترك</div>
-      <div class="win-badge" id="totalBadge" onclick="loadUsers()">جاري التحميل...</div>
+      <div class="header-right-tools">
+        <button type="button" class="btn-reload-users" onclick="loadUsers()" title="تحديث قائمة المشتركين">🔄</button>
+        <div class="win-badge" id="totalBadge" onclick="loadUsers()">جاري التحميل...</div>
+      </div>
     </div>
 
     <div class="field-group">
@@ -291,7 +315,7 @@
 
     <div class="field-group">
       <div class="label-row">
-        <span>💬 الكومنت (يزيد +30 يوم تلقائياً)</span>
+        <span>💬 الكومنت (يحافظ على النص بالكامل + تعديل التاريخ)</span>
         <button type="button" class="btn-add-days" onclick="bumpCommentDays(30)">+30 يوم ➕</button>
       </div>
       <input type="text" id="commentInput" class="input-box" placeholder="الكومنت...">
@@ -348,6 +372,11 @@
     let selectedProfile = '512+';
     let selectedGb = 12;
 
+    function getUserComment(u) {
+      if (!u) return '';
+      return String(u.c ?? u.comment ?? u.cm ?? '');
+    }
+
     function closeOrBack() {
       if (isInsideTelegram) { tg.close(); }
       else { window.location.href = 'panel.html'; }
@@ -356,18 +385,49 @@
     const urlParams = new URLSearchParams(window.location.search);
     const preUser = urlParams.get('user');
 
+    async function fetchUsersFromGitHubApi() {
+      const apiUrl = `https://api.github.com/repos/aboyomna2006-cloud/Mikrotik/contents/users.json?ref=main&_=${Date.now()}`;
+      const res = await fetch(apiUrl, {
+        cache: 'no-store',
+        headers: {
+          'Authorization': `Bearer ${GH_TK}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      });
+      if (!res.ok) return null;
+      const meta = await res.json();
+      if (!meta.content) return null;
+      const binStr = atob(meta.content.replace(/\s/g, ''));
+      const bytes = Uint8Array.from(binStr, c => c.charCodeAt(0));
+      return JSON.parse(new TextDecoder('utf-8').decode(bytes));
+    }
+
     async function loadUsers() {
       const badge = document.getElementById('totalBadge');
       badge.innerText = 'جاري التحميل...';
+
+      try {
+        const apiData = await fetchUsersFromGitHubApi();
+        if (Array.isArray(apiData) && apiData.length > 0) {
+          usersList = apiData;
+          badge.innerText = `متصل • ${usersList.length} مشترك`;
+          if (preUser) {
+            const found = usersList.find(u => u.n === preUser || u.id === preUser);
+            if (found) pickUser(found.id);
+          }
+          return;
+        }
+      } catch (e) {}
+
       const ts = Date.now();
       const urls = [
-        `https://aboyomna2006-cloud.github.io/Mikrotik/users.json?v=${ts}`,
-        `https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?v=${ts}`
+        `https://raw.githubusercontent.com/aboyomna2006-cloud/Mikrotik/main/users.json?v=${ts}`,
+        `https://aboyomna2006-cloud.github.io/Mikrotik/users.json?v=${ts}`
       ];
 
       for (const url of urls) {
         try {
-          const res = await fetch(url);
+          const res = await fetch(url, { cache: 'no-store' });
           if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data) && data.length > 0) {
@@ -385,32 +445,32 @@
       badge.innerText = 'اضغط لإعادة المحاولة 🔄';
     }
 
-    function addDaysToComment(rawComm, daysToAdd, fromToday = false) {
-      const baseText = (rawComm || '').trim();
+    function addDaysToComment(rawComm, daysToAdd) {
+      const baseText = String(rawComm ?? '');
       const dateRegex = /(To\s+)(\d{1,2})[-/](\d{1,2})[-/](\d{4})/i;
       const match = baseText.match(dateRegex);
 
-      let dt = new Date();
-      if (!fromToday && match) {
-        const d = parseInt(match[2], 10);
-        const m = parseInt(match[3], 10) - 1;
-        const y = parseInt(match[4], 10);
-        dt = new Date(y, m, d);
+      if (!match) {
+        const dt = new Date();
+        dt.setDate(dt.getDate() + daysToAdd);
+        const newDateStr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
+        return baseText.trim() ? `${baseText.trim()} To ${newDateStr}` : `To ${newDateStr}`;
       }
 
+      const d = parseInt(match[2], 10);
+      const m = parseInt(match[3], 10) - 1;
+      const y = parseInt(match[4], 10);
+      const dt = new Date(y, m, d);
       dt.setDate(dt.getDate() + daysToAdd);
       const newDateStr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
 
-      if (match) {
-        return baseText.replace(dateRegex, `${match[1]}${newDateStr}`);
-      } else {
-        return baseText ? `${baseText} To ${newDateStr}` : `To ${newDateStr}`;
-      }
+      return baseText.replace(dateRegex, `${match[1]}${newDateStr}`);
     }
 
     function bumpCommentDays(days) {
       const inp = document.getElementById('commentInput');
-      inp.value = addDaysToComment(inp.value, days, false);
+      const currentVal = inp.value || getUserComment(selectedUser) || (selectedUser ? selectedUser.n : '');
+      inp.value = addDaysToComment(currentVal, days);
     }
 
     function formatDataSize(mb) {
@@ -468,11 +528,16 @@
       }
     }
 
-    function renderDropdown(items) {
+    function renderDropdown(items, emptyText = 'لا يوجد مشترك مطابق') {
       const box = document.getElementById('dropdownList');
-      if (!items.length) { box.style.display = 'none'; return; }
+      if (!items.length) {
+        box.innerHTML = `<div class="drop-empty">${emptyText}</div>`;
+        box.style.display = 'block';
+        return;
+      }
       box.innerHTML = items.map(u => {
-        const label = (u.c && u.c.trim()) ? u.c : u.n;
+        const commText = getUserComment(u).trim();
+        const label = commText ? `${commText} (${u.n})` : u.n;
         return `<div class="drop-item" onclick="pickUser('${u.id}')"><span>${label}</span><span style="color:#00e5ff;font-size:11px;">${u.p}</span></div>`;
       }).join('');
       box.style.display = 'block';
@@ -481,29 +546,28 @@
     function filterUsers() {
       const q = document.getElementById('searchInput').value.trim().toLowerCase();
       if (!q) { renderDropdown(usersList.slice(0, 15)); return; }
-      const matches = usersList.filter(u =>
-        (u.n && u.n.toLowerCase().includes(q)) ||
-        (u.c && u.c.toLowerCase().includes(q))
-      );
-      renderDropdown(matches);
+      const matches = usersList.filter(u => {
+        const commText = getUserComment(u).toLowerCase();
+        return (u.n && u.n.toLowerCase().includes(q)) || commText.includes(q);
+      });
+      renderDropdown(matches, `لا يوجد مشترك مطابق لـ "${document.getElementById('searchInput').value.trim()}"`);
     }
 
     function showAllUsers() {
       const box = document.getElementById('dropdownList');
       if (box.style.display === 'block') { box.style.display = 'none'; return; }
-      renderDropdown(usersList);
+      filterUsers();
     }
 
     function pickUser(id) {
       const u = usersList.find(x => x.id === id);
       if (!u) return;
       selectedUser = u;
+      const origComm = getUserComment(u);
       document.getElementById('dropdownList').style.display = 'none';
-      document.getElementById('searchInput').value = (u.c && u.c.trim()) ? u.c : u.n;
+      document.getElementById('searchInput').value = origComm.trim() || u.n;
       document.getElementById('currProfBadge').innerText = `الحالي: ${u.p}`;
-
-      const origComm = u.c || '';
-      document.getElementById('commentInput').value = addDaysToComment(origComm, 30, selectedGb === 0);
+      document.getElementById('commentInput').value = origComm;
 
       updateQuotaRing(u);
 
@@ -532,11 +596,6 @@
       selectedGb = gb;
       document.querySelectorAll('.gb-grid .chip-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
-
-      if (selectedUser) {
-        const origComm = selectedUser.c || '';
-        document.getElementById('commentInput').value = addDaysToComment(origComm, 30, gb === 0);
-      }
     }
 
     async function sendDirectCommandToRouter(payload) {
@@ -566,20 +625,22 @@
         return;
       }
       const target = selectedUser.n.startsWith('Arabic_User_') ? selectedUser.id : selectedUser.n;
-      const comm = document.getElementById('commentInput').value.trim();
+      const fallbackComm = getUserComment(selectedUser);
+      const rawInputComm = document.getElementById('commentInput').value;
+      const comm = (rawInputComm.trim() ? rawInputComm.trim() : fallbackComm.trim()).replace(/\|/g, ' - ');
       const payload = `/renew_user|${target}|${selectedProfile}|${selectedGb}|${comm}`;
 
       if (isInsideTelegram) {
         tg.sendData(payload);
       } else {
         const btn = document.getElementById('btnSaveRenew');
-        btn.innerText = '⏳ جاري الحفظ...';
+        btn.innerText = '⏳ جاري الإرسال...';
         btn.disabled = true;
         const ok = await sendDirectCommandToRouter(payload);
         btn.innerText = '✅ حفظ التعديل';
         btn.disabled = false;
         if (ok) {
-          alert(`✅ تم إرسال تعديل/تجديد (${target}) للسيرفر بنجاح!`);
+          alert(`✅ تم إرسال أمر تعديل (${target}) إلى السيرفر، وسيتم تطبيقه وتحديث الكومنت خلال ثوانٍ.`);
           window.location.href = 'panel.html';
         } else {
           alert('❌ تعذر الاتصال بالسيرفر، تأكد من الإنترنت وحاول مرة أخرى');
