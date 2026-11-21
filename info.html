@@ -30,7 +30,6 @@
       color: var(--text-main);
       height: 100dvh;
       overflow: hidden;
-      overscroll-behavior: none;
     }
 
     body {
@@ -117,7 +116,6 @@
     .users-scroll {
       flex: 1;
       overflow-y: auto;
-      overscroll-behavior: none;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -142,13 +140,12 @@
       transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
       -webkit-user-select: none;
       user-select: none;
-      touch-action: pan-y;
     }
 
     .user-row.long-ready {
       border-color: var(--gold-bright);
-      box-shadow: 0 0 14px rgba(245, 185, 66, 0.38), inset 0 1px 0 rgba(255, 245, 206, 0.45);
-      transform: scale(0.986);
+      box-shadow: 0 0 14px rgba(245, 185, 66, 0.35), inset 0 1px 0 rgba(255, 245, 206, 0.45);
+      transform: scale(0.988);
     }
 
     .user-row:active {
@@ -621,9 +618,7 @@
     }
 
     function bindRowGestures() {
-      const scrollBox = document.getElementById('usersListBox');
       const rows = document.querySelectorAll('.user-row');
-
       rows.forEach(row => {
         const rawName = row.getAttribute('data-user') || '';
         let holdTimer = null;
@@ -645,18 +640,14 @@
           holdTimer = setTimeout(() => {
             isLongReady = true;
             row.classList.add('long-ready');
-          }, 260);
+          }, 340);
         };
 
-        const onMove = (e, clientY) => {
+        const onMove = (clientY) => {
+          if (!isLongReady || triggeredByPull) return;
           const deltaY = clientY - startY;
-          if (!isLongReady && Math.abs(deltaY) > 10) {
-            clearHold();
-            return;
-          }
-          if (isLongReady && !triggeredByPull && deltaY > 16) {
+          if (deltaY > 26) {
             triggeredByPull = true;
-            if (e && e.cancelable) e.preventDefault();
             clearHold();
             row.classList.remove('long-ready');
             openFocusModalByName(rawName);
@@ -667,7 +658,7 @@
           clearHold();
           row.classList.remove('long-ready');
           if (triggeredByPull) {
-            setTimeout(() => { triggeredByPull = false; }, 160);
+            setTimeout(() => { triggeredByPull = false; }, 120);
             return;
           }
           if (!isLongReady) {
@@ -681,8 +672,8 @@
         }, { passive: true });
 
         row.addEventListener('touchmove', e => {
-          if (e.touches && e.touches.length > 0) onMove(e, e.touches[0].clientY);
-        }, { passive: false });
+          if (e.touches && e.touches.length > 0) onMove(e.touches[0].clientY);
+        }, { passive: true });
 
         row.addEventListener('touchend', () => onEnd());
         row.addEventListener('touchcancel', () => {
@@ -697,7 +688,7 @@
         });
 
         row.addEventListener('mousemove', e => {
-          if (e.buttons === 1) onMove(e, e.clientY);
+          if (e.buttons === 1) onMove(e.clientY);
         });
 
         row.addEventListener('mouseup', () => onEnd());
@@ -707,20 +698,6 @@
           row.classList.remove('long-ready');
         });
       });
-
-      if (scrollBox && !scrollBox.dataset.pullGuardBound) {
-        scrollBox.dataset.pullGuardBound = '1';
-        let boxStartY = 0;
-        scrollBox.addEventListener('touchstart', e => {
-          if (e.touches && e.touches.length > 0) boxStartY = e.touches[0].clientY;
-        }, { passive: true });
-        scrollBox.addEventListener('touchmove', e => {
-          if (!e.touches || e.touches.length === 0) return;
-          if (scrollBox.scrollTop <= 0 && (e.touches[0].clientY - boxStartY) > 0) {
-            if (e.cancelable) e.preventDefault();
-          }
-        }, { passive: false });
-      }
     }
 
     async function fetchUsers() {
