@@ -137,7 +137,15 @@
       gap: 10px;
       cursor: pointer;
       flex-shrink: 0;
-      transition: transform 0.1s ease, border-color 0.15s ease;
+      transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .user-row.long-ready {
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 14px rgba(245, 185, 66, 0.35), inset 0 1px 0 rgba(255, 245, 206, 0.45);
+      transform: scale(0.988);
     }
 
     .user-row:active {
@@ -249,6 +257,194 @@
       border-color: rgba(255, 59, 107, 0.5);
       color: #ff6b8b;
     }
+
+    /* نافذة الفوكس من صغير لكبير وسط الشاشة */
+    .focus-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 5, 9, 0.78);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20000;
+      padding: 18px;
+      opacity: 0;
+      transition: opacity 0.24s ease;
+    }
+
+    .focus-backdrop.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .focus-card {
+      width: 100%;
+      max-width: 355px;
+      border-radius: 22px;
+      border: 1.5px solid rgba(255, 210, 110, 0.68);
+      background: linear-gradient(155deg, rgba(58, 55, 50, 0.92), rgba(15, 18, 24, 0.99) 50%, #07090d 95%);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85), 0 0 26px rgba(245, 185, 66, 0.22), inset 0 1px 1px rgba(255, 245, 206, 0.45);
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transform: scale(0.32);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.18, 0.9, 0.32, 1.08), opacity 0.22s ease;
+    }
+
+    .focus-backdrop.show .focus-card {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .focus-head {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+    }
+
+    .focus-title {
+      font-size: 14.5px;
+      font-weight: 900;
+      color: var(--gold-bright);
+    }
+
+    .focus-x {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 59, 107, 0.5);
+      background: rgba(255, 59, 107, 0.14);
+      color: #ff6b8b;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .big-ring-wrap {
+      position: relative;
+      width: 126px;
+      height: 126px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    .big-ring-wrap svg {
+      width: 126px;
+      height: 126px;
+      transform: rotate(-90deg);
+    }
+
+    .big-bg {
+      fill: none;
+      stroke: rgba(175, 181, 195, 0.25);
+      stroke-width: 9;
+    }
+
+    .big-fg {
+      fill: none;
+      stroke: url(#miniGoldGrad);
+      stroke-width: 9;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 8px rgba(245, 185, 66, 0.55));
+    }
+
+    .big-fg-red {
+      fill: none;
+      stroke: url(#miniRedGrad);
+      stroke-width: 9;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 8px rgba(255, 45, 85, 0.75));
+    }
+
+    .big-pct {
+      position: absolute;
+      font-size: 24px;
+      font-weight: 900;
+      color: #ffffff;
+      direction: ltr;
+    }
+
+    .focus-details-box {
+      width: 100%;
+      background: rgba(8, 11, 17, 0.85);
+      border: 1px solid rgba(245, 190, 100, 0.28);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .focus-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+      padding-bottom: 5px;
+      font-size: 12.5px;
+    }
+
+    .focus-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .focus-lbl {
+      color: var(--text-sub);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .focus-val {
+      color: #ffffff;
+      font-weight: 800;
+      direction: ltr;
+      text-align: left;
+      word-break: break-word;
+    }
+
+    .focus-val.gold {
+      color: var(--gold-bright);
+    }
+
+    .focus-actions {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      gap: 8px;
+    }
+
+    .btn-focus-close {
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 59, 107, 0.5);
+      background: rgba(255, 59, 107, 0.14);
+      color: #ff6b8b;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-focus-renew {
+      height: 40px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #f5b942, #d99116);
+      color: #090d14;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -285,6 +481,48 @@
     </div>
   </div>
 
+  <div class="focus-backdrop" id="focusModal" onclick="if(event.target===this) closeFocusModal()">
+    <div class="focus-card">
+      <div class="focus-head">
+        <div class="focus-title">📊 تفاصيل المشترك</div>
+        <button type="button" class="focus-x" onclick="closeFocusModal()">✕</button>
+      </div>
+
+      <div class="big-ring-wrap">
+        <svg viewBox="0 0 120 120">
+          <circle class="big-bg" cx="60" cy="60" r="48"/>
+          <circle class="big-fg" id="bigRingArc" cx="60" cy="60" r="48" stroke-dasharray="301.59" stroke-dashoffset="301.59"/>
+          <circle class="big-fg-red" id="bigRedTipArc" cx="60" cy="60" r="48" stroke-dasharray="0 301.59" stroke-dashoffset="0" style="opacity:0;"/>
+        </svg>
+        <span class="big-pct" id="bigRingPct">0%</span>
+      </div>
+
+      <div class="focus-details-box">
+        <div class="focus-row">
+          <span class="focus-lbl">👤 المشترك:</span>
+          <span class="focus-val gold" id="fUserName">-</span>
+        </div>
+        <div class="focus-row">
+          <span class="focus-lbl">💬 الكومنت:</span>
+          <span class="focus-val" id="fComment">-</span>
+        </div>
+        <div class="focus-row">
+          <span class="focus-lbl">🚀 البروفايل:</span>
+          <span class="focus-val" id="fProfile">-</span>
+        </div>
+        <div class="focus-row">
+          <span class="focus-lbl">📦 الاستهلاك:</span>
+          <span class="focus-val gold" id="fQuota">-</span>
+        </div>
+      </div>
+
+      <div class="focus-actions">
+        <button type="button" class="btn-focus-close" onclick="closeFocusModal()">إغلاق</button>
+        <button type="button" class="btn-focus-renew" id="btnGoRenewFromFocus">🔄 تجديد / تعديل</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     const isInsideTelegram = !!(tg && tg.initData && tg.initData.length > 0);
@@ -292,6 +530,7 @@
 
     const GH_TK = ["ghp_", "3C37QKdKnv044XpQn", "Ju0gbb6pVhB0k3ca3pZ"].join("");
     let allUsers = [];
+    let activeFocusUserRawName = '';
 
     const urlParams = new URLSearchParams(window.location.search);
     const preUser = urlParams.get('user');
@@ -321,6 +560,144 @@
     function clearSearch() {
       document.getElementById('qInput').value = '';
       renderList();
+    }
+
+    function openFocusModalByName(rawName) {
+      const u = allUsers.find(item => String((item.n || '').trim()) === String(rawName).trim());
+      if (!u) return;
+
+      const nameStr = (u.n || '').trim();
+      const commStr = (u.c || '').trim() || '-';
+      const profStr = (u.p || '').trim() || '-';
+      const usedGB = Number(u.u || 0) / 1024;
+      const limGB = Number(u.l || 0);
+      const pct = limGB > 0 ? Math.min(100, Math.round((usedGB / limGB) * 100)) : 0;
+      const quotaStr = limGB > 0 ? `${usedGB.toFixed(1)} / ${limGB} GB` : `${usedGB.toFixed(1)} GB`;
+
+      activeFocusUserRawName = nameStr;
+      document.getElementById('fUserName').innerText = nameStr || '-';
+      document.getElementById('fComment').innerText = commStr;
+      document.getElementById('fProfile').innerText = profStr;
+      document.getElementById('fQuota').innerText = quotaStr;
+      document.getElementById('bigRingPct').innerText = `${pct}%`;
+
+      const bigCirc = 301.59;
+      const arc = document.getElementById('bigRingArc');
+      const redArc = document.getElementById('bigRedTipArc');
+      arc.style.strokeDashoffset = (bigCirc - (pct / 100) * bigCirc).toFixed(2);
+
+      if (pct > 80) {
+        const startLen = (0.8 * bigCirc).toFixed(2);
+        const redLen = (((pct - 80) / 100) * bigCirc).toFixed(2);
+        redArc.style.opacity = '1';
+        redArc.style.strokeDasharray = `${redLen} ${bigCirc}`;
+        redArc.style.strokeDashoffset = `-${startLen}`;
+      } else {
+        redArc.style.opacity = '0';
+      }
+
+      document.getElementById('btnGoRenewFromFocus').onclick = function() {
+        window.location.href = `renew.html?user=${encodeURIComponent(activeFocusUserRawName)}`;
+      };
+
+      const backdrop = document.getElementById('focusModal');
+      backdrop.style.display = 'flex';
+      requestAnimationFrame(() => {
+        backdrop.classList.add('show');
+      });
+    }
+
+    function closeFocusModal() {
+      const backdrop = document.getElementById('focusModal');
+      backdrop.classList.remove('show');
+      setTimeout(() => {
+        if (!backdrop.classList.contains('show')) {
+          backdrop.style.display = 'none';
+        }
+      }, 240);
+    }
+
+    function bindRowGestures() {
+      const rows = document.querySelectorAll('.user-row');
+      rows.forEach(row => {
+        const rawName = row.getAttribute('data-user') || '';
+        let holdTimer = null;
+        let isLongReady = false;
+        let startY = 0;
+        let triggeredByPull = false;
+
+        const clearHold = () => {
+          clearTimeout(holdTimer);
+          holdTimer = null;
+        };
+
+        const onStart = (clientY) => {
+          triggeredByPull = false;
+          isLongReady = false;
+          startY = clientY;
+          row.classList.remove('long-ready');
+          clearHold();
+          holdTimer = setTimeout(() => {
+            isLongReady = true;
+            row.classList.add('long-ready');
+          }, 340);
+        };
+
+        const onMove = (clientY) => {
+          if (!isLongReady || triggeredByPull) return;
+          const deltaY = clientY - startY;
+          if (deltaY > 26) {
+            triggeredByPull = true;
+            clearHold();
+            row.classList.remove('long-ready');
+            openFocusModalByName(rawName);
+          }
+        };
+
+        const onEnd = () => {
+          clearHold();
+          row.classList.remove('long-ready');
+          if (triggeredByPull) {
+            setTimeout(() => { triggeredByPull = false; }, 120);
+            return;
+          }
+          if (!isLongReady) {
+            window.location.href = `renew.html?user=${encodeURIComponent(rawName)}`;
+          }
+          isLongReady = false;
+        };
+
+        row.addEventListener('touchstart', e => {
+          if (e.touches && e.touches.length > 0) onStart(e.touches[0].clientY);
+        }, { passive: true });
+
+        row.addEventListener('touchmove', e => {
+          if (e.touches && e.touches.length > 0) onMove(e.touches[0].clientY);
+        }, { passive: true });
+
+        row.addEventListener('touchend', () => onEnd());
+        row.addEventListener('touchcancel', () => {
+          clearHold();
+          isLongReady = false;
+          row.classList.remove('long-ready');
+        });
+
+        row.addEventListener('mousedown', e => {
+          if (e.button !== 0) return;
+          onStart(e.clientY);
+        });
+
+        row.addEventListener('mousemove', e => {
+          if (e.buttons === 1) onMove(e.clientY);
+        });
+
+        row.addEventListener('mouseup', () => onEnd());
+        row.addEventListener('mouseleave', () => {
+          clearHold();
+          isLongReady = false;
+          row.classList.remove('long-ready');
+        });
+      });
     }
 
     async function fetchUsers() {
@@ -401,8 +778,10 @@
             : `<span class="u-meta-tag">${u.p || ''}</span> • ${quotaInfo}`;
         }
 
+        const safeAttrName = rawName.replace(/"/g, '&quot;');
+
         return `
-          <div class="user-row" onclick="window.location.href='renew.html?user=${encodeURIComponent(rawName)}'">
+          <div class="user-row" data-user="${safeAttrName}">
             <div class="u-info">
               <div class="u-primary">${titleHtml}</div>
               <div class="u-secondary">${subHtml}</div>
@@ -418,6 +797,8 @@
           </div>
         `;
       }).join('');
+
+      bindRowGestures();
     }
 
     fetchUsers();
