@@ -31,10 +31,11 @@
       height: 100dvh;
       overflow: hidden;
       overscroll-behavior: none;
+      overscroll-behavior-y: none;
     }
 
     body {
-      padding: 8px 10px 64px;
+      padding: 8px 10px 10px;
       display: flex;
       justify-content: center;
     }
@@ -118,6 +119,7 @@
       flex: 1;
       overflow-y: auto;
       overscroll-behavior: none;
+      overscroll-behavior-y: none;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -241,7 +243,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
       flex-shrink: 0;
-      margin-bottom: 14px;
+      margin-bottom: 4px;
     }
 
     .btn-foot {
@@ -619,6 +621,26 @@
       }, 240);
     }
 
+    (function initGlobalNoPullRefresh() {
+      if (document.documentElement.dataset.noPullBound) return;
+      document.documentElement.dataset.noPullBound = '1';
+      let gStartY = 0;
+
+      document.addEventListener('touchstart', e => {
+        if (e.touches && e.touches.length > 0) gStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      document.addEventListener('touchmove', e => {
+        if (!e.touches || e.touches.length === 0) return;
+        const deltaY = e.touches[0].clientY - gStartY;
+        const scrollBox = document.getElementById('usersListBox');
+        const atTop = !scrollBox || scrollBox.scrollTop <= 0;
+        if (atTop && deltaY > 0 && e.cancelable) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+    })();
+
     function bindRowGestures() {
       const scrollBox = document.getElementById('usersListBox');
       const rows = document.querySelectorAll('.user-row');
@@ -662,10 +684,13 @@
               didScrollOrDrag = true;
               clearHold();
             }
+            if (scrollBox && scrollBox.scrollTop <= 0 && deltaY > 0 && e && e.cancelable) {
+              e.preventDefault();
+            }
             return;
           }
 
-          if (!triggeredByPull && deltaY > 16) {
+          if (!triggeredByPull && deltaY > 14) {
             triggeredByPull = true;
             if (e && e.cancelable) e.preventDefault();
             clearHold();
