@@ -2,45 +2,143 @@ name: Abu-Yomna Notifications
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - accesses_status.json
+      - neighbors.json
+  schedule:
+    - cron: '3,8,13,18,23,28,33,38,43,48,53,58 * * * *'
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: abu-yomna-notifications
+  cancel-in-progress: false
 
 jobs:
-  test-firebase:
+  monitor:
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
       - name: Install Firebase SDK
         run: pip install firebase-admin
 
-      - name: Test Firebase connection
+      - name: Monitor devices
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           python - <<'PY'
           import os
           import json
+          from pathlib import Path
           import firebase_admin
           from firebase_admin import credentials, messaging
 
-          config = json.loads(os.environ["FIREBASE_SERVICE_ACCOUNT"])
-          firebase_admin.initialize_app(credentials.Certificate(config))
-
-          message = messaging.Message(
-              notification=messaging.Notification(
-                  title="Abu-Yomna",
-                  body="Firebase connection test"
-              ),
-              topic="abu_yomna_test"
+          config = json.loads(
+              os.environ["FIREBASE_SERVICE_ACCOUNT"]
+          )
+          firebase_admin.initialize_app(
+              credentials.Certificate(config)
           )
 
-          messaging.send(message, dry_run=False)
-          print("Firebase FCM connection successful")
+          state_file = Path(
+              "notification_state.json"
+          )
+
+          previous = {}
+
+          if state_file.exists():
+              previous = json.loads(
+                  state_file.read_text()
+              )
+
+          current = dict(previous)
+
+          sources = [
+              ("accesses_status.json", "Access"),
+              ("neighbors.json", "Neighbor")
+          ]
+
+          for filename, category in sources:
+              devices = json.loads(
+                  Path(filename).read_text()
+              )
+
+              for device in devices:
+                  ip = device.get("ip", "")
+                  mac = device.get("mac", "")
+                  name = device.get("name", "Unknown")
+                  status = device.get("state", "")
+
+                  identity = mac or ip
+
+                  if not identity:
+                      continue
+
+                  key = category + ":" + identity
+
+                  if status not in ("online", "offline"):
+                      continue
+
+                  old_status = previous.get(key)
+
+                  if old_status and old_status != status:
+                      if status == "offline":
+                          title = "🔴 انقطع الاتصال بالجهاز"
+                      else:
+                          title = "🟢 عاد الاتصال بالجهاز"
+
+                      message = messaging.Message(
+                          notification=messaging.Notification(
+                              title=title,
+                              body=f"{name}\n{ip or mac}"
+                          ),
+                          android=messaging.AndroidConfig(
+                              priority="high",
+                              notification=messaging.AndroidNotification(
+                                  sound="default"
+                              )
+                          ),
+                          topic="abu_yomna_test"
+                      )
+
+                      messaging.send(message)
+                      print(f"Notification sent: {name}")
+
+                  current[key] = status
+
+          state_file.write_text(
+              json.dumps(
+                  current,
+                  ensure_ascii=False,
+                  indent=2,
+                  sort_keys=True
+              )
+          )
+
+          print("Monitoring completed")
           PY
+
+      - name: Save monitoring state
+        run: |
+          git config user.name "Abu-Yomna Monitor"
+          git config user.email "actions@github.com"
+          git add notification_state.json
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Update notification state"
+            git pull --rebase origin main
+            git push origin main
+          fi
