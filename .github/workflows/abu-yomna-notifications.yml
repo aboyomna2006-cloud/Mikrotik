@@ -41,6 +41,6 @@ jobs:
               topic="abu_yomna_test"
           )
 
-          messaging.send(message, dry_run=True)
+          messaging.send(message, dry_run=False)
           print("Firebase FCM connection successful")
           PY
