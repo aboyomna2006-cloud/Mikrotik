@@ -1,0 +1,46 @@
+name: Abu-Yomna Notifications
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-firebase:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Firebase SDK
+        run: pip install firebase-admin
+
+      - name: Test Firebase connection
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          python - <<'PY'
+          import os
+          import json
+          import firebase_admin
+          from firebase_admin import credentials, messaging
+
+          config = json.loads(os.environ["FIREBASE_SERVICE_ACCOUNT"])
+          firebase_admin.initialize_app(credentials.Certificate(config))
+
+          message = messaging.Message(
+              notification=messaging.Notification(
+                  title="Abu-Yomna",
+                  body="Firebase connection test"
+              ),
+              topic="abu_yomna_test"
+          )
+
+          messaging.send(message, dry_run=True)
+          print("Firebase FCM connection successful")
+          PY
