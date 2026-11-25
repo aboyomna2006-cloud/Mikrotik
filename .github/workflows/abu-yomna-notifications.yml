@@ -96,14 +96,14 @@ jobs:
 
                   if old_status and old_status != status:
                       if status == "offline":
-                          title = "🔴 انقطع الاتصال بالجهاز"
+                          title = "🔴 تنبيه: انقطاع الاتصال"
                       else:
-                          title = "🟢 عاد الاتصال بالجهاز"
+                          title = "🟢 تنبيه: استعادة الاتصال"
 
                       message = messaging.Message(
                           data={
                               "title": title,
-                              "body": f"{name}\n{ip or mac}"
+                              "body": f"الجهاز: {name}\nIP: {ip or mac}"
                           },
                           android=messaging.AndroidConfig(
                               priority="high"
