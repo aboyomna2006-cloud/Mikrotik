@@ -101,15 +101,12 @@ jobs:
                           title = "🟢 عاد الاتصال بالجهاز"
 
                       message = messaging.Message(
-                          notification=messaging.Notification(
-                              title=title,
-                              body=f"{name}\n{ip or mac}"
-                          ),
+                          data={
+                              "title": title,
+                              "body": f"{name}\n{ip or mac}"
+                          },
                           android=messaging.AndroidConfig(
-                              priority="high",
-                              notification=messaging.AndroidNotification(
-                                  sound="default"
-                              )
+                              priority="high"
                           ),
                           topic="abu_yomna_test"
                       )
