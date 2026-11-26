@@ -9,7 +9,7 @@
   "Access:192.168.1.15": "online",
   "Access:192.168.1.9": "online",
   "Access:192.168.16.127": "online",
-  "Access:192.168.16.128": "online",
+  "Access:192.168.16.128": "offline",
   "Access:192.168.16.129": "online",
   "Access:192.168.16.135": "online",
   "Neighbor:00:15:6D:4A:CB:37": "online",
